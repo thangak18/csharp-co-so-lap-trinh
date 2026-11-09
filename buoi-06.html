@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buổi 6 · Hàm (Phương thức)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="assets/slides.css">
+</head>
+<body data-lesson="Buổi 6" data-title="Hàm (phương thức)">
+<div class="deck">
+
+<section class="slide cover">
+  <div class="badge"><span class="dot"></span>Cơ sở lập trình C# · Buổi 06</div>
+  <h1><em>Hàm</em> (phương thức)<br>chia để trị</h1>
+  <p class="sub">Đóng gói từng công việc thành một hàm có tên, gọi lại bao nhiêu lần cũng được. Chương trình ngắn hơn, dễ đọc, dễ sửa lỗi.</p>
+  <div class="meta"><span>⏱ 90–120 phút</span><span>🧩 void · return</span><span>🔗 ref · out</span><span>♻ Đệ quy</span></div>
+  <div class="big-num">06</div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mục tiêu</span><h2>Sau buổi học này, bạn có thể</h2></header>
+  <div class="s-body">
+    <ul class="goals">
+      <li>Khai báo và gọi hàm <code>static</code> trong lớp <code>Program</code>.</li>
+      <li>Phân biệt hàm <code>void</code> (không trả về) và hàm có <code>return</code>.</li>
+      <li>Hiểu tham số, đối số, phạm vi biến (biến cục bộ).</li>
+      <li>Phân biệt truyền <strong>tham trị</strong> và <strong>tham chiếu</strong> (<code>ref</code>, <code>out</code>).</li>
+      <li>Biết nạp chồng hàm, tham số mặc định và hàm đệ quy cơ bản.</li>
+      <li>Tổ chức lại chương trình menu thành các hàm riêng biệt.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Hàm là gì? Tại sao cần hàm?</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p><strong>Hàm (function / method)</strong> là một khối lệnh được đặt tên, thực hiện một công việc cụ thể. Có thể <strong>gọi</strong> nhiều lần từ nhiều nơi.</p>
+        <p>Bạn đã dùng nhiều hàm có sẵn: <code>Console.WriteLine()</code>, <code>Math.Sqrt()</code>, <code>int.Parse()</code>… Hôm nay ta tự viết hàm của riêng mình.</p>
+        <div class="callout tip small"><b>Hình dung:</b> hàm như một chiếc máy xay sinh tố. Cho nguyên liệu vào (<strong>tham số</strong>), máy xử lý bên trong, trả ra ly sinh tố (<strong>giá trị trả về</strong>).</div>
+      </div>
+      <div class="cols" style="grid-template-columns:1fr;gap:12px">
+        <div class="card small"><h4><span class="ic">♻</span>Tái sử dụng</h4><p>Viết 1 lần, gọi nhiều lần. Không copy-paste code.</p></div>
+        <div class="card small"><h4><span class="ic">🧩</span>Chia nhỏ bài toán</h4><p>Bài lớn chia thành nhiều hàm nhỏ, mỗi hàm làm một việc.</p></div>
+        <div class="card small"><h4><span class="ic">🔧</span>Dễ sửa lỗi</h4><p>Sai ở đâu sửa trong đúng hàm đó, không ảnh hưởng chỗ khác.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Cú pháp khai báo hàm</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          static KiểuTrảVề TênHàm(kiểu1 thamSố1, kiểu2 thamSố2)
+          {
+              // thân hàm
+              return giáTrị;   // nếu KiểuTrảVề khác void
+          }
+        </script>
+        <table class="tbl small">
+          <tr><th>Thành phần</th><th>Ý nghĩa</th></tr>
+          <tr><td><code>static</code></td><td>Để gọi được trực tiếp từ <code>Main</code> (cũng là static)</td></tr>
+          <tr><td>Kiểu trả về</td><td><code>int</code>, <code>double</code>, <code>bool</code>, <code>string</code>… hoặc <code>void</code> nếu không trả về gì</td></tr>
+          <tr><td>Tên hàm</td><td>Động từ, viết PascalCase: <code>TinhTong</code>, <code>KiemTraNT</code></td></tr>
+          <tr><td>Tham số</td><td>Dữ liệu đầu vào, có thể không có: <code>()</code></td></tr>
+        </table>
+      </div>
+      <div>
+        <h3>Đặt hàm ở đâu?</h3>
+        <script type="text/x-csharp" data-size="sm">
+          class Program
+          {
+              static int BinhPhuong(int x)     // ← khai báo hàm
+              {
+                  return x * x;
+              }
+
+              static void Main(string[] args)
+              {
+                  int kq = BinhPhuong(5);      // ← gọi hàm
+                  Console.WriteLine(kq);       // 25
+                  Console.WriteLine(BinhPhuong(3) + BinhPhuong(4)); // 25
+              }
+          }
+        </script>
+        <div class="callout small">Hàm nằm <strong>trong class</strong>, <strong>ngang hàng</strong> với <code>Main</code>, không đặt bên trong <code>Main</code>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Hàm void và hàm có giá trị trả về</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3>Hàm <code>void</code>: chỉ thực hiện việc</h3>
+        <script type="text/x-csharp" data-size="sm">
+          static void InDuongKe(int doDai)
+          {
+              for (int i = 0; i < doDai; i++)
+                  Console.Write("=");
+              Console.WriteLine();
+          }
+
+          static void ChaoMung(string ten)
+          {
+              Console.WriteLine($"Xin chào {ten}!");
+          }
+
+          // Gọi: đứng một mình như một câu lệnh
+          InDuongKe(20);
+          ChaoMung("Lan");
+        </script>
+      </div>
+      <div>
+        <h3>Hàm có <code>return</code>: tính ra kết quả</h3>
+        <script type="text/x-csharp" data-size="sm">
+          static double TinhDTB(double toan, double ly, double hoa)
+          {
+              return (toan + ly + hoa) / 3;
+          }
+
+          static bool LaSoChan(int n)
+          {
+              return n % 2 == 0;
+          }
+
+          // Gọi: dùng kết quả trong biểu thức
+          double tb = TinhDTB(8, 7.5, 9);
+          if (LaSoChan(10)) Console.WriteLine("Chẵn");
+        </script>
+        <div class="callout warn small"><code>return</code> <strong>kết thúc hàm ngay lập tức</strong>. Mọi nhánh của hàm có kiểu trả về đều phải có <code>return</code>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Tham số, đối số và phạm vi biến</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          static int Tong(int a, int b)   // a, b: THAM SỐ (hình thức)
+          {
+              int kq = a + b;              // kq: biến CỤC BỘ
+              return kq;
+          }
+
+          static void Main(string[] args)
+          {
+              int x = 3, y = 4;
+              int s = Tong(x, y);          // x, y: ĐỐI SỐ (thực tế)
+              Console.WriteLine(s);        // 7
+              Console.WriteLine(kq);       // ❌ LỖI: kq không tồn tại ở đây
+          }
+        </script>
+      </div>
+      <div>
+        <ul class="small">
+          <li><strong>Tham số</strong>: biến khai báo trong ngoặc ở định nghĩa hàm.</li>
+          <li><strong>Đối số</strong>: giá trị thật truyền vào khi gọi hàm.</li>
+          <li>Đối số phải <strong>đúng số lượng, thứ tự và kiểu</strong> với tham số.</li>
+          <li><strong>Biến cục bộ</strong> chỉ tồn tại trong hàm (hoặc khối <code>{ }</code>) khai báo nó, mất đi khi hàm kết thúc.</li>
+          <li>Hai hàm khác nhau có thể dùng biến <strong>trùng tên</strong> mà không ảnh hưởng nhau.</li>
+        </ul>
+        <div class="callout tip small"><b>Muốn dùng kết quả ở Main?</b> Hàm phải <code>return</code> giá trị và Main nhận vào một biến.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Truyền tham trị và tham chiếu (ref)</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3>Tham trị (mặc định): truyền <em>bản sao</em></h3>
+        <script type="text/x-csharp" data-size="sm">
+          static void HoanDoi(int a, int b)
+          {
+              int tam = a; a = b; b = tam;
+          }
+          int x = 1, y = 2;
+          HoanDoi(x, y);
+          Console.WriteLine($"x={x}, y={y}");
+        </script>
+        <script type="text/x-out">x=1, y=2      ← KHÔNG đổi!</script>
+        <p class="small">Hàm chỉ đổi <strong>bản sao</strong> a, b; biến gốc x, y không bị ảnh hưởng.</p>
+      </div>
+      <div>
+        <h3>Tham chiếu <code>ref</code>: truyền <em>bản gốc</em></h3>
+        <script type="text/x-csharp" data-size="sm">
+          static void HoanDoi(ref int a, ref int b)
+          {
+              int tam = a; a = b; b = tam;
+          }
+          int x = 1, y = 2;
+          HoanDoi(ref x, ref y);
+          Console.WriteLine($"x={x}, y={y}");
+        </script>
+        <script type="text/x-out">x=2, y=1      ← đã đổi ✓</script>
+        <p class="small">Phải viết <code>ref</code> ở <strong>cả khai báo và lời gọi</strong>. Biến phải được gán giá trị trước khi truyền.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Tham số out: trả về nhiều kết quả</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          // Trả về cả tổng, hiệu, tích, thương
+          static void TinhToan(int a, int b,
+                               out int tong, out int hieu,
+                               out int tich, out double thuong)
+          {
+              tong = a + b;
+              hieu = a - b;
+              tich = a * b;
+              thuong = (double)a / b;
+          }
+
+          static void Main(string[] args)
+          {
+              TinhToan(7, 2, out int t, out int h,
+                       out int p, out double q);
+              Console.WriteLine($"{t} {h} {p} {q}");
+          }
+        </script>
+        <script type="text/x-out">9 5 14 3.5</script>
+      </div>
+      <div>
+        <table class="tbl small">
+          <tr><th></th><th><code>ref</code></th><th><code>out</code></th></tr>
+          <tr><td>Gán giá trị trước khi truyền</td><td>Bắt buộc</td><td>Không cần</td></tr>
+          <tr><td>Hàm phải gán giá trị</td><td>Không bắt buộc</td><td><strong>Bắt buộc</strong></td></tr>
+          <tr><td>Mục đích</td><td>Sửa biến có sẵn</td><td>Trả thêm kết quả</td></tr>
+        </table>
+        <div class="callout tip small">Bạn đã dùng <code>out</code> ở buổi 5: <code>int.TryParse(s, out int n)</code> trả về <code>bool</code> và trả thêm <code>n</code> qua <code>out</code>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Nạp chồng hàm và tham số mặc định</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3>Nạp chồng (overload)</h3>
+        <p class="small">Nhiều hàm <strong>cùng tên</strong> nhưng <strong>khác danh sách tham số</strong> (số lượng hoặc kiểu).</p>
+        <script type="text/x-csharp" data-size="sm">
+          static int Max(int a, int b)
+          {
+              return a > b ? a : b;
+          }
+          static int Max(int a, int b, int c)
+          {
+              return Max(Max(a, b), c);
+          }
+          static double Max(double a, double b)
+          {
+              return a > b ? a : b;
+          }
+
+          Max(3, 8);        // gọi hàm 1
+          Max(3, 8, 5);     // gọi hàm 2
+          Max(2.5, 1.7);    // gọi hàm 3
+        </script>
+      </div>
+      <div>
+        <h3>Tham số mặc định</h3>
+        <script type="text/x-csharp" data-size="sm">
+          static void InDuongKe(int doDai = 30, char kyTu = '-')
+          {
+              Console.WriteLine(new string(kyTu, doDai));
+          }
+
+          InDuongKe();          // 30 dấu '-'
+          InDuongKe(10);        // 10 dấu '-'
+          InDuongKe(10, '*');   // 10 dấu '*'
+        </script>
+        <div class="callout small">Tham số mặc định phải đặt <strong>cuối</strong> danh sách tham số.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Hàm đệ quy (giới thiệu)</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p class="small"><strong>Đệ quy</strong>: hàm <strong>gọi lại chính nó</strong> với bài toán nhỏ hơn. Bắt buộc có <strong>điều kiện dừng</strong>.</p>
+        <script type="text/x-csharp" data-size="sm">
+          // n! = n × (n-1)!,  0! = 1
+          static long GiaiThua(int n)
+          {
+              if (n <= 1)                   // điều kiện dừng
+                  return 1;
+              return n * GiaiThua(n - 1);   // gọi đệ quy
+          }
+
+          // Fibonacci: F(1)=F(2)=1, F(n)=F(n-1)+F(n-2)
+          static long Fibo(int n)
+          {
+              if (n <= 2) return 1;
+              return Fibo(n - 1) + Fibo(n - 2);
+          }
+        </script>
+      </div>
+      <div>
+        <h3>Quá trình tính GiaiThua(4)</h3>
+        <div class="out" style="color:#e4e6f1">GiaiThua(4)
+= 4 * GiaiThua(3)
+= 4 * (3 * GiaiThua(2))
+= 4 * (3 * (2 * GiaiThua(1)))
+= 4 * (3 * (2 * 1))
+= 24</div>
+        <div class="callout danger small">Thiếu điều kiện dừng thì hàm gọi mãi, gây lỗi <code>StackOverflowException</code>.</div>
+        <div class="callout tip small">Ở môn này, đệ quy chỉ cần hiểu và đọc được. Với bài thực tế, vòng lặp thường chạy nhanh hơn.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide divider">
+  <div class="num">THỰC HÀNH</div>
+  <h2>Viết thư viện hàm của riêng bạn</h2>
+  <p>Đóng gói lại các thuật toán đã học thành hàm và dùng chúng để xây dựng chương trình menu.</p>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 1</span><h2>Bộ hàm xử lý số nguyên</h2></header>
+  <div class="s-body">
+    <script type="text/x-csharp" data-size="sm">
+      static bool LaSoNguyenTo(int n)
+      {
+          if (n < 2) return false;
+          for (int i = 2; i * i <= n; i++)
+              if (n % i == 0) return false;   // return sớm, không cần cờ
+          return true;
+      }
+
+      static int UCLN(int a, int b)
+      {
+          a = Math.Abs(a); b = Math.Abs(b);
+          while (b != 0) { int r = a % b; a = b; b = r; }
+          return a;
+      }
+
+      static int TongChuSo(int n)
+      {
+          n = Math.Abs(n);
+          int tong = 0;
+          while (n > 0) { tong += n % 10; n /= 10; }
+          return tong;
+      }
+
+      static int DaoSo(int n)
+      {
+          int dao = 0;
+          while (n > 0) { dao = dao * 10 + n % 10; n /= 10; }
+          return dao;
+      }
+
+      static bool LaSoDoiXung(int n) => n == DaoSo(n);   // hàm 1 dòng (expression-bodied)
+    </script>
+    <div class="callout tip small">Bên trong hàm có thể <code>return</code> sớm ngay khi biết kết quả, giúp code gọn hơn so với dùng biến cờ.</div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 2</span><h2>Hàm nhập liệu an toàn dùng lại nhiều lần</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          static int NhapSoNguyen(string thongBao,
+                                  int min = int.MinValue,
+                                  int max = int.MaxValue)
+          {
+              int n;
+              while (true)
+              {
+                  Console.Write(thongBao);
+                  if (int.TryParse(Console.ReadLine(), out n)
+                      && n >= min && n <= max)
+                      return n;
+                  Console.WriteLine($"  ⚠ Nhập số nguyên trong [{min}, {max}]");
+              }
+          }
+
+          static double NhapSoThuc(string thongBao)
+          {
+              double x;
+              Console.Write(thongBao);
+              while (!double.TryParse(Console.ReadLine(), out x))
+                  Console.Write("  ⚠ Không hợp lệ, nhập lại: ");
+              return x;
+          }
+        </script>
+      </div>
+      <div>
+        <h3>Sử dụng trong Main</h3>
+        <script type="text/x-csharp" data-size="sm">
+          int tuoi  = NhapSoNguyen("Tuổi: ", 1, 120);
+          int thang = NhapSoNguyen("Tháng: ", 1, 12);
+          double diem = NhapSoThuc("Điểm: ");
+        </script>
+        <div class="callout ok small">Từ giờ, mọi chỗ cần nhập số chỉ cần <strong>1 dòng</strong>. Đây là sức mạnh của hàm.</div>
+        <div class="callout small"><code>while (true)</code> lặp mãi, chỉ thoát khi gặp <code>return</code>, tức là khi dữ liệu hợp lệ.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 3</span><h2>Chương trình menu được tổ chức bằng hàm</h2></header>
+  <div class="s-body">
+    <div class="cols c-64">
+      <script type="text/x-csharp" data-size="sm">
+        static void HienMenu()
+        {
+            Console.WriteLine("\n====== XỬ LÝ SỐ ======");
+            Console.WriteLine("1. Kiểm tra số nguyên tố");
+            Console.WriteLine("2. Tính UCLN, BCNN");
+            Console.WriteLine("3. Kiểm tra số đối xứng");
+            Console.WriteLine("0. Thoát");
+        }
+
+        static void Main(string[] args)
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            int chon;
+            do
+            {
+                HienMenu();
+                chon = NhapSoNguyen("Chọn: ", 0, 3);
+                switch (chon)
+                {
+                    case 1:
+                        int n = NhapSoNguyen("n = ");
+                        Console.WriteLine(LaSoNguyenTo(n) ? "Là SNT" : "Không là SNT");
+                        break;
+                    case 2:
+                        int a = NhapSoNguyen("a = "), b = NhapSoNguyen("b = ");
+                        int u = UCLN(a, b);
+                        Console.WriteLine($"UCLN = {u}, BCNN = {a / u * b}");
+                        break;
+                    case 3:
+                        int m = NhapSoNguyen("n = ", 0);
+                        Console.WriteLine(LaSoDoiXung(m) ? "Đối xứng" : "Không đối xứng");
+                        break;
+                }
+            } while (chon != 0);
+        }
+      </script>
+      <div>
+        <div class="card small"><h4><span class="ic">✓</span>So với buổi 5</h4>
+          <ul>
+            <li><code>Main</code> ngắn, đọc như mục lục.</li>
+            <li>Mỗi hàm làm đúng <strong>một việc</strong>.</li>
+            <li>Sửa thuật toán số nguyên tố? Chỉ sửa trong <code>LaSoNguyenTo</code>.</li>
+          </ul>
+        </div>
+        <div class="callout tip small">Đây chính là cấu trúc mà đề thi thường yêu cầu: <em>"Viết các hàm sau… và viết hàm Main có menu để gọi các hàm"</em>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lưu ý</span><h2>Lỗi thường gặp với hàm</h2></header>
+  <div class="s-body">
+    <table class="tbl">
+      <tr><th>Lỗi</th><th>Thông báo / Hiện tượng</th><th>Cách sửa</th></tr>
+      <tr><td>Quên <code>static</code></td><td>"An object reference is required…"</td><td>Thêm <code>static</code> trước kiểu trả về</td></tr>
+      <tr><td>Thiếu <code>return</code> ở một nhánh</td><td>"not all code paths return a value"</td><td>Đảm bảo mọi nhánh đều có <code>return</code></td></tr>
+      <tr><td>Khai báo hàm bên trong Main</td><td>Lỗi cú pháp / hàm cục bộ khó hiểu</td><td>Đặt hàm ngang hàng với Main</td></tr>
+      <tr><td>Gọi hàm sai số / kiểu đối số</td><td>"No overload for method … takes 1 arguments"</td><td>Kiểm tra lại danh sách tham số</td></tr>
+      <tr><td>In trong hàm thay vì return</td><td>Hàm <code>Tong</code> dùng <code>WriteLine</code>, không dùng được kết quả</td><td>Hàm tính toán nên <code>return</code>, việc in để Main làm</td></tr>
+      <tr><td>Quên <code>ref</code> khi gọi</td><td>"Argument must be passed with the 'ref' keyword"</td><td>Viết <code>ref</code> cả ở lời gọi</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Bài tập vận dụng</span><h2>Luyện tập</h2></header>
+  <div class="s-body">
+    <div class="ex"><div class="ex-h"><b>Bài 1.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Viết hàm <code>double TinhDienTich(double r)</code> trả về diện tích hình tròn và hàm <code>double TinhChuVi(double r)</code>. Gọi trong Main.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 2.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Viết hàm <code>string XepLoai(double dtb)</code> trả về "Giỏi", "Khá", "Trung bình", "Yếu".</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          static string XepLoai(double dtb)
+          {
+              if (dtb >= 8) return "Giỏi";
+              if (dtb >= 6.5) return "Khá";
+              if (dtb >= 5) return "Trung bình";
+              return "Yếu";
+          }
+        </script>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 3.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Viết hàm <code>bool GiaiPTBac2(double a, double b, double c, out double x1, out double x2)</code> trả về <code>false</code> nếu vô nghiệm.</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          static bool GiaiPTBac2(double a, double b, double c, out double x1, out double x2)
+          {
+              x1 = x2 = 0;
+              double delta = b * b - 4 * a * c;
+              if (delta < 0) return false;
+              x1 = (-b + Math.Sqrt(delta)) / (2 * a);
+              x2 = (-b - Math.Sqrt(delta)) / (2 * a);
+              return true;
+          }
+        </script>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 4.</b><span class="lvl l3">Nâng cao</span></div>
+      <p>Viết hàm đệ quy <code>int TongChuSoDQ(int n)</code> và hàm <code>long LuyThua(int a, int n)</code> tính aⁿ bằng đệ quy.</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          static int TongChuSoDQ(int n) => n < 10 ? n : n % 10 + TongChuSoDQ(n / 10);
+          static long LuyThua(int a, int n) => n == 0 ? 1 : a * LuyThua(a, n - 1);
+        </script>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-hw">Bài tập về nhà</span><h2>Chuẩn bị cho buổi 7</h2></header>
+  <div class="s-body">
+    <ol class="steps">
+      <li>Viết lại toàn bộ bài tập về nhà buổi 4 dưới dạng hàm, mỗi bài một hàm.</li>
+      <li>Viết hàm <code>bool LaSoHoanHao(int n)</code>, in các số hoàn hảo nhỏ hơn 10.000.</li>
+      <li>Viết hàm <code>void RutGonPhanSo(ref int tu, ref int mau)</code>.</li>
+      <li>Viết hàm <code>double TinhTienDien(int kwh)</code> theo bậc thang (buổi 3), gọi cho 3 hộ gia đình.</li>
+      <li>Viết chương trình menu "Máy tính tài chính": 1. Lãi kép; 2. Trả góp hàng tháng; 3. Số năm để đạt mục tiêu. Mỗi chức năng là một hàm.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-sum">Tổng kết</span><h2>Ghi nhớ của buổi 6</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <ul>
+        <li>Cú pháp: <code>static Kiểu Tên(tham số) { … }</code>, đặt ngang hàng Main.</li>
+        <li><code>void</code>: không trả về; hàm khác phải <code>return</code> ở mọi nhánh.</li>
+        <li>Biến cục bộ chỉ sống trong hàm khai báo nó.</li>
+        <li>Hàm tính toán nên <strong>return kết quả</strong>, để Main in.</li>
+      </ul>
+      <ul>
+        <li>Mặc định truyền <strong>tham trị</strong> (bản sao).</li>
+        <li><code>ref</code>: sửa biến gốc; <code>out</code>: trả thêm kết quả.</li>
+        <li>Nạp chồng: cùng tên, khác tham số.</li>
+        <li>Đệ quy: gọi lại chính mình, <strong>phải có điều kiện dừng</strong>.</li>
+      </ul>
+    </div>
+    <div class="callout ok"><b>Buổi tiếp theo:</b> Mảng một chiều: lưu trữ và xử lý cả danh sách dữ liệu.</div>
+  </div>
+</section>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/slides.js"></script>
+</body>
+</html>

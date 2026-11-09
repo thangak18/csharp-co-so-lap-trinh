@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buổi 3 · Cấu trúc rẽ nhánh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="assets/slides.css">
+</head>
+<body data-lesson="Buổi 3" data-title="Cấu trúc rẽ nhánh if, switch">
+<div class="deck">
+
+<section class="slide cover">
+  <div class="badge"><span class="dot"></span>Cơ sở lập trình C# · Buổi 03</div>
+  <h1>Cấu trúc <em>rẽ nhánh</em><br>if · else · switch</h1>
+  <p class="sub">Dạy chương trình biết "ra quyết định": làm việc này nếu điều kiện đúng, làm việc khác nếu điều kiện sai.</p>
+  <div class="meta"><span>⏱ 90–120 phút</span><span>⚖ So sánh · Logic</span><span>🔀 if / else if / switch</span></div>
+  <div class="big-num">03</div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mục tiêu</span><h2>Sau buổi học này, bạn có thể</h2></header>
+  <div class="s-body">
+    <ul class="goals">
+      <li>Viết biểu thức điều kiện với toán tử so sánh và toán tử logic <code>&amp;&amp;</code>, <code>||</code>, <code>!</code>.</li>
+      <li>Sử dụng thành thạo <code>if</code>, <code>if…else</code>, <code>if…else if…else</code> và if lồng nhau.</li>
+      <li>Dùng toán tử 3 ngôi <code>? :</code> cho các lựa chọn đơn giản.</li>
+      <li>Sử dụng <code>switch…case</code> khi so sánh một biến với nhiều giá trị cụ thể.</li>
+      <li>Giải các bài toán kinh điển: xếp loại, năm nhuận, phương trình bậc 2, tính tiền bậc thang.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Toán tử so sánh và toán tử logic</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3>So sánh (kết quả là <code>bool</code>)</h3>
+        <table class="tbl small">
+          <tr><th>Toán tử</th><th>Ý nghĩa</th><th>Ví dụ (a=5, b=8)</th></tr>
+          <tr><td><code>==</code></td><td>Bằng</td><td><code>a == b</code> → false</td></tr>
+          <tr><td><code>!=</code></td><td>Khác</td><td><code>a != b</code> → true</td></tr>
+          <tr><td><code>&gt;</code> <code>&lt;</code></td><td>Lớn hơn, nhỏ hơn</td><td><code>a &lt; b</code> → true</td></tr>
+          <tr><td><code>&gt;=</code> <code>&lt;=</code></td><td>Lớn/nhỏ hơn hoặc bằng</td><td><code>a &gt;= 5</code> → true</td></tr>
+        </table>
+        <div class="callout danger small"><code>=</code> là <strong>gán</strong>, <code>==</code> là <strong>so sánh</strong>. Đừng nhầm!</div>
+      </div>
+      <div>
+        <h3>Logic</h3>
+        <table class="tbl small">
+          <tr><th>Toán tử</th><th>Tên</th><th>Đúng khi</th></tr>
+          <tr><td><code>&amp;&amp;</code></td><td>VÀ (AND)</td><td><strong>Cả hai</strong> vế đều đúng</td></tr>
+          <tr><td><code>||</code></td><td>HOẶC (OR)</td><td><strong>Ít nhất một</strong> vế đúng</td></tr>
+          <tr><td><code>!</code></td><td>PHỦ ĐỊNH (NOT)</td><td>Đảo ngược true ↔ false</td></tr>
+        </table>
+        <table class="tbl small center">
+          <tr><th>A</th><th>B</th><th>A &amp;&amp; B</th><th>A || B</th></tr>
+          <tr><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+          <tr><td>T</td><td>F</td><td>F</td><td>T</td></tr>
+          <tr><td>F</td><td>T</td><td>F</td><td>T</td></tr>
+          <tr><td>F</td><td>F</td><td>F</td><td>F</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Viết điều kiện từ ngôn ngữ đời thường</h2></header>
+  <div class="s-body">
+    <table class="tbl">
+      <tr><th>Mô tả bằng lời</th><th>Biểu thức C#</th></tr>
+      <tr><td>x là số chẵn</td><td><code>x % 2 == 0</code></td></tr>
+      <tr><td>x thuộc đoạn [5, 10]</td><td><code>x &gt;= 5 &amp;&amp; x &lt;= 10</code> &nbsp;<span style="color:var(--danger)">(KHÔNG viết <code>5 &lt;= x &lt;= 10</code>)</span></td></tr>
+      <tr><td>x nằm ngoài đoạn [5, 10]</td><td><code>x &lt; 5 || x &gt; 10</code></td></tr>
+      <tr><td>Điểm hợp lệ (0 → 10)</td><td><code>diem &gt;= 0 &amp;&amp; diem &lt;= 10</code></td></tr>
+      <tr><td>x chia hết cho 3 nhưng không chia hết cho 5</td><td><code>x % 3 == 0 &amp;&amp; x % 5 != 0</code></td></tr>
+      <tr><td>Ký tự c là nguyên âm a/e/i/o/u</td><td><code>c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'</code></td></tr>
+      <tr><td>Năm nhuận</td><td><code>(n % 4 == 0 &amp;&amp; n % 100 != 0) || n % 400 == 0</code></td></tr>
+    </table>
+    <div class="callout tip small"><b>Thứ tự ưu tiên:</b> <code>!</code> → số học → so sánh → <code>&amp;&amp;</code> → <code>||</code>. Khi không chắc, cứ <strong>thêm ngoặc tròn</strong> cho rõ ràng.</div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Câu lệnh if và if…else</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3>Dạng thiếu: if</h3>
+        <script type="text/x-csharp" data-size="sm">
+          if (điều_kiện)
+          {
+              // chạy khi điều kiện ĐÚNG
+          }
+        </script>
+        <script type="text/x-csharp" data-size="sm">
+          if (diem < 5)
+          {
+              Console.WriteLine("Bạn phải học lại!");
+          }
+        </script>
+      </div>
+      <div>
+        <h3>Dạng đủ: if…else</h3>
+        <script type="text/x-csharp" data-size="sm">
+          if (điều_kiện)
+          {
+              // chạy khi ĐÚNG
+          }
+          else
+          {
+              // chạy khi SAI
+          }
+        </script>
+        <script type="text/x-csharp" data-size="sm">
+          if (n % 2 == 0)
+              Console.WriteLine($"{n} là số chẵn");
+          else
+              Console.WriteLine($"{n} là số lẻ");
+        </script>
+      </div>
+    </div>
+    <div class="callout warn small">Nếu khối lệnh chỉ có <strong>1 câu lệnh</strong> thì có thể bỏ <code>{ }</code>. Người mới học nên <strong>luôn dùng { }</strong> để tránh lỗi khi thêm lệnh sau này.</div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Nhiều nhánh: if…else if…else</h2></header>
+  <div class="s-body">
+    <div class="cols c-64">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          Console.Write("Nhập điểm TB: ");
+          double dtb = double.Parse(Console.ReadLine());
+
+          if (dtb < 0 || dtb > 10)
+              Console.WriteLine("Điểm không hợp lệ");
+          else if (dtb >= 9)
+              Console.WriteLine("Xuất sắc");
+          else if (dtb >= 8)
+              Console.WriteLine("Giỏi");
+          else if (dtb >= 6.5)
+              Console.WriteLine("Khá");
+          else if (dtb >= 5)
+              Console.WriteLine("Trung bình");
+          else
+              Console.WriteLine("Yếu");
+        </script>
+      </div>
+      <div>
+        <div class="card small"><h4><span class="ic">⤵</span>Cách hoạt động</h4>
+          <p>Kiểm tra lần lượt <strong>từ trên xuống</strong>. Gặp điều kiện đúng đầu tiên thì chạy nhánh đó và <strong>bỏ qua tất cả nhánh còn lại</strong>.</p>
+        </div>
+        <div class="callout tip small">Vì vậy ở nhánh <code>dtb &gt;= 8</code> không cần viết thêm <code>&amp;&amp; dtb &lt; 9</code>: nếu đến được đây thì chắc chắn dtb &lt; 9.</div>
+        <div class="callout warn small">Sắp xếp sai thứ tự (ví dụ <code>&gt;= 5</code> đặt trước <code>&gt;= 9</code>) thì điểm 9.5 sẽ bị xếp "Trung bình".</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>If lồng nhau và toán tử 3 ngôi</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3>If lồng nhau</h3>
+        <script type="text/x-csharp" data-size="sm">
+          if (tuoi >= 18)
+          {
+              if (coBangLai)
+                  Console.WriteLine("Được lái xe");
+              else
+                  Console.WriteLine("Cần thi bằng lái");
+          }
+          else
+          {
+              Console.WriteLine("Chưa đủ tuổi");
+          }
+        </script>
+        <div class="callout warn small"><code>else</code> luôn đi với <code>if</code> <strong>gần nhất</strong> chưa có else. Dùng <code>{ }</code> để tránh nhầm.</div>
+      </div>
+      <div>
+        <h3>Toán tử 3 ngôi <code>? :</code></h3>
+        <p class="small"><code>điều_kiện ? giá_trị_nếu_đúng : giá_trị_nếu_sai</code></p>
+        <script type="text/x-csharp" data-size="sm">
+          int max = (a > b) ? a : b;
+
+          string kq = (diem >= 5) ? "Đậu" : "Rớt";
+
+          Console.WriteLine(n % 2 == 0 ? "Chẵn" : "Lẻ");
+        </script>
+        <div class="callout tip small">Dùng khi chỉ cần <strong>chọn 1 trong 2 giá trị</strong>. Logic phức tạp hơn thì dùng if…else cho dễ đọc.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Câu lệnh switch…case</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          switch (biểu_thức)
+          {
+              case giá_trị_1:
+                  // lệnh
+                  break;
+              case giá_trị_2:
+                  // lệnh
+                  break;
+              default:
+                  // không khớp case nào
+                  break;
+          }
+        </script>
+        <ul class="small">
+          <li>Biểu thức có kiểu: <code>int</code>, <code>char</code>, <code>string</code>, <code>bool</code>…</li>
+          <li>Mỗi <code>case</code> là một <strong>hằng</strong> cụ thể, không phải khoảng.</li>
+          <li><strong>Bắt buộc</strong> có <code>break</code> cuối mỗi case trong C#.</li>
+          <li><code>default</code> tương tự <code>else</code>, không bắt buộc.</li>
+        </ul>
+      </div>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          Console.Write("Nhập thứ (2-8): ");
+          int thu = int.Parse(Console.ReadLine());
+          switch (thu)
+          {
+              case 2: Console.WriteLine("Monday"); break;
+              case 3: Console.WriteLine("Tuesday"); break;
+              case 4: Console.WriteLine("Wednesday"); break;
+              case 5: Console.WriteLine("Thursday"); break;
+              case 6: Console.WriteLine("Friday"); break;
+              case 7:
+              case 8:   // gộp case: 7 hoặc 8
+                  Console.WriteLine("Weekend");
+                  break;
+              default:
+                  Console.WriteLine("Không hợp lệ");
+                  break;
+          }
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Khi nào dùng if, khi nào dùng switch?</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div class="card"><h4><span class="ic">if</span>Dùng if…else if khi</h4>
+        <ul class="small">
+          <li>Điều kiện là <strong>khoảng giá trị</strong>: <code>dtb &gt;= 8</code></li>
+          <li>Kết hợp nhiều biến: <code>a &gt; 0 &amp;&amp; b &lt; 0</code></li>
+          <li>Kiểu số thực <code>double</code></li>
+        </ul>
+      </div>
+      <div class="card"><h4><span class="ic">sw</span>Dùng switch khi</h4>
+        <ul class="small">
+          <li>So sánh <strong>một biến</strong> với nhiều <strong>giá trị cụ thể</strong></li>
+          <li>Xây dựng <strong>menu</strong> chọn chức năng 1, 2, 3…</li>
+          <li>Phân loại theo ký tự, mã: 'A', 'B', "HN", "HCM"</li>
+        </ul>
+      </div>
+    </div>
+    <h3 style="margin-top:16px">Switch với string và char</h3>
+    <script type="text/x-csharp" data-size="sm">
+      Console.Write("Mã vùng (HN/HCM/DN): ");
+      string ma = Console.ReadLine().ToUpper();   // chuyển chữ hoa để so sánh không phân biệt hoa thường
+      switch (ma)
+      {
+          case "HN":  Console.WriteLine("Phí ship: 30.000đ"); break;
+          case "HCM": Console.WriteLine("Phí ship: 20.000đ"); break;
+          case "DN":  Console.WriteLine("Phí ship: 25.000đ"); break;
+          default:    Console.WriteLine("Phí ship: 40.000đ"); break;
+      }
+    </script>
+  </div>
+</section>
+
+<section class="slide divider">
+  <div class="num">THỰC HÀNH</div>
+  <h2>Ví dụ mẫu kinh điển</h2>
+  <p>Những dạng bài rẽ nhánh xuất hiện thường xuyên trong bài kiểm tra và đề thi.</p>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 1</span><h2>Kiểm tra năm nhuận và số ngày trong tháng</h2></header>
+  <div class="s-body">
+    <p class="small">Năm nhuận: chia hết cho 400, <strong>hoặc</strong> chia hết cho 4 nhưng không chia hết cho 100.</p>
+    <div class="cols c-64">
+      <script type="text/x-csharp" data-size="sm">
+        Console.Write("Nhập tháng: "); int thang = int.Parse(Console.ReadLine());
+        Console.Write("Nhập năm: ");   int nam = int.Parse(Console.ReadLine());
+
+        bool nhuan = (nam % 4 == 0 && nam % 100 != 0) || nam % 400 == 0;
+        int soNgay;
+        switch (thang)
+        {
+            case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+                soNgay = 31; break;
+            case 4: case 6: case 9: case 11:
+                soNgay = 30; break;
+            case 2:
+                soNgay = nhuan ? 29 : 28; break;
+            default:
+                soNgay = -1; break;
+        }
+
+        if (soNgay == -1)
+            Console.WriteLine("Tháng không hợp lệ");
+        else
+            Console.WriteLine($"Tháng {thang}/{nam} có {soNgay} ngày");
+      </script>
+      <div>
+        <script type="text/x-out">
+          Nhập tháng: {{2}}
+          Nhập năm: {{2024}}
+          Tháng 2/2024 có 29 ngày
+        </script>
+        <table class="tbl small center">
+          <tr><th>Năm</th><th>Nhuận?</th></tr>
+          <tr><td>2024</td><td>✅ (÷4, không ÷100)</td></tr>
+          <tr><td>1900</td><td>❌ (÷100, không ÷400)</td></tr>
+          <tr><td>2000</td><td>✅ (÷400)</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 2</span><h2>Giải phương trình bậc hai ax² + bx + c = 0</h2></header>
+  <div class="s-body">
+    <div class="cols c-64">
+      <script type="text/x-csharp" data-size="sm">
+        Console.Write("a = "); double a = double.Parse(Console.ReadLine());
+        Console.Write("b = "); double b = double.Parse(Console.ReadLine());
+        Console.Write("c = "); double c = double.Parse(Console.ReadLine());
+
+        if (a == 0)
+        {   // suy biến thành bx + c = 0
+            if (b == 0)
+                Console.WriteLine(c == 0 ? "Vô số nghiệm" : "Vô nghiệm");
+            else
+                Console.WriteLine($"Nghiệm duy nhất x = {-c / b:F2}");
+        }
+        else
+        {
+            double delta = b * b - 4 * a * c;
+            if (delta < 0)
+                Console.WriteLine("Phương trình vô nghiệm");
+            else if (delta == 0)
+                Console.WriteLine($"Nghiệm kép x = {-b / (2 * a):F2}");
+            else
+            {
+                double x1 = (-b + Math.Sqrt(delta)) / (2 * a);
+                double x2 = (-b - Math.Sqrt(delta)) / (2 * a);
+                Console.WriteLine($"x1 = {x1:F2}, x2 = {x2:F2}");
+            }
+        }
+      </script>
+      <div>
+        <script type="text/x-out">
+          a = {{1}}
+          b = {{-3}}
+          c = {{2}}
+          x1 = 2.00, x2 = 1.00
+        </script>
+        <div class="callout warn small"><b>Bẫy:</b> phải viết <code>(2 * a)</code> trong ngoặc. Viết <code>/ 2 * a</code> sẽ thành chia 2 rồi <strong>nhân</strong> a.</div>
+        <div class="callout tip small">Bộ test nên thử: (1,−3,2), (1,2,1), (1,1,5), (0,2,−4), (0,0,0), (0,0,3).</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 3</span><h2>Tính tiền điện sinh hoạt theo bậc thang</h2></header>
+  <div class="s-body">
+    <div class="cols c-46">
+      <div>
+        <table class="tbl small">
+          <tr><th>Bậc</th><th>Số kWh</th><th>Giá (đ/kWh)</th></tr>
+          <tr><td>1</td><td>0 – 50</td><td>1.800</td></tr>
+          <tr><td>2</td><td>51 – 100</td><td>2.000</td></tr>
+          <tr><td>3</td><td>101 – 200</td><td>2.500</td></tr>
+          <tr><td>4</td><td>trên 200</td><td>3.000</td></tr>
+        </table>
+        <p class="small" style="color:var(--muted)">Giá minh họa cho bài tập, không phải giá EVN thực tế.</p>
+        <div class="callout small"><b>Ý tưởng:</b> mỗi bậc chỉ tính <strong>phần vượt</strong> của bậc đó. Ví dụ 120 kWh = 50×1800 + 50×2000 + 20×2500.</div>
+      </div>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          Console.Write("Số kWh tiêu thụ: ");
+          int kwh = int.Parse(Console.ReadLine());
+          double tien;
+
+          if (kwh <= 50)
+              tien = kwh * 1800;
+          else if (kwh <= 100)
+              tien = 50 * 1800 + (kwh - 50) * 2000;
+          else if (kwh <= 200)
+              tien = 50 * 1800 + 50 * 2000 + (kwh - 100) * 2500;
+          else
+              tien = 50 * 1800 + 50 * 2000 + 100 * 2500 + (kwh - 200) * 3000;
+
+          tien *= 1.1;   // cộng VAT 10%
+          Console.WriteLine($"Tiền điện (gồm VAT): {tien:N0} đ");
+        </script>
+        <script type="text/x-out">
+          Số kWh tiêu thụ: {{120}}
+          Tiền điện (gồm VAT): 264,000 đ
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 4</span><h2>Máy tính bỏ túi với switch</h2></header>
+  <div class="s-body">
+    <div class="cols c-64">
+      <script type="text/x-csharp" data-size="sm">
+        Console.Write("Số thứ nhất: "); double a = double.Parse(Console.ReadLine());
+        Console.Write("Phép toán (+ - * /): "); char op = char.Parse(Console.ReadLine());
+        Console.Write("Số thứ hai: "); double b = double.Parse(Console.ReadLine());
+
+        switch (op)
+        {
+            case '+': Console.WriteLine($"{a} + {b} = {a + b}"); break;
+            case '-': Console.WriteLine($"{a} - {b} = {a - b}"); break;
+            case '*': Console.WriteLine($"{a} * {b} = {a * b}"); break;
+            case '/':
+                if (b == 0)
+                    Console.WriteLine("Lỗi: không thể chia cho 0");
+                else
+                    Console.WriteLine($"{a} / {b} = {a / b:F2}");
+                break;
+            default:
+                Console.WriteLine("Phép toán không hợp lệ");
+                break;
+        }
+      </script>
+      <div>
+        <script type="text/x-out">
+          Số thứ nhất: {{15}}
+          Phép toán (+ - * /): {{/}}
+          Số thứ hai: {{4}}
+          15 / 4 = 3.75
+        </script>
+        <div class="callout tip small">Kết hợp <code>switch</code> và <code>if</code> lồng bên trong một case là hoàn toàn bình thường.</div>
+        <div class="callout small">Hằng ký tự dùng <strong>nháy đơn</strong>: <code>case '+':</code></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lưu ý</span><h2>Lỗi thường gặp với rẽ nhánh</h2></header>
+  <div class="s-body">
+    <table class="tbl">
+      <tr><th>Lỗi</th><th>Code sai</th><th>Hậu quả / Sửa</th></tr>
+      <tr><td>Dấu <code>;</code> sau if</td><td><code>if (x &gt; 0); { ... }</code></td><td>Khối lệnh <strong>luôn chạy</strong>. Bỏ dấu <code>;</code></td></tr>
+      <tr><td>Dùng <code>=</code> thay <code>==</code></td><td><code>if (x = 5)</code></td><td>Lỗi biên dịch. Sửa: <code>x == 5</code></td></tr>
+      <tr><td>Viết khoảng kiểu toán học</td><td><code>if (5 &lt;= x &lt;= 10)</code></td><td>Lỗi. Sửa: <code>x &gt;= 5 &amp;&amp; x &lt;= 10</code></td></tr>
+      <tr><td>Quên <code>break</code> trong switch</td><td><code>case 1: ...; case 2:</code></td><td>Lỗi biên dịch "Control cannot fall through"</td></tr>
+      <tr><td>Nhiều if rời rạc thay vì else if</td><td><code>if (d&gt;=8) ...; if (d&gt;=5) ...;</code></td><td>Điểm 9 in ra <strong>cả 2</strong> kết quả</td></tr>
+      <tr><td>So sánh số thực bằng <code>==</code></td><td><code>0.1 + 0.2 == 0.3</code> → false</td><td>So sánh sai số: <code>Math.Abs(x - y) &lt; 1e-9</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Bài tập vận dụng</span><h2>Luyện tập (1/2)</h2></header>
+  <div class="s-body">
+    <div class="ex"><div class="ex-h"><b>Bài 1.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Nhập 3 số nguyên a, b, c. Tìm và in ra số lớn nhất, số nhỏ nhất.</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          int max = a, min = a;
+          if (b > max) max = b;
+          if (c > max) max = c;
+          if (b < min) min = b;
+          if (c < min) min = c;
+          Console.WriteLine($"Max = {max}, Min = {min}");
+        </script>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 2.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Nhập điểm hệ 10, quy đổi sang điểm chữ theo thang tín chỉ (ví dụ): A (≥ 8.5), B (7.0–8.4), C (5.5–6.9), D (4.0–5.4), F (&lt; 4.0).</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 3.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Nhập 3 cạnh a, b, c. Kiểm tra có phải tam giác không; nếu có thì cho biết là tam giác đều, cân, vuông hay thường.</p>
+      <details class="sol"><summary>Xem gợi ý</summary>
+        <ul class="small">
+          <li>Tam giác: <code>a + b &gt; c &amp;&amp; a + c &gt; b &amp;&amp; b + c &gt; a</code></li>
+          <li>Đều: <code>a == b &amp;&amp; b == c</code>; Cân: <code>a == b || b == c || a == c</code></li>
+          <li>Vuông: <code>a*a + b*b == c*c || a*a + c*c == b*b || b*b + c*c == a*a</code></li>
+          <li>Kiểm tra theo thứ tự: không phải tam giác → đều → vuông → cân → thường.</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Bài tập vận dụng</span><h2>Luyện tập (2/2)</h2></header>
+  <div class="s-body">
+    <div class="ex"><div class="ex-h"><b>Bài 4.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Tính thuế thu nhập cá nhân đơn giản: thu nhập ≤ 11 triệu: 0%; 11–20 triệu: 5% phần vượt 11tr; trên 20 triệu: 450.000đ + 10% phần vượt 20tr.</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          double tn = double.Parse(Console.ReadLine());
+          double thue;
+          if (tn <= 11000000) thue = 0;
+          else if (tn <= 20000000) thue = (tn - 11000000) * 0.05;
+          else thue = 450000 + (tn - 20000000) * 0.10;
+          Console.WriteLine($"Thuế phải nộp: {thue:N0} đ");
+        </script>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 5.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Viết menu: <code>1. Tính tổng</code>, <code>2. Tính hiệu</code>, <code>3. Tính tích</code>, <code>4. Tính thương</code>. Nhập lựa chọn và 2 số, dùng <code>switch</code> để xử lý.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 6.</b><span class="lvl l3">Nâng cao</span></div>
+      <p>Nhập ngày, tháng, năm. Kiểm tra ngày có hợp lệ không, nếu hợp lệ thì in ra <strong>ngày kế tiếp</strong> (ví dụ 31/12/2024 → 1/1/2025; 28/2/2023 → 1/3/2023).</p>
+      <details class="sol"><summary>Xem gợi ý</summary>
+        <p class="small">Tái sử dụng code tính số ngày trong tháng ở ví dụ mẫu 1. Nếu <code>ngay &lt; soNgay</code> → ngày + 1; ngược lại ngày = 1, tháng + 1; nếu tháng &gt; 12 → tháng = 1, năm + 1.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-hw">Bài tập về nhà</span><h2>Chuẩn bị cho buổi 4</h2></header>
+  <div class="s-body">
+    <ol class="steps">
+      <li>Nhập một số nguyên, cho biết số đó dương/âm/bằng 0 và chẵn/lẻ.</li>
+      <li>Nhập một ký tự, cho biết đó là chữ hoa, chữ thường, chữ số hay ký tự đặc biệt (gợi ý: <code>c &gt;= 'A' &amp;&amp; c &lt;= 'Z'</code>).</li>
+      <li>Tính cước taxi: 1 km đầu 15.000đ; từ km 2 đến 30: 12.000đ/km; trên 30 km: 10.000đ/km.</li>
+      <li>Nhập tháng (1–12), dùng <code>switch</code> in ra quý tương ứng (gộp case).</li>
+      <li>Nhập điểm 3 môn, tính điểm trung bình và xếp loại; nếu có môn dưới 4 thì xếp loại <strong>tối đa là Trung bình</strong>.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-sum">Tổng kết</span><h2>Ghi nhớ của buổi 3</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <ul>
+        <li>So sánh: <code>== != &gt; &lt; &gt;= &lt;=</code>; logic: <code>&amp;&amp; || !</code>.</li>
+        <li>Khoảng [a, b]: <code>x &gt;= a &amp;&amp; x &lt;= b</code>.</li>
+        <li><code>if…else if…else</code>: kiểm tra từ trên xuống, dừng ở nhánh đúng <strong>đầu tiên</strong>.</li>
+        <li>Toán tử 3 ngôi: <code>đk ? a : b</code>.</li>
+      </ul>
+      <ul>
+        <li><code>switch</code>: so sánh 1 biến với các <strong>giá trị cụ thể</strong>, mỗi case cần <code>break</code>.</li>
+        <li>Gộp case bằng cách viết liền nhau: <code>case 7: case 8:</code>.</li>
+        <li>Luôn kiểm tra <strong>dữ liệu không hợp lệ</strong> trước (điểm âm, chia cho 0…).</li>
+        <li>Tự đặt bộ test bao phủ <strong>mọi nhánh</strong>.</li>
+      </ul>
+    </div>
+    <div class="callout ok"><b>Buổi tiếp theo:</b> Cấu trúc lặp <code>for</code>, <code>while</code>, <code>do…while</code>.</div>
+  </div>
+</section>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/slides.js"></script>
+</body>
+</html>

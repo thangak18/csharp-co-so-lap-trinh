@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cơ sở lập trình C#</title>
+<meta name="description" content="Bộ slide 12 buổi học Cơ sở lập trình C#: thuật toán, rẽ nhánh, vòng lặp, hàm, mảng, chuỗi, tệp tin và luyện đề.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f5fb; --paper: #fff; --ink: #1b1d2e; --ink-2: #4a4e69; --muted: #8a8fa8; --line: #e6e7f0;
+    --brand: #6b2fbf; --brand-2: #9b5de5; --brand-soft: #f3edfc; --accent: #0ea5a4;
+    --font: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--font); color: var(--ink); background: var(--bg); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+
+  .hero {
+    color: #fff; padding: 72px 24px 120px;
+    background: radial-gradient(1000px 500px at 85% 0%, #3b1d7a 0%, transparent 60%),
+                radial-gradient(800px 500px at 0% 100%, #0b4d5c 0%, transparent 60%), #14122b;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  .badge { display: inline-flex; gap: 10px; align-items: center; font-size: 13px; font-weight: 600; color: #d9c8ff; letter-spacing: .1em; text-transform: uppercase; }
+  .badge i { width: 9px; height: 9px; border-radius: 50%; background: var(--brand-2); box-shadow: 0 0 14px var(--brand-2); }
+  h1 { font-size: clamp(36px, 6vw, 64px); line-height: 1.06; margin: 16px 0 14px; font-weight: 800; letter-spacing: -.02em; }
+  h1 em { font-style: normal; background: linear-gradient(90deg, #c4a7ff, #5eead4); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lead { font-size: clamp(16px, 2vw, 20px); color: #c7c9de; max-width: 760px; line-height: 1.6; margin: 0; }
+  .stats { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .stats span { border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06); padding: 8px 16px; border-radius: 999px; font-size: 14px; color: #e5e6f3; }
+  .cta { display: inline-flex; align-items: center; gap: 10px; margin-top: 30px; background: #fff; color: var(--brand); font-weight: 700; padding: 13px 22px; border-radius: 12px; font-size: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+  .cta:hover { transform: translateY(-1px); }
+
+  main { margin-top: -72px; padding: 0 24px 60px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+  .lesson {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 22px 22px 18px;
+    display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden;
+    transition: transform .18s, box-shadow .18s, border-color .18s;
+    box-shadow: 0 4px 14px rgba(30,20,80,.05);
+  }
+  .lesson:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(60,30,140,.14); border-color: #d8ccf5; }
+  .lesson::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--brand), var(--brand-2) 60%, var(--accent)); opacity: 0; transition: opacity .18s; }
+  .lesson:hover::before { opacity: 1; }
+  .num { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--brand); background: var(--brand-soft); padding: 4px 10px; border-radius: 999px; align-self: flex-start; }
+  .lesson h3 { margin: 2px 0 0; font-size: 20px; line-height: 1.3; }
+  .lesson p { margin: 0; color: var(--ink-2); font-size: 14.5px; line-height: 1.55; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 6px; }
+  .tags code { font-variant-ligatures: none; font-family: var(--mono); font-size: 12px; background: #f1f0f7; color: #5b3a9a; padding: 3px 8px; border-radius: 6px; }
+  .go { font-size: 14px; font-weight: 700; color: var(--brand); margin-top: 6px; }
+  .phase { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; margin: 18px 0 2px; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .phase::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .phase:first-child { margin-top: 0; }
+
+  .guide { margin-top: 44px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .g { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+  .g h4 { margin: 0 0 8px; font-size: 16px; }
+  .g p, .g li { font-size: 14px; color: var(--ink-2); line-height: 1.6; margin: 0; }
+  .g ul { margin: 0; padding-left: 18px; }
+  kbd { font-family: var(--mono); font-size: 12px; background: #f1f0f7; border: 1px solid #ddd8ee; border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; }
+  footer { text-align: center; color: var(--muted); font-size: 13px; padding: 30px 16px 40px; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 48px 16px 100px; }
+    main { padding: 0 16px 40px; }
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="badge"><i></i>Giáo trình 12 buổi · Console App</div>
+    <h1>Cơ sở lập trình <em>C#</em></h1>
+    <p class="lead">Bộ slide bám sát nội dung học phần Cơ sở lập trình cho sinh viên khối kinh tế: từ thuật toán, biến, rẽ nhánh, vòng lặp, hàm đến mảng, chuỗi và tệp tin. Mỗi buổi gồm lý thuyết, ví dụ mẫu có kết quả chạy, bài tập vận dụng kèm đáp án và bài về nhà.</p>
+    <div class="stats"><span>📚 12 buổi học</span><span>💻 Hơn 100 đoạn code mẫu</span><span>✍ Bài tập có đáp án</span><span>📝 Đề thi thử</span></div>
+    <a class="cta" href="buoi-01.html">Bắt đầu từ Buổi 1 →</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="grid">
+      <div class="phase">Phần 1 · Nền tảng</div>
+      <a class="lesson" href="buoi-01.html"><span class="num">BUỔI 01</span><h3>Tổng quan lập trình và Thuật toán</h3><p>Chương trình, ngôn ngữ lập trình, thuật toán, mã giả, lưu đồ, lần vết. Cài Visual Studio và viết chương trình C# đầu tiên.</p><div class="tags"><code>Lưu đồ</code><code>Mã giả</code><code>Main</code><code>WriteLine</code></div><span class="go">Mở slide →</span></a>
+      <a class="lesson" href="buoi-02.html"><span class="num">BUỔI 02</span><h3>Biến, kiểu dữ liệu, nhập xuất và toán tử</h3><p>Khai báo biến, hằng, các kiểu dữ liệu, nhập bằng Parse/Convert, định dạng khi xuất, chia nguyên và chia lấy dư, lớp Math.</p><div class="tags"><code>int</code><code>double</code><code>Parse</code><code>$"{x:N0}"</code></div><span class="go">Mở slide →</span></a>
+      <a class="lesson" href="buoi-03.html"><span class="num">BUỔI 03</span><h3>Cấu trúc rẽ nhánh</h3><p>Toán tử so sánh và logic, if/else if, if lồng, toán tử 3 ngôi, switch. Năm nhuận, phương trình bậc 2, tiền điện bậc thang.</p><div class="tags"><code>if</code><code>else if</code><code>switch</code><code>&amp;&amp; ||</code></div><span class="go">Mở slide →</span></a>
+      <a class="lesson" href="buoi-04.html"><span class="num">BUỔI 04</span><h3>Cấu trúc lặp</h3><p>for, while, do…while, break, continue. Tổng, đếm, giai thừa, số nguyên tố, UCLN Euclid, đảo số, bài toán tiết kiệm.</p><div class="tags"><code>for</code><code>while</code><code>do…while</code><code>break</code></div><span class="go">Mở slide →</span></a>
+
+      <div class="phase">Phần 2 · Tổ chức chương trình</div>
+      <a class="lesson" href="buoi-05.html"><span class="num">BUỔI 05</span><h3>Lặp lồng nhau, TryParse và Menu</h3><p>In hình bằng ký tự, bài toán vét cạn, nhập liệu an toàn với TryParse, try…catch và chương trình có menu (mô phỏng ATM).</p><div class="tags"><code>TryParse</code><code>do…while</code><code>Random</code></div><span class="go">Mở slide →</span></a>
+      <a class="lesson" href="buoi-06.html"><span class="num">BUỔI 06</span><h3>Hàm (phương thức)</h3><p>Khai báo và gọi hàm, void và return, phạm vi biến, tham trị, ref, out, nạp chồng, tham số mặc định, đệ quy.</p><div class="tags"><code>static</code><code>return</code><code>ref</code><code>out</code></div><span class="go">Mở slide →</span></a>
+
+      <div class="phase">Phần 3 · Cấu trúc dữ liệu</div>
+      <a class="lesson" href="buoi-07.html"><span class="num">BUỔI 07</span><h3>Mảng một chiều</h3><p>Khai báo, duyệt for/foreach, hàm nhập xuất mảng, tổng, trung bình, max/min, đếm, kiểm tra, phân tích doanh thu 12 tháng.</p><div class="tags"><code>int[]</code><code>Length</code><code>foreach</code></div><span class="go">Mở slide →</span></a>
+      <a class="lesson" href="buoi-08.html"><span class="num">BUỔI 08</span><h3>Tìm kiếm và Sắp xếp</h3><p>Tìm tuần tự, tìm nhị phân, sắp xếp chọn, nổi bọt, chèn (có lần vết), thêm/xóa phần tử, xếp hạng điểm thi.</p><div class="tags"><code>Binary Search</code><code>Selection</code><code>Bubble</code></div><span class="go">Mở slide →</span></a>
+      <a class="lesson" href="buoi-09.html"><span class="num">BUỔI 09</span><h3>Mảng hai chiều (ma trận)</h3><p>Xử lý theo dòng, cột, đường chéo; chuyển vị, cộng, nhân ma trận; bảng doanh thu chi nhánh và bảng điểm có tín chỉ.</p><div class="tags"><code>int[,]</code><code>GetLength</code><code>a[i, j]</code></div><span class="go">Mở slide →</span></a>
+      <a class="lesson" href="buoi-10.html"><span class="num">BUỔI 10</span><h3>Chuỗi ký tự</h3><p>Duyệt ký tự, hàm của char và string, StringBuilder. Đếm từ, đảo chuỗi, đối xứng, chuẩn hóa họ tên, kiểm tra mật khẩu.</p><div class="tags"><code>Split</code><code>Substring</code><code>Trim</code><code>char</code></div><span class="go">Mở slide →</span></a>
+      <a class="lesson" href="buoi-11.html"><span class="num">BUỔI 11</span><h3>Tệp tin và kiểu cấu trúc</h3><p>Đọc/ghi file với File, StreamReader, StreamWriter; xử lý lỗi; struct; dự án mini quản lý điểm từ file CSV.</p><div class="tags"><code>System.IO</code><code>using</code><code>struct</code><code>CSV</code></div><span class="go">Mở slide →</span></a>
+
+      <div class="phase">Phần 4 · Về đích</div>
+      <a class="lesson" href="buoi-12.html"><span class="num">BUỔI 12</span><h3>Tổng ôn tập và Luyện đề</h3><p>Sơ đồ kiến thức, 8 khuôn thuật toán, đọc code đoán kết quả, tìm sửa lỗi, đề thi thử có đáp án, chiến lược làm bài.</p><div class="tags"><code>Ôn thi</code><code>Đề mẫu</code><code>Checklist</code></div><span class="go">Mở slide →</span></a>
+    </div>
+
+    <section class="guide">
+      <div class="g"><h4>⌨ Cách xem slide</h4><ul><li><kbd>→</kbd> / <kbd>Space</kbd>: slide sau</li><li><kbd>←</kbd>: slide trước</li><li><kbd>F</kbd>: toàn màn hình · <kbd>O</kbd>: xem tổng quan</li></ul></div>
+      <div class="g"><h4>📱 Trên điện thoại</h4><p>Slide tự chuyển sang dạng cuộn dọc cho dễ đọc. Trên máy tính bảng có thể vuốt trái/phải để chuyển slide.</p></div>
+      <div class="g"><h4>✍ Học hiệu quả</h4><p>Gõ lại từng ví dụ mẫu trong Visual Studio thay vì chỉ đọc. Tự làm bài vận dụng trước, sau đó mới mở "Xem đáp án".</p></div>
+      <div class="g"><h4>📋 Sao chép code</h4><p>Mỗi khối code có nút <strong>Sao chép</strong> ở góc trên bên phải để dán thẳng vào Visual Studio.</p></div>
+    </section>
+  </div>
+</main>
+
+<footer>Cơ sở lập trình C# · Tài liệu giảng dạy kèm 1-1</footer>
+</body>
+</html>

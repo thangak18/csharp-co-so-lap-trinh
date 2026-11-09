@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buổi 7 · Mảng một chiều</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="assets/slides.css">
+<style>
+  .arr-viz { display: flex; gap: 0; margin: 10px 0 4px; font-family: var(--mono); }
+  .arr-viz div { width: 64px; text-align: center; }
+  .arr-viz .v { border: 2px solid var(--brand); border-right-width: 0; padding: 10px 0; font-size: 20px; font-weight: 700; color: var(--ink); background: #fff; }
+  .arr-viz div:last-child .v { border-right-width: 2px; }
+  .arr-viz .i { font-size: 14px; color: var(--muted); margin-top: 4px; }
+  .arr-viz .hl .v { background: var(--brand-soft); }
+</style>
+</head>
+<body data-lesson="Buổi 7" data-title="Mảng một chiều">
+<div class="deck">
+
+<section class="slide cover">
+  <div class="badge"><span class="dot"></span>Cơ sở lập trình C# · Buổi 07</div>
+  <h1><em>Mảng</em> một chiều</h1>
+  <p class="sub">Lưu cả danh sách điểm của lớp, doanh thu 12 tháng, giá 100 sản phẩm… trong một biến duy nhất và xử lý chúng bằng vòng lặp.</p>
+  <div class="meta"><span>⏱ 90–120 phút</span><span>📦 int[] · double[]</span><span>🔢 Tổng · Max · Đếm</span></div>
+  <div class="big-num">07</div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mục tiêu</span><h2>Sau buổi học này, bạn có thể</h2></header>
+  <div class="s-body">
+    <ul class="goals">
+      <li>Khai báo, khởi tạo mảng và truy xuất phần tử theo chỉ số.</li>
+      <li>Duyệt mảng bằng <code>for</code> và <code>foreach</code>.</li>
+      <li>Viết hàm nhập, xuất, tạo ngẫu nhiên mảng.</li>
+      <li>Giải các bài toán cơ bản: tổng, trung bình, max/min, đếm, tìm vị trí.</li>
+      <li>Hiểu mảng là kiểu <strong>tham chiếu</strong> khi truyền vào hàm.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Tại sao cần mảng?</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3>Không có mảng 😩</h3>
+        <script type="text/x-csharp" data-size="sm">
+          double diem1, diem2, diem3, diem4, diem5;
+          // ... 40 sinh viên thì 40 biến?
+          double tong = diem1 + diem2 + diem3 + diem4 + diem5;
+        </script>
+        <h3>Có mảng 😎</h3>
+        <script type="text/x-csharp" data-size="sm">
+          double[] diem = new double[40];
+          double tong = 0;
+          for (int i = 0; i < diem.Length; i++)
+              tong += diem[i];
+        </script>
+      </div>
+      <div>
+        <p><strong>Mảng (array)</strong> là tập hợp <strong>nhiều phần tử cùng kiểu</strong>, nằm liên tiếp trong bộ nhớ, truy cập qua <strong>chỉ số (index)</strong>.</p>
+        <div class="arr-viz">
+          <div><div class="v">7</div><div class="i">[0]</div></div>
+          <div class="hl"><div class="v">3</div><div class="i">[1]</div></div>
+          <div><div class="v">9</div><div class="i">[2]</div></div>
+          <div><div class="v">1</div><div class="i">[3]</div></div>
+          <div><div class="v">5</div><div class="i">[4]</div></div>
+        </div>
+        <p class="small"><code>a[1]</code> = 3 &nbsp;·&nbsp; <code>a.Length</code> = 5</p>
+        <div class="callout warn small">Chỉ số bắt đầu từ <strong>0</strong> và kết thúc ở <strong>Length − 1</strong>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Khai báo và khởi tạo mảng</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          // 1. Khai báo kích thước, phần tử nhận giá trị mặc định
+          int[] a = new int[5];          // {0, 0, 0, 0, 0}
+          double[] d = new double[3];    // {0.0, 0.0, 0.0}
+          string[] s = new string[2];    // {null, null}
+          bool[] b = new bool[4];        // {false, false, false, false}
+
+          // 2. Khởi tạo với giá trị cụ thể
+          int[] so = { 7, 3, 9, 1, 5 };
+          string[] thu = { "T2", "T3", "T4", "T5", "T6" };
+
+          // 3. Kích thước nhập từ bàn phím
+          int n = int.Parse(Console.ReadLine());
+          double[] diem = new double[n];
+        </script>
+      </div>
+      <div>
+        <h3>Truy xuất và gán</h3>
+        <script type="text/x-csharp" data-size="sm">
+          int[] so = { 7, 3, 9, 1, 5 };
+          Console.WriteLine(so[0]);            // 7 (đầu tiên)
+          Console.WriteLine(so[so.Length - 1]); // 5 (cuối cùng)
+          so[2] = 100;                          // {7, 3, 100, 1, 5}
+          so[1] += 10;                          // {7, 13, 100, 1, 5}
+
+          Console.WriteLine(so[5]);  // ❌ IndexOutOfRangeException
+        </script>
+        <div class="callout danger small"><b>Lỗi kinh điển:</b> truy cập <code>a[a.Length]</code> sẽ vượt khỏi mảng. Vòng lặp phải dùng <code>i &lt; a.Length</code>, <strong>không</strong> phải <code>i &lt;= a.Length</code>.</div>
+        <div class="callout small">Kích thước mảng <strong>cố định</strong> sau khi tạo.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Duyệt mảng: for và foreach</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3><code>for</code>: biết chỉ số, đọc và sửa được</h3>
+        <script type="text/x-csharp" data-size="sm">
+          int[] a = { 4, 8, 15, 16, 23, 42 };
+          for (int i = 0; i < a.Length; i++)
+          {
+              Console.Write($"a[{i}]={a[i]}  ");
+          }
+          // Nhân đôi từng phần tử
+          for (int i = 0; i < a.Length; i++)
+              a[i] *= 2;
+        </script>
+        <script type="text/x-out">a[0]=4  a[1]=8  a[2]=15  a[3]=16  a[4]=23  a[5]=42</script>
+      </div>
+      <div>
+        <h3><code>foreach</code>: gọn, chỉ để đọc</h3>
+        <script type="text/x-csharp" data-size="sm">
+          int[] a = { 4, 8, 15, 16, 23, 42 };
+          int tong = 0;
+          foreach (int x in a)
+          {
+              tong += x;
+          }
+          Console.WriteLine($"Tổng = {tong}");
+        </script>
+        <script type="text/x-out">Tổng = 108</script>
+        <div class="callout warn small"><code>foreach</code> <strong>không</strong> sửa được phần tử (<code>x = 0;</code> báo lỗi) và không biết vị trí. Cần chỉ số hoặc sửa mảng thì dùng <code>for</code>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mẫu chương trình</span><h2>Hàm nhập, xuất và tạo mảng ngẫu nhiên</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          static int[] NhapMang()
+          {
+              Console.Write("Số phần tử n = ");
+              int n = int.Parse(Console.ReadLine());
+              int[] a = new int[n];
+              for (int i = 0; i < n; i++)
+              {
+                  Console.Write($"a[{i}] = ");
+                  a[i] = int.Parse(Console.ReadLine());
+              }
+              return a;
+          }
+
+          static int[] TaoMangNgauNhien(int n, int min, int max)
+          {
+              Random rd = new Random();
+              int[] a = new int[n];
+              for (int i = 0; i < n; i++)
+                  a[i] = rd.Next(min, max + 1);
+              return a;
+          }
+
+          static void XuatMang(int[] a)
+          {
+              foreach (int x in a)
+                  Console.Write(x + "\t");
+              Console.WriteLine();
+          }
+        </script>
+      </div>
+      <div>
+        <h3>Trong Main</h3>
+        <script type="text/x-csharp" data-size="sm">
+          int[] a = NhapMang();
+          XuatMang(a);
+
+          int[] b = TaoMangNgauNhien(10, 1, 100);
+          XuatMang(b);
+        </script>
+        <script type="text/x-out">
+          Số phần tử n = {{4}}
+          a[0] = {{5}}
+          a[1] = {{-2}}
+          a[2] = {{8}}
+          a[3] = {{3}}
+          5	-2	8	3
+          47	12	88	5	63	91	30	2	76	19
+        </script>
+        <div class="callout tip small">Khi làm bài, dùng <code>TaoMangNgauNhien</code> để test nhanh, đỡ phải gõ tay nhiều lần.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Mảng là kiểu tham chiếu</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          static void TangMoiPhanTu(int[] a)
+          {
+              for (int i = 0; i < a.Length; i++)
+                  a[i]++;
+          }
+
+          static void Main(string[] args)
+          {
+              int[] m = { 1, 2, 3 };
+              TangMoiPhanTu(m);         // KHÔNG cần ref
+              Console.WriteLine(string.Join(", ", m));
+          }
+        </script>
+        <script type="text/x-out">2, 3, 4      ← mảng gốc đã bị thay đổi</script>
+      </div>
+      <div>
+        <ul class="small">
+          <li>Biến mảng chỉ lưu <strong>địa chỉ</strong> của vùng nhớ chứa dữ liệu.</li>
+          <li>Truyền mảng vào hàm là truyền địa chỉ, nên hàm sửa trực tiếp mảng gốc.</li>
+          <li>Tương tự: <code>int[] b = a;</code> thì <code>a</code> và <code>b</code> cùng trỏ một mảng.</li>
+        </ul>
+        <script type="text/x-csharp" data-size="sm">
+          int[] a = { 1, 2, 3 };
+          int[] b = a;          // b và a là MỘT mảng
+          b[0] = 99;            // a[0] cũng là 99!
+          int[] c = (int[])a.Clone();   // c là bản sao độc lập
+        </script>
+        <div class="callout tip small"><code>string.Join(", ", a)</code> ghép các phần tử thành chuỗi, rất tiện để in nhanh.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide divider">
+  <div class="num">THỰC HÀNH</div>
+  <h2>Các bài toán kinh điển trên mảng</h2>
+  <p>Tổng, trung bình, max/min, đếm, tìm vị trí: nền tảng cho mọi bài thi về mảng.</p>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 1</span><h2>Tổng, trung bình và tổng có điều kiện</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          static int TinhTong(int[] a)
+          {
+              int tong = 0;
+              foreach (int x in a) tong += x;
+              return tong;
+          }
+
+          static double TrungBinh(int[] a)
+          {
+              if (a.Length == 0) return 0;
+              return (double)TinhTong(a) / a.Length;
+          }
+
+          static int TongSoChan(int[] a)
+          {
+              int tong = 0;
+              foreach (int x in a)
+                  if (x % 2 == 0) tong += x;
+              return tong;
+          }
+
+          // Trung bình các số dương
+          static double TBDuong(int[] a)
+          {
+              int tong = 0, dem = 0;
+              foreach (int x in a)
+                  if (x > 0) { tong += x; dem++; }
+              return dem == 0 ? 0 : (double)tong / dem;
+          }
+        </script>
+      </div>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          int[] a = { 5, -2, 8, 3, -7, 6 };
+          Console.WriteLine($"Tổng: {TinhTong(a)}");
+          Console.WriteLine($"TB: {TrungBinh(a):F2}");
+          Console.WriteLine($"Tổng chẵn: {TongSoChan(a)}");
+          Console.WriteLine($"TB dương: {TBDuong(a):F2}");
+        </script>
+        <script type="text/x-out">
+          Tổng: 13
+          TB: 2.17
+          Tổng chẵn: 12
+          TB dương: 5.50
+        </script>
+        <div class="callout warn small">Luôn kiểm tra <strong>chia cho 0</strong> khi không có phần tử nào thỏa điều kiện.</div>
+        <div class="callout small">−2 là số chẵn nên được cộng: 8 + (−2) + 6 = 12.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 2</span><h2>Tìm giá trị lớn nhất, nhỏ nhất và vị trí</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          static int TimMax(int[] a)
+          {
+              int max = a[0];                 // giả sử phần tử đầu lớn nhất
+              for (int i = 1; i < a.Length; i++)
+                  if (a[i] > max)
+                      max = a[i];             // gặp số lớn hơn thì cập nhật
+              return max;
+          }
+
+          static int ViTriMin(int[] a)
+          {
+              int vt = 0;
+              for (int i = 1; i < a.Length; i++)
+                  if (a[i] < a[vt])
+                      vt = i;
+              return vt;
+          }
+        </script>
+        <div class="callout danger small"><b>Đừng</b> khởi tạo <code>max = 0</code>: mảng toàn số âm sẽ cho kết quả sai. Khởi tạo bằng <code>a[0]</code>.</div>
+      </div>
+      <div>
+        <h3>Lần vết TimMax với {5, 2, 9, 1, 9, 6}</h3>
+        <table class="tbl small center">
+          <tr><th>i</th><th>a[i]</th><th>a[i] &gt; max?</th><th>max</th></tr>
+          <tr><td>–</td><td>–</td><td>–</td><td>5</td></tr>
+          <tr><td>1</td><td>2</td><td>✗</td><td>5</td></tr>
+          <tr><td>2</td><td>9</td><td>✓</td><td>9</td></tr>
+          <tr><td>3</td><td>1</td><td>✗</td><td>9</td></tr>
+          <tr><td>4</td><td>9</td><td>✗</td><td>9</td></tr>
+          <tr><td>5</td><td>6</td><td>✗</td><td>9</td></tr>
+        </table>
+        <script type="text/x-csharp" data-size="sm">
+          // In TẤT CẢ vị trí đạt max
+          int max = TimMax(a);
+          for (int i = 0; i < a.Length; i++)
+              if (a[i] == max) Console.Write(i + " ");   // 2 4
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 3</span><h2>Đếm, kiểm tra và liệt kê</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          static bool LaSNT(int n)
+          {
+              if (n < 2) return false;
+              for (int i = 2; i * i <= n; i++)
+                  if (n % i == 0) return false;
+              return true;
+          }
+
+          // Đếm số nguyên tố trong mảng
+          static int DemSNT(int[] a)
+          {
+              int dem = 0;
+              foreach (int x in a)
+                  if (LaSNT(x)) dem++;
+              return dem;
+          }
+
+          // Mảng có toàn số dương không? (cờ hiệu)
+          static bool ToanDuong(int[] a)
+          {
+              foreach (int x in a)
+                  if (x <= 0) return false;
+              return true;
+          }
+
+          // Mảng có tăng dần không?
+          static bool TangDan(int[] a)
+          {
+              for (int i = 0; i < a.Length - 1; i++)
+                  if (a[i] > a[i + 1]) return false;
+              return true;
+          }
+        </script>
+      </div>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          int[] a = { 2, 9, 11, 4, 7, 15 };
+          Console.WriteLine($"Số SNT: {DemSNT(a)}");
+          Console.WriteLine($"Toàn dương: {ToanDuong(a)}");
+          Console.WriteLine($"Tăng dần: {TangDan(a)}");
+
+          Console.Write("Các số lẻ ở vị trí chẵn: ");
+          for (int i = 0; i < a.Length; i += 2)
+              if (a[i] % 2 != 0) Console.Write(a[i] + " ");
+        </script>
+        <script type="text/x-out">
+          Số SNT: 3
+          Toàn dương: True
+          Tăng dần: False
+          Các số lẻ ở vị trí chẵn: 11 7
+        </script>
+        <div class="callout warn small">Khi so sánh <code>a[i]</code> với <code>a[i + 1]</code>, vòng lặp chỉ chạy đến <code>a.Length − 1</code> để không vượt mảng.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 4</span><h2>Ứng dụng: phân tích doanh thu 12 tháng</h2></header>
+  <div class="s-body">
+    <div class="cols c-64">
+      <script type="text/x-csharp" data-size="sm">
+        double[] dt = { 120, 135, 98, 150, 170, 160, 155, 180, 175, 190, 210, 250 }; // triệu đồng
+
+        double tong = 0;
+        int thangMax = 0, thangMin = 0, demTren = 0;
+        for (int i = 0; i < dt.Length; i++)
+        {
+            tong += dt[i];
+            if (dt[i] > dt[thangMax]) thangMax = i;
+            if (dt[i] < dt[thangMin]) thangMin = i;
+        }
+        double tb = tong / dt.Length;
+        foreach (double x in dt) if (x > tb) demTren++;
+
+        Console.WriteLine($"Tổng doanh thu năm: {tong:N0} triệu");
+        Console.WriteLine($"Trung bình/tháng : {tb:N2} triệu");
+        Console.WriteLine($"Cao nhất: tháng {thangMax + 1} ({dt[thangMax]} tr)");
+        Console.WriteLine($"Thấp nhất: tháng {thangMin + 1} ({dt[thangMin]} tr)");
+        Console.WriteLine($"Số tháng vượt trung bình: {demTren}");
+
+        Console.WriteLine("Tăng trưởng so với tháng trước:");
+        for (int i = 1; i < dt.Length; i++)
+        {
+            double tt = (dt[i] - dt[i - 1]) / dt[i - 1];
+            Console.Write($"T{i + 1}:{tt,7:P1}  ");
+        }
+      </script>
+      <div>
+        <script type="text/x-out">
+          Tổng doanh thu năm: 1,993 triệu
+          Trung bình/tháng : 166.08 triệu
+          Cao nhất: tháng 12 (250 tr)
+          Thấp nhất: tháng 3 (98 tr)
+          Số tháng vượt trung bình: 6
+          Tăng trưởng so với tháng trước:
+          T2:  12.5%  T3: -27.4%  T4:  53.1% ...
+        </script>
+        <div class="callout small">Chỉ số tháng = <code>i + 1</code> vì mảng bắt đầu từ 0 nhưng tháng bắt đầu từ 1.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lưu ý</span><h2>Lỗi thường gặp với mảng</h2></header>
+  <div class="s-body">
+    <table class="tbl">
+      <tr><th>Lỗi</th><th>Code sai</th><th>Cách sửa</th></tr>
+      <tr><td>Vượt chỉ số</td><td><code>for (i = 0; i &lt;= a.Length; i++)</code></td><td><code>i &lt; a.Length</code></td></tr>
+      <tr><td>Dùng mảng chưa cấp phát</td><td><code>int[] a; a[0] = 5;</code></td><td><code>int[] a = new int[n];</code></td></tr>
+      <tr><td>In mảng trực tiếp</td><td><code>Console.WriteLine(a);</code> → "System.Int32[]"</td><td>Duyệt từng phần tử hoặc <code>string.Join</code></td></tr>
+      <tr><td>Khởi tạo max/min bằng 0</td><td><code>int max = 0;</code></td><td><code>int max = a[0];</code></td></tr>
+      <tr><td>Sửa phần tử trong foreach</td><td><code>foreach (int x in a) x = 0;</code></td><td>Dùng <code>for</code> với chỉ số</td></tr>
+      <tr><td>Nhầm vị trí và giá trị</td><td>Trả về <code>a[i]</code> khi đề hỏi vị trí</td><td>Đọc kỹ đề: "vị trí" là <code>i</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Bài tập vận dụng</span><h2>Luyện tập</h2></header>
+  <div class="s-body">
+    <div class="ex"><div class="ex-h"><b>Bài 1.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Nhập mảng n số nguyên. Đếm số phần tử âm, dương, bằng 0. In các phần tử chia hết cho 3.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 2.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Viết hàm tìm <strong>số chẵn lớn nhất</strong> trong mảng; nếu không có số chẵn thì trả về −1.</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          static int ChanLonNhat(int[] a)
+          {
+              int kq = -1; bool coChan = false;
+              foreach (int x in a)
+                  if (x % 2 == 0 && (!coChan || x > kq)) { kq = x; coChan = true; }
+              return coChan ? kq : -1;
+          }
+        </script>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 3.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Nhập điểm của n sinh viên (0–10). In điểm trung bình lớp, số SV đậu (≥ 5), tỷ lệ đậu (%), điểm cao nhất và danh sách vị trí SV đạt điểm cao nhất.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 4.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Đảo ngược mảng tại chỗ (không dùng mảng phụ): {1,2,3,4,5} → {5,4,3,2,1}.</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          for (int i = 0; i < a.Length / 2; i++)
+          {
+              int tam = a[i];
+              a[i] = a[a.Length - 1 - i];
+              a[a.Length - 1 - i] = tam;
+          }
+        </script>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 5.</b><span class="lvl l3">Nâng cao</span></div>
+      <p>Tìm đoạn con liên tiếp <strong>tăng dần dài nhất</strong> trong mảng, in vị trí bắt đầu và độ dài.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-hw">Bài tập về nhà</span><h2>Chuẩn bị cho buổi 8</h2></header>
+  <div class="s-body">
+    <ol class="steps">
+      <li>Viết hàm đếm số lần xuất hiện của giá trị x trong mảng.</li>
+      <li>Tìm giá trị lớn thứ hai trong mảng (khác giá trị lớn nhất).</li>
+      <li>Tạo mảng mới chỉ chứa các số nguyên tố từ mảng ban đầu.</li>
+      <li>Kiểm tra mảng có đối xứng không: {1, 3, 5, 3, 1} là đối xứng.</li>
+      <li>Dịch trái mảng 1 vị trí vòng tròn: {1,2,3,4} → {2,3,4,1}.</li>
+      <li>Nhập giá cổ phiếu n ngày. Tìm ngày mua và ngày bán (sau ngày mua) để lợi nhuận lớn nhất.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-sum">Tổng kết</span><h2>Ghi nhớ của buổi 7</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <ul>
+        <li>Khai báo: <code>int[] a = new int[n];</code> hoặc <code>{ 1, 2, 3 }</code>.</li>
+        <li>Chỉ số từ <strong>0</strong> đến <strong>Length − 1</strong>.</li>
+        <li><code>for</code> khi cần chỉ số/sửa; <code>foreach</code> khi chỉ đọc.</li>
+        <li>Mảng truyền vào hàm là <strong>tham chiếu</strong>: hàm sửa được mảng gốc.</li>
+      </ul>
+      <ul>
+        <li>Tổng/đếm: khởi tạo 0, duyệt và cộng/đếm có điều kiện.</li>
+        <li>Max/min: khởi tạo bằng <code>a[0]</code>.</li>
+        <li>Kiểm tra "tất cả": return false khi gặp phản ví dụ.</li>
+        <li>Chia trung bình: ép <code>(double)</code>, kiểm tra mẫu khác 0.</li>
+      </ul>
+    </div>
+    <div class="callout ok"><b>Buổi tiếp theo:</b> Tìm kiếm và sắp xếp mảng, thêm và xóa phần tử.</div>
+  </div>
+</section>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/slides.js"></script>
+</body>
+</html>

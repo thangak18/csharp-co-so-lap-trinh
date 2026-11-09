@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buổi 12 · Ôn tập và Luyện đề</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="assets/slides.css">
+</head>
+<body data-lesson="Buổi 12" data-title="Tổng ôn tập và luyện đề thi">
+<div class="deck">
+
+<section class="slide cover">
+  <div class="badge"><span class="dot"></span>Cơ sở lập trình C# · Buổi 12</div>
+  <h1>Tổng <em>ôn tập</em><br>và luyện đề thi</h1>
+  <p class="sub">Hệ thống lại toàn bộ kiến thức, luyện dạng câu hỏi đọc code, làm đề mẫu có bấm giờ và chiến lược làm bài đạt điểm cao.</p>
+  <div class="meta"><span>⏱ 120 phút</span><span>🗺 Sơ đồ kiến thức</span><span>📝 Đề mẫu có đáp án</span></div>
+  <div class="big-num">12</div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mục tiêu</span><h2>Buổi học hôm nay</h2></header>
+  <div class="s-body">
+    <ul class="goals">
+      <li>Hệ thống hóa kiến thức 11 buổi trên một sơ đồ.</li>
+      <li>Luyện dạng <strong>đọc code, đoán kết quả</strong> (hay gặp trong thi giấy và trắc nghiệm).</li>
+      <li>Luyện dạng <strong>tìm và sửa lỗi</strong> trong đoạn code.</li>
+      <li>Làm một đề thi mẫu tự luận (60–90 phút) và đối chiếu đáp án.</li>
+      <li>Nắm chiến lược phân bổ thời gian và checklist trước khi nộp bài.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Sơ đồ kiến thức</span><h2>Toàn cảnh môn Cơ sở lập trình</h2></header>
+  <div class="s-body">
+    <div class="cols c4">
+      <div class="card small"><h4><span class="ic">1</span>Nền tảng</h4>
+        <ul><li>Thuật toán, mã giả, lưu đồ</li><li>Biến, kiểu dữ liệu, hằng</li><li>Nhập/xuất, Parse, định dạng</li><li>Toán tử, <code>/</code> và <code>%</code></li></ul>
+      </div>
+      <div class="card small"><h4><span class="ic">2</span>Điều khiển</h4>
+        <ul><li><code>if</code> / <code>else if</code> / <code>switch</code></li><li><code>for</code> / <code>while</code> / <code>do…while</code></li><li>Lặp lồng, <code>break</code>, <code>continue</code></li><li><code>TryParse</code>, menu</li></ul>
+      </div>
+      <div class="card small"><h4><span class="ic">3</span>Tổ chức</h4>
+        <ul><li>Hàm <code>void</code> / <code>return</code></li><li>Tham trị, <code>ref</code>, <code>out</code></li><li>Nạp chồng, đệ quy</li><li><code>struct</code></li></ul>
+      </div>
+      <div class="card small"><h4><span class="ic">4</span>Dữ liệu</h4>
+        <ul><li>Mảng 1 chiều</li><li>Tìm kiếm, sắp xếp</li><li>Mảng 2 chiều</li><li>Chuỗi, tệp tin</li></ul>
+      </div>
+    </div>
+    <div class="callout small" style="margin-top:14px"><b>Cấu trúc đề thi thường gặp</b> (tham khảo, tùy giảng viên): <strong>Câu 1</strong> cấu trúc điều khiển/vòng lặp với số nguyên · <strong>Câu 2</strong> viết hàm xử lý mảng 1 chiều · <strong>Câu 3</strong> chuỗi hoặc ma trận · có thể kèm câu đọc code và menu gọi các hàm.</div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mẫu cần thuộc</span><h2>8 "khuôn" thuật toán gặp nhiều nhất</h2></header>
+  <div class="s-body">
+    <table class="tbl small">
+      <tr><th>Mẫu</th><th>Khung code</th></tr>
+      <tr><td>Tổng / đếm có điều kiện</td><td><code>tong = 0; for (...) if (đk) tong += x;</code></td></tr>
+      <tr><td>Tích / giai thừa</td><td><code>tich = 1; for (i = 1..n) tich *= i;</code></td></tr>
+      <tr><td>Tách chữ số</td><td><code>while (n &gt; 0) { cs = n % 10; ...; n /= 10; }</code></td></tr>
+      <tr><td>Kiểm tra "tồn tại / tất cả"</td><td><code>foreach (...) if (phản ví dụ) return false; return true;</code></td></tr>
+      <tr><td>Max / min và vị trí</td><td><code>vt = 0; for (i = 1..) if (a[i] &gt; a[vt]) vt = i;</code></td></tr>
+      <tr><td>Hoán vị</td><td><code>tam = a; a = b; b = tam;</code> hoặc <code>(a, b) = (b, a);</code></td></tr>
+      <tr><td>Sắp xếp đổi chỗ</td><td><code>for i: for j = i+1: if (a[j] &lt; a[i]) hoán vị</code></td></tr>
+      <tr><td>Nhập an toàn</td><td><code>do { ... } while (!int.TryParse(..., out n) || n &lt; min);</code></td></tr>
+    </table>
+    <div class="callout tip small">Hầu hết bài thi là sự <strong>kết hợp</strong> của các khuôn này. Đọc đề, nhận ra khuôn, rồi ghép lại.</div>
+  </div>
+</section>
+
+<section class="slide divider">
+  <div class="num">DẠNG 1</div>
+  <h2>Đọc code, đoán kết quả</h2>
+  <p>Lập bảng lần vết trên giấy, đừng đoán mò.</p>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Đọc code</span><h2>Câu 1 – Câu 3</h2></header>
+  <div class="s-body">
+    <div class="cols c3">
+      <div>
+        <p class="small"><strong>Câu 1.</strong> Kết quả in ra?</p>
+        <script type="text/x-csharp" data-size="sm">
+          int a = 17, b = 5;
+          double c = a / b;
+          Console.WriteLine(c);
+          Console.WriteLine(a % b);
+          Console.WriteLine((double)a / b);
+        </script>
+        <details class="sol"><summary>Đáp án</summary>
+          <script type="text/x-out">
+            3
+            2
+            3.4
+          </script>
+          <p class="small"><code>a / b</code> là chia nguyên ra 3, rồi mới chuyển sang double.</p>
+        </details>
+      </div>
+      <div>
+        <p class="small"><strong>Câu 2.</strong> Kết quả in ra?</p>
+        <script type="text/x-csharp" data-size="sm">
+          int s = 0;
+          for (int i = 1; i <= 10; i++)
+          {
+              if (i % 3 == 0) continue;
+              if (i > 7) break;
+              s += i;
+          }
+          Console.WriteLine(s);
+        </script>
+        <details class="sol"><summary>Đáp án</summary>
+          <p class="small"><strong>19</strong>. Các i được cộng: 1, 2, 4, 5, 7 (bỏ 3, 6; i = 8 thì break).</p>
+        </details>
+      </div>
+      <div>
+        <p class="small"><strong>Câu 3.</strong> Kết quả in ra?</p>
+        <script type="text/x-csharp" data-size="sm">
+          int n = 2024, k = 0;
+          while (n > 0)
+          {
+              k = k * 10 + n % 10;
+              n /= 10;
+          }
+          Console.WriteLine(k);
+        </script>
+        <details class="sol"><summary>Đáp án</summary>
+          <p class="small"><strong>4202</strong>. Đây là thuật toán đảo số.</p>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Đọc code</span><h2>Câu 4 – Câu 6</h2></header>
+  <div class="s-body">
+    <div class="cols c3">
+      <div>
+        <p class="small"><strong>Câu 4.</strong> Kết quả in ra?</p>
+        <script type="text/x-csharp" data-size="sm">
+          static void F(int x, ref int y)
+          {
+              x++;
+              y += x;
+          }
+          // Main
+          int p = 1, q = 10;
+          F(p, ref q);
+          Console.WriteLine($"{p} {q}");
+        </script>
+        <details class="sol"><summary>Đáp án</summary>
+          <p class="small"><strong>1 12</strong>. <code>p</code> truyền tham trị nên không đổi; trong hàm x = 2, y = 10 + 2 = 12 ghi vào q.</p>
+        </details>
+      </div>
+      <div>
+        <p class="small"><strong>Câu 5.</strong> Mảng a sau khi chạy?</p>
+        <script type="text/x-csharp" data-size="sm">
+          int[] a = { 3, 8, 1, 6 };
+          for (int i = 0; i < a.Length - 1; i++)
+              if (a[i] > a[i + 1])
+              {
+                  int t = a[i];
+                  a[i] = a[i + 1];
+                  a[i + 1] = t;
+              }
+          Console.WriteLine(string.Join(" ", a));
+        </script>
+        <details class="sol"><summary>Đáp án</summary>
+          <p class="small"><strong>3 1 6 8</strong>. Chỉ là <em>một lượt</em> nổi bọt: (3,8) giữ, (8,1) đổi, (8,6) đổi.</p>
+        </details>
+      </div>
+      <div>
+        <p class="small"><strong>Câu 6.</strong> Kết quả in ra?</p>
+        <script type="text/x-csharp" data-size="sm">
+          string s = " Kinh Te ";
+          s.Trim();
+          Console.WriteLine($"[{s}] {s.Length}");
+          s = s.Trim().ToUpper();
+          Console.WriteLine(s.IndexOf('T'));
+          Console.WriteLine(s.Substring(2, 3));
+        </script>
+        <details class="sol"><summary>Đáp án</summary>
+          <script type="text/x-out">
+            [ Kinh Te ] 9
+            5
+            NH
+          </script>
+          <p class="small"><code>s.Trim();</code> không gán lại nên s chưa đổi. Sau đó s = "KINH TE"; <code>Substring(2, 3)</code> = "NH " (có khoảng trắng cuối).</p>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide divider">
+  <div class="num">DẠNG 2</div>
+  <h2>Tìm và sửa lỗi</h2>
+  <p>Cả lỗi biên dịch (không chạy được) lẫn lỗi logic (chạy nhưng sai kết quả).</p>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Sửa lỗi</span><h2>Đoạn code sau có những lỗi nào?</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p class="small">Hàm tính trung bình cộng các số dương trong mảng:</p>
+        <script type="text/x-csharp" data-size="sm">
+          static double TBDuong(int[] a)
+          {
+              int tong, dem = 0;
+              for (int i = 0; i <= a.Length; i++);
+              {
+                  if (a[i] > 0)
+                      tong += a[i];
+                      dem++;
+              }
+              return tong / dem;
+          }
+        </script>
+      </div>
+      <div>
+        <details class="sol"><summary>Xem đáp án (6 lỗi)</summary>
+          <ol class="small">
+            <li><code>tong</code> chưa khởi tạo → <code>int tong = 0</code></li>
+            <li><code>i &lt;= a.Length</code> vượt mảng → <code>i &lt; a.Length</code></li>
+            <li>Dấu <code>;</code> sau <code>for</code> làm thân vòng lặp rỗng → bỏ <code>;</code></li>
+            <li>Thiếu <code>{ }</code> cho if nên <code>dem++</code> luôn chạy → bọc cả 2 lệnh</li>
+            <li><code>tong / dem</code> chia nguyên → <code>(double)tong / dem</code></li>
+            <li>Không xử lý <code>dem == 0</code> → <code>return dem == 0 ? 0 : …</code></li>
+          </ol>
+          <script type="text/x-csharp" data-size="sm">
+            static double TBDuong(int[] a)
+            {
+                int tong = 0, dem = 0;
+                for (int i = 0; i < a.Length; i++)
+                {
+                    if (a[i] > 0)
+                    {
+                        tong += a[i];
+                        dem++;
+                    }
+                }
+                return dem == 0 ? 0 : (double)tong / dem;
+            }
+          </script>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide divider">
+  <div class="num">DẠNG 3</div>
+  <h2>Đề thi mẫu tự luận</h2>
+  <p>Thời gian 75 phút · Được dùng máy tính có Visual Studio · Không dùng Internet.</p>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-hw">Đề mẫu</span><h2>Đề thi thử: Cơ sở lập trình C#</h2></header>
+  <div class="s-body">
+    <div class="ex"><div class="ex-h"><b>Câu 1 (3 điểm).</b><span class="lvl l1">Số nguyên</span></div>
+      <p>Viết chương trình nhập số nguyên dương n (bắt nhập lại nếu n ≤ 0).<br>
+      a) Tính và in tổng các chữ số của n.<br>
+      b) Kiểm tra n có phải số nguyên tố không.<br>
+      c) In tất cả các số hoàn hảo nhỏ hơn n.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Câu 2 (4 điểm).</b><span class="lvl l2">Mảng 1 chiều</span></div>
+      <p>Viết các hàm sau cho mảng số nguyên a gồm n phần tử:<br>
+      a) <code>NhapMang</code>, <code>XuatMang</code>.<br>
+      b) <code>TongLe</code>: tổng các phần tử lẻ.<br>
+      c) <code>ViTriMaxCuoi</code>: vị trí cuối cùng của phần tử lớn nhất.<br>
+      d) <code>SapXepGiam</code>: sắp xếp giảm dần bằng thuật toán tự cài đặt.<br>
+      e) <code>XoaX</code>: xóa tất cả phần tử có giá trị x.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Câu 3 (3 điểm).</b><span class="lvl l3">Chuỗi</span></div>
+      <p>Nhập một chuỗi họ tên.<br>
+      a) Chuẩn hóa chuỗi (bỏ khoảng trắng thừa, viết hoa chữ cái đầu mỗi từ).<br>
+      b) Đếm số từ trong chuỗi.<br>
+      c) In tên (từ cuối) và họ (từ đầu).</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Đáp án</span><h2>Câu 1</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <script type="text/x-csharp" data-size="sm">
+        static int TongChuSo(int n)
+        {
+            int t = 0;
+            while (n > 0) { t += n % 10; n /= 10; }
+            return t;
+        }
+
+        static bool LaSNT(int n)
+        {
+            if (n < 2) return false;
+            for (int i = 2; i * i <= n; i++)
+                if (n % i == 0) return false;
+            return true;
+        }
+
+        static bool LaSoHoanHao(int n)
+        {
+            if (n < 2) return false;
+            int tong = 0;
+            for (int i = 1; i < n; i++)
+                if (n % i == 0) tong += i;
+            return tong == n;
+        }
+      </script>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          static void Main(string[] args)
+          {
+              int n;
+              do
+              {
+                  Console.Write("Nhập n > 0: ");
+              } while (!int.TryParse(Console.ReadLine(), out n) || n <= 0);
+
+              Console.WriteLine($"a) Tổng chữ số: {TongChuSo(n)}");
+              Console.WriteLine(LaSNT(n) ? "b) Là số nguyên tố"
+                                         : "b) Không là số nguyên tố");
+              Console.Write("c) Số hoàn hảo < n: ");
+              for (int i = 1; i < n; i++)
+                  if (LaSoHoanHao(i)) Console.Write(i + " ");
+              Console.WriteLine();
+          }
+        </script>
+        <script type="text/x-out">
+          Nhập n > 0: {{-3}}
+          Nhập n > 0: {{1000}}
+          a) Tổng chữ số: 1
+          b) Không là số nguyên tố
+          c) Số hoàn hảo < n: 6 28 496
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Đáp án</span><h2>Câu 2</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <script type="text/x-csharp" data-size="sm">
+        static int[] NhapMang(out int n)
+        {
+            Console.Write("n = ");
+            n = int.Parse(Console.ReadLine());
+            int[] a = new int[n];
+            for (int i = 0; i < n; i++)
+            {
+                Console.Write($"a[{i}] = ");
+                a[i] = int.Parse(Console.ReadLine());
+            }
+            return a;
+        }
+
+        static void XuatMang(int[] a, int n)
+        {
+            for (int i = 0; i < n; i++) Console.Write(a[i] + " ");
+            Console.WriteLine();
+        }
+
+        static int TongLe(int[] a, int n)
+        {
+            int t = 0;
+            for (int i = 0; i < n; i++)
+                if (a[i] % 2 != 0) t += a[i];
+            return t;
+        }
+      </script>
+      <script type="text/x-csharp" data-size="sm">
+        static int ViTriMaxCuoi(int[] a, int n)
+        {
+            int vt = 0;
+            for (int i = 1; i < n; i++)
+                if (a[i] >= a[vt]) vt = i;    // >= để lấy vị trí CUỐI
+            return vt;
+        }
+
+        static void SapXepGiam(int[] a, int n)
+        {
+            for (int i = 0; i < n - 1; i++)
+                for (int j = i + 1; j < n; j++)
+                    if (a[j] > a[i])
+                    {
+                        int t = a[i]; a[i] = a[j]; a[j] = t;
+                    }
+        }
+
+        static void XoaX(int[] a, ref int n, int x)
+        {
+            int k = 0;                        // vị trí ghi
+            for (int i = 0; i < n; i++)
+                if (a[i] != x) a[k++] = a[i]; // giữ lại phần tử khác x
+            n = k;
+        }
+      </script>
+    </div>
+    <div class="callout tip small"><b>Điểm cộng:</b> chú ý chi tiết <code>&gt;=</code> trong <code>ViTriMaxCuoi</code> và cách xóa 1 lượt (2 con trỏ) trong <code>XoaX</code>. Đây là chỗ phân loại điểm 8 với điểm 10.</div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Đáp án</span><h2>Câu 3</h2></header>
+  <div class="s-body">
+    <div class="cols c-64">
+      <script type="text/x-csharp" data-size="sm">
+        static string ChuanHoa(string s)
+        {
+            string[] tu = s.Trim().ToLower()
+                           .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < tu.Length; i++)
+                tu[i] = char.ToUpper(tu[i][0]) + tu[i].Substring(1);
+            return string.Join(" ", tu);
+        }
+
+        static void Main(string[] args)
+        {
+            Console.InputEncoding = Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Console.Write("Họ tên: ");
+            string s = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(s)) { Console.WriteLine("Chuỗi rỗng!"); return; }
+
+            string ht = ChuanHoa(s);
+            string[] tu = ht.Split(' ');
+            Console.WriteLine($"a) {ht}");
+            Console.WriteLine($"b) Số từ: {tu.Length}");
+            Console.WriteLine($"c) Tên: {tu[tu.Length - 1]}, Họ: {tu[0]}");
+        }
+      </script>
+      <div>
+        <script type="text/x-out">
+          Họ tên: {{  trẦN   thị  thu  HÀ  }}
+          a) Trần Thị Thu Hà
+          b) Số từ: 4
+          c) Tên: Hà, Họ: Trần
+        </script>
+        <div class="callout small">Sau khi chuẩn hóa, các từ cách nhau đúng 1 khoảng trắng, nên <code>Split(' ')</code> lần 2 cho kết quả chính xác.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Chiến lược</span><h2>Làm bài thi đạt điểm cao</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3>Phân bổ thời gian (75 phút)</h3>
+        <table class="tbl small">
+          <tr><th>Giai đoạn</th><th>Thời gian</th></tr>
+          <tr><td>Đọc toàn bộ đề, đánh dấu câu dễ</td><td>5 phút</td></tr>
+          <tr><td>Làm câu dễ nhất trước</td><td>20 phút</td></tr>
+          <tr><td>Các câu còn lại</td><td>40 phút</td></tr>
+          <tr><td>Chạy test, rà soát, lưu bài</td><td>10 phút</td></tr>
+        </table>
+        <h3>Nguyên tắc</h3>
+        <ul class="small">
+          <li>Viết <strong>từng hàm</strong> và chạy thử ngay, đừng viết hết rồi mới chạy.</li>
+          <li>Câu nào bí quá 10 phút: chuyển câu khác, quay lại sau.</li>
+          <li>Làm được một phần vẫn có điểm: <strong>đừng bỏ trống</strong>.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Checklist trước khi nộp ✅</h3>
+        <ul class="goals small">
+          <li>Chương trình biên dịch được, không còn lỗi đỏ.</li>
+          <li>Đặt tên hàm, biến <strong>đúng như đề yêu cầu</strong>.</li>
+          <li>Đã test trường hợp đặc biệt: n = 0, n = 1, số âm, mảng rỗng, chuỗi rỗng.</li>
+          <li>Không còn phép chia nguyên ngoài ý muốn.</li>
+          <li>Vòng lặp mảng dùng <code>&lt; Length</code> (hoặc <code>&lt; n</code>).</li>
+          <li>Đã lưu file đúng tên, đúng thư mục theo quy định.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-hw">Tự luyện</span><h2>Đề luyện thêm (tự làm, có bấm giờ)</h2></header>
+  <div class="s-body">
+    <div class="ex"><div class="ex-h"><b>Câu 1.</b><span class="lvl l1">3 điểm</span></div>
+      <p>Nhập a, b (a &lt; b). In các số trong đoạn [a, b] vừa chia hết cho 3 vừa có tổng chữ số chẵn. Tính trung bình cộng các số đó.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Câu 2.</b><span class="lvl l2">4 điểm</span></div>
+      <p>Cho ma trận m × n số nguyên (tạo ngẫu nhiên −50 → 50). Viết hàm: xuất ma trận; tìm dòng có tổng lớn nhất; đếm số phần tử là số nguyên tố; sắp xếp tăng dần các phần tử trên mỗi cột.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Câu 3.</b><span class="lvl l3">3 điểm</span></div>
+      <p>Đọc file <code>sanpham.csv</code> (MaSP, TenSP, SoLuong, DonGia). In bảng có cột Thành tiền, tổng doanh thu, sản phẩm có thành tiền cao nhất; ghi các sản phẩm có số lượng &lt; 10 vào file <code>canhap.txt</code>.</p>
+    </div>
+    <div class="callout tip small">Làm xong, đối chiếu với các ví dụ mẫu ở buổi 4 (số), buổi 9 (ma trận), buổi 11 (file) để tự chấm.</div>
+  </div>
+</section>
+
+<section class="slide cover">
+  <div class="badge"><span class="dot"></span>Hoàn thành khóa học</div>
+  <h1>Chúc bạn <em>thi tốt!</em> 🎯</h1>
+  <p class="sub">Lập trình là kỹ năng, không phải kiến thức để học thuộc. Mỗi ngày code một bài nhỏ quan trọng hơn đọc lý thuyết cả đêm trước ngày thi.</p>
+  <div class="meta"><span>✔ 12 buổi</span><span>✔ Thuật toán → Hàm → Mảng → Chuỗi → File</span><span>➜ Tiếp theo: Lập trình hướng đối tượng</span></div>
+  <div class="big-num">C#</div>
+</section>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/slides.js"></script>
+</body>
+</html>

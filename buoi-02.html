@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buổi 2 · Biến, kiểu dữ liệu và nhập xuất</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="assets/slides.css">
+</head>
+<body data-lesson="Buổi 2" data-title="Biến, kiểu dữ liệu, nhập xuất và toán tử">
+<div class="deck">
+
+<section class="slide cover">
+  <div class="badge"><span class="dot"></span>Cơ sở lập trình C# · Buổi 02</div>
+  <h1>Biến, <em>kiểu dữ liệu</em><br>nhập xuất và toán tử</h1>
+  <p class="sub">Cách chương trình lưu trữ dữ liệu trong bộ nhớ, đọc dữ liệu từ bàn phím, tính toán và hiển thị kết quả đẹp mắt.</p>
+  <div class="meta"><span>⏱ 90–120 phút</span><span>🧮 int · double · string · bool</span><span>⌨ ReadLine · Parse</span></div>
+  <div class="big-num">02</div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mục tiêu</span><h2>Sau buổi học này, bạn có thể</h2></header>
+  <div class="s-body">
+    <ul class="goals">
+      <li>Khai báo biến, hằng đúng cú pháp và đặt tên theo quy tắc.</li>
+      <li>Chọn đúng kiểu dữ liệu: <code>int</code>, <code>double</code>, <code>decimal</code>, <code>char</code>, <code>string</code>, <code>bool</code>.</li>
+      <li>Nhập dữ liệu từ bàn phím và chuyển sang kiểu số bằng <code>Parse</code> / <code>Convert</code>.</li>
+      <li>Dùng các toán tử số học, đặc biệt là <strong>chia nguyên</strong> <code>/</code> và <strong>chia lấy dư</strong> <code>%</code>.</li>
+      <li>Xuất kết quả có định dạng: <code>$"..."</code>, <code>{x:F2}</code>, <code>{x:N0}</code>.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Nội dung</span><h2>Lộ trình buổi học</h2></header>
+  <div class="s-body">
+    <ol class="agenda">
+      <li>Biến và cách khai báo</li>
+      <li>Quy tắc đặt tên</li>
+      <li>Các kiểu dữ liệu cơ bản</li>
+      <li>Hằng số</li>
+      <li>Nhập dữ liệu và chuyển kiểu</li>
+      <li>Xuất dữ liệu có định dạng</li>
+      <li>Toán tử và lớp Math</li>
+      <li>Ví dụ mẫu, bài tập vận dụng</li>
+    </ol>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Biến (variable) là gì?</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p><strong>Biến</strong> là một vùng nhớ có <strong>tên</strong>, dùng để lưu một giá trị. Giá trị này có thể thay đổi khi chương trình chạy.</p>
+        <p>Mỗi biến có 3 yếu tố: <span class="pill">Kiểu dữ liệu</span> <span class="pill">Tên</span> <span class="pill">Giá trị</span></p>
+        <div class="callout tip"><b>Hình dung:</b> biến giống một chiếc hộp có dán nhãn. Kiểu dữ liệu quyết định hộp chứa được loại đồ gì.</div>
+      </div>
+      <div>
+        <h3>Cú pháp khai báo</h3>
+        <script type="text/x-csharp" data-size="sm">
+          // kiểu tên;
+          int tuoi;
+          // kiểu tên = giá trị khởi tạo;
+          double diemTB = 8.5;
+          string hoTen = "Nguyễn Văn An";
+          // khai báo nhiều biến cùng kiểu
+          int a = 5, b = 10, tong;
+          // gán giá trị mới
+          tuoi = 19;
+          tong = a + b;     // tong = 15
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Quy tắc đặt tên biến</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div class="card"><h4><span class="ic">!</span>Bắt buộc (sai sẽ lỗi biên dịch)</h4>
+        <ul class="small">
+          <li>Chỉ gồm chữ cái, chữ số, dấu gạch dưới <code>_</code></li>
+          <li><strong>Không</strong> bắt đầu bằng chữ số</li>
+          <li><strong>Không</strong> chứa khoảng trắng, ký tự đặc biệt (<code>-</code>, <code>@</code>, <code>#</code>…)</li>
+          <li><strong>Không</strong> trùng từ khóa: <code>int</code>, <code>class</code>, <code>if</code>…</li>
+          <li>Phân biệt hoa thường: <code>diem</code> ≠ <code>Diem</code></li>
+        </ul>
+      </div>
+      <div class="card"><h4><span class="ic">✓</span>Nên làm (quy ước)</h4>
+        <ul class="small">
+          <li>Đặt tên <strong>có ý nghĩa</strong>: <code>soLuong</code> thay vì <code>x</code></li>
+          <li>Biến dùng kiểu <strong>camelCase</strong>: <code>diemTrungBinh</code></li>
+          <li>Hằng, hàm, lớp dùng <strong>PascalCase</strong>: <code>TinhTong</code></li>
+          <li>Không dùng dấu tiếng Việt trong tên</li>
+        </ul>
+      </div>
+    </div>
+    <table class="tbl" style="margin-top:14px">
+      <tr><th>Tên</th><th>Hợp lệ?</th><th>Lý do</th></tr>
+      <tr><td><code>soLuong</code>, <code>_dem</code>, <code>diem1</code></td><td>✅</td><td>Đúng quy tắc</td></tr>
+      <tr><td><code>1diem</code></td><td>❌</td><td>Bắt đầu bằng số</td></tr>
+      <tr><td><code>so luong</code>, <code>don-gia</code></td><td>❌</td><td>Có khoảng trắng / dấu gạch ngang</td></tr>
+      <tr><td><code>class</code>, <code>double</code></td><td>❌</td><td>Trùng từ khóa</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Các kiểu dữ liệu cơ bản</h2></header>
+  <div class="s-body">
+    <table class="tbl">
+      <tr><th>Kiểu</th><th>Ý nghĩa</th><th>Kích thước</th><th>Ví dụ</th></tr>
+      <tr><td><code>int</code></td><td>Số nguyên (≈ ±2,1 tỷ)</td><td>4 byte</td><td><code>int soLuong = 25;</code></td></tr>
+      <tr><td><code>long</code></td><td>Số nguyên lớn (≈ ±9,2 × 10¹⁸)</td><td>8 byte</td><td><code>long danSo = 8000000000;</code></td></tr>
+      <tr><td><code>float</code></td><td>Số thực, ~7 chữ số chính xác</td><td>4 byte</td><td><code>float f = 3.14f;</code></td></tr>
+      <tr><td><code>double</code></td><td>Số thực, ~15–16 chữ số (<strong>hay dùng nhất</strong>)</td><td>8 byte</td><td><code>double diem = 8.75;</code></td></tr>
+      <tr><td><code>decimal</code></td><td>Số thực chính xác cao, dùng cho <strong>tiền tệ</strong></td><td>16 byte</td><td><code>decimal gia = 199.99m;</code></td></tr>
+      <tr><td><code>char</code></td><td>Một ký tự, dùng nháy đơn</td><td>2 byte</td><td><code>char xepLoai = 'A';</code></td></tr>
+      <tr><td><code>string</code></td><td>Chuỗi ký tự, dùng nháy kép</td><td>tùy độ dài</td><td><code>string ten = "Lan";</code></td></tr>
+      <tr><td><code>bool</code></td><td>Logic: <code>true</code> / <code>false</code></td><td>1 byte</td><td><code>bool daThi = true;</code></td></tr>
+    </table>
+    <div class="callout warn small"><b>Chú ý hậu tố:</b> số thực mặc định là <code>double</code>. Muốn gán cho <code>float</code> phải thêm <code>f</code>, cho <code>decimal</code> phải thêm <code>m</code>.</div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Hằng số (const)</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p><strong>Hằng</strong> là giá trị cố định, <strong>không thể thay đổi</strong> sau khi khai báo. Dùng từ khóa <code>const</code> và bắt buộc gán giá trị ngay.</p>
+        <script type="text/x-csharp" data-size="sm">
+          const double PI = 3.14159;
+          const double THUE_VAT = 0.1;   // 10%
+          const int SO_MON = 3;
+
+          double r = 5;
+          double dienTich = PI * r * r;
+
+          PI = 3.14;   // ❌ LỖI: không thể gán lại hằng
+        </script>
+      </div>
+      <div>
+        <div class="card"><h4><span class="ic">?</span>Tại sao dùng hằng?</h4>
+          <ul class="small">
+            <li>Code dễ đọc: <code>THUE_VAT</code> rõ nghĩa hơn <code>0.1</code></li>
+            <li>Dễ sửa: thuế đổi thành 8% chỉ cần sửa <strong>1 chỗ</strong></li>
+            <li>Tránh vô tình thay đổi giá trị quan trọng</li>
+          </ul>
+        </div>
+        <div class="callout tip small">C# có sẵn hằng <code>Math.PI</code> = 3.14159265358979…</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Nhập dữ liệu từ bàn phím</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p><code>Console.ReadLine()</code> luôn trả về <strong>chuỗi</strong> (<code>string</code>). Muốn tính toán phải <strong>chuyển sang kiểu số</strong>.</p>
+        <script type="text/x-csharp" data-size="sm">
+          Console.Write("Nhập tên: ");
+          string ten = Console.ReadLine();
+
+          Console.Write("Nhập tuổi: ");
+          int tuoi = int.Parse(Console.ReadLine());
+
+          Console.Write("Nhập điểm: ");
+          double diem = double.Parse(Console.ReadLine());
+
+          // Cách 2: dùng lớp Convert
+          int soLuong = Convert.ToInt32(Console.ReadLine());
+          double gia  = Convert.ToDouble(Console.ReadLine());
+        </script>
+      </div>
+      <div>
+        <table class="tbl small">
+          <tr><th>Muốn kiểu</th><th>Cách 1</th><th>Cách 2</th></tr>
+          <tr><td><code>int</code></td><td><code>int.Parse(s)</code></td><td><code>Convert.ToInt32(s)</code></td></tr>
+          <tr><td><code>long</code></td><td><code>long.Parse(s)</code></td><td><code>Convert.ToInt64(s)</code></td></tr>
+          <tr><td><code>double</code></td><td><code>double.Parse(s)</code></td><td><code>Convert.ToDouble(s)</code></td></tr>
+          <tr><td><code>decimal</code></td><td><code>decimal.Parse(s)</code></td><td><code>Convert.ToDecimal(s)</code></td></tr>
+          <tr><td><code>char</code></td><td><code>char.Parse(s)</code></td><td><code>Convert.ToChar(s)</code></td></tr>
+        </table>
+        <div class="callout danger small"><b>Lỗi khi nhập sai:</b> gõ chữ "abc" vào chỗ cần số sẽ gây lỗi <code>FormatException</code> và chương trình dừng. Cách xử lý (<code>TryParse</code>) học ở buổi 5.</div>
+        <div class="callout warn small"><b>Dấu thập phân:</b> tùy cài đặt máy mà phải nhập <code>8.5</code> hay <code>8,5</code>. Nếu bị lỗi, hãy thử dấu còn lại.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Xuất dữ liệu: 3 cách ghép chuỗi</h2></header>
+  <div class="s-body">
+    <script type="text/x-csharp" data-size="sm">
+      string ten = "An"; int tuoi = 19; double diem = 8.456;
+
+      // 1. Nối chuỗi bằng +
+      Console.WriteLine("Bạn " + ten + " " + tuoi + " tuổi, điểm " + diem);
+
+      // 2. Placeholder {0}, {1}, ... (giáo trình hay dùng)
+      Console.WriteLine("Bạn {0} {1} tuổi, điểm {2}", ten, tuoi, diem);
+
+      // 3. Nội suy chuỗi $"..." (hiện đại, KHUYÊN DÙNG)
+      Console.WriteLine($"Bạn {ten} {tuoi} tuổi, điểm {diem}");
+    </script>
+    <script type="text/x-out">
+      Bạn An 19 tuổi, điểm 8.456
+      Bạn An 19 tuổi, điểm 8.456
+      Bạn An 19 tuổi, điểm 8.456
+    </script>
+    <div class="callout tip small">Cả 3 cách cho cùng kết quả. Hãy biết đọc cả 3 vì đề thi có thể dùng bất kỳ cách nào; khi tự viết thì dùng <code>$"..."</code> cho gọn.</div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Định dạng số khi xuất</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <table class="tbl small">
+          <tr><th>Định dạng</th><th>Ý nghĩa</th><th>Kết quả với 1234567.891</th></tr>
+          <tr><td><code>{x:F2}</code></td><td>2 chữ số thập phân</td><td>1234567.89</td></tr>
+          <tr><td><code>{x:F0}</code></td><td>Làm tròn đến hàng đơn vị</td><td>1234568</td></tr>
+          <tr><td><code>{x:N2}</code></td><td>Có dấu phân cách hàng nghìn</td><td>1,234,567.89</td></tr>
+          <tr><td><code>{x:N0}</code></td><td>Phân cách, không lẻ (tiền VNĐ)</td><td>1,234,568</td></tr>
+          <tr><td><code>{x:P1}</code></td><td>Phần trăm (với x = 0.125)</td><td>12.5%</td></tr>
+          <tr><td><code>{x,10}</code></td><td>Căn phải, rộng 10 ký tự</td><td>"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1234"</td></tr>
+          <tr><td><code>{x,-10}</code></td><td>Căn trái, rộng 10 ký tự</td><td>"1234&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"</td></tr>
+        </table>
+      </div>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          double tien = 1250000;
+          double tb = 7.6666;
+          Console.WriteLine($"Thành tiền: {tien:N0} đ");
+          Console.WriteLine($"Điểm TB: {tb:F2}");
+          Console.WriteLine("Điểm TB: {0:F1}", tb);
+          Console.WriteLine($"{"Tên",-8}|{"Điểm",6}");
+          Console.WriteLine($"{"An",-8}|{8.5,6}");
+        </script>
+        <script type="text/x-out">
+          Thành tiền: 1,250,000 đ
+          Điểm TB: 7.67
+          Điểm TB: 7.7
+          Tên     | Điểm
+          An      |   8.5
+        </script>
+        <div class="callout warn small"><b>Lưu ý vùng (culture):</b> máy cài định dạng Việt Nam sẽ in <code>1.250.000</code> và <code>7,67</code> (đảo dấu chấm/phẩy). Đây không phải lỗi.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Toán tử số học</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <table class="tbl small">
+          <tr><th>Toán tử</th><th>Ý nghĩa</th><th>Ví dụ</th><th>Kết quả</th></tr>
+          <tr><td><code>+</code></td><td>Cộng</td><td><code>7 + 2</code></td><td>9</td></tr>
+          <tr><td><code>-</code></td><td>Trừ</td><td><code>7 - 2</code></td><td>5</td></tr>
+          <tr><td><code>*</code></td><td>Nhân</td><td><code>7 * 2</code></td><td>14</td></tr>
+          <tr><td><code>/</code></td><td>Chia</td><td><code>7 / 2</code></td><td><strong style="color:var(--danger)">3</strong> (!)</td></tr>
+          <tr><td><code>/</code></td><td>Chia</td><td><code>7.0 / 2</code></td><td>3.5</td></tr>
+          <tr><td><code>%</code></td><td>Chia lấy dư</td><td><code>7 % 2</code></td><td>1</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="callout danger"><b>Bẫy kinh điển:</b> nếu <strong>cả hai</strong> toán hạng là số nguyên thì <code>/</code> là <strong>chia nguyên</strong> (bỏ phần thập phân).</div>
+        <script type="text/x-csharp" data-size="sm">
+          int tong = 25, soMon = 3;
+          double tb1 = tong / soMon;          // 8   ❌
+          double tb2 = (double)tong / soMon;  // 8.333 ✅
+          double tb3 = tong / 3.0;            // 8.333 ✅
+        </script>
+        <div class="callout tip small"><b>Ứng dụng của <code>/</code> và <code>%</code>:</b> <code>n % 2 == 0</code> kiểm tra chẵn; <code>n % 10</code> lấy chữ số cuối; <code>n / 10</code> bỏ chữ số cuối.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Toán tử gán, tăng giảm và ép kiểu</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3>Gán kết hợp và tăng/giảm</h3>
+        <table class="tbl small">
+          <tr><th>Viết gọn</th><th>Tương đương</th></tr>
+          <tr><td><code>x += 5;</code></td><td><code>x = x + 5;</code></td></tr>
+          <tr><td><code>x -= 2;</code></td><td><code>x = x - 2;</code></td></tr>
+          <tr><td><code>x *= 3;</code></td><td><code>x = x * 3;</code></td></tr>
+          <tr><td><code>x /= 2;</code></td><td><code>x = x / 2;</code></td></tr>
+          <tr><td><code>x++;</code> / <code>x--;</code></td><td><code>x = x + 1;</code> / <code>x = x - 1;</code></td></tr>
+        </table>
+        <script type="text/x-csharp" data-size="sm">
+          int a = 5;
+          int b = a++;   // b = 5, a = 6  (dùng rồi mới tăng)
+          int c = ++a;   // a = 7, c = 7  (tăng rồi mới dùng)
+        </script>
+      </div>
+      <div>
+        <h3>Ép kiểu (type casting)</h3>
+        <ul class="small">
+          <li><strong>Ngầm định:</strong> kiểu nhỏ → kiểu lớn, tự động, an toàn: <code>int</code> → <code>long</code> → <code>double</code>.</li>
+          <li><strong>Tường minh:</strong> kiểu lớn → kiểu nhỏ, phải viết <code>(kiểu)</code>, có thể mất dữ liệu.</li>
+        </ul>
+        <script type="text/x-csharp" data-size="sm">
+          int n = 10;
+          double d = n;            // ngầm định: 10.0
+          double x = 9.87;
+          int m = (int)x;          // tường minh: 9 (cắt bỏ, KHÔNG làm tròn)
+          int k = (int)Math.Round(x); // 10 (làm tròn)
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Lớp Math: các hàm toán học có sẵn</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <table class="tbl small">
+        <tr><th>Hàm</th><th>Ý nghĩa</th><th>Ví dụ → Kết quả</th></tr>
+        <tr><td><code>Math.Sqrt(x)</code></td><td>Căn bậc hai</td><td><code>Math.Sqrt(16)</code> → 4</td></tr>
+        <tr><td><code>Math.Pow(x, y)</code></td><td>x mũ y</td><td><code>Math.Pow(2, 10)</code> → 1024</td></tr>
+        <tr><td><code>Math.Abs(x)</code></td><td>Giá trị tuyệt đối</td><td><code>Math.Abs(-7)</code> → 7</td></tr>
+        <tr><td><code>Math.Round(x, n)</code></td><td>Làm tròn n chữ số</td><td><code>Math.Round(3.14159, 2)</code> → 3.14</td></tr>
+        <tr><td><code>Math.Ceiling(x)</code></td><td>Làm tròn lên</td><td><code>Math.Ceiling(4.1)</code> → 5</td></tr>
+        <tr><td><code>Math.Floor(x)</code></td><td>Làm tròn xuống</td><td><code>Math.Floor(4.9)</code> → 4</td></tr>
+        <tr><td><code>Math.Max(a, b)</code></td><td>Số lớn hơn</td><td><code>Math.Max(3, 8)</code> → 8</td></tr>
+        <tr><td><code>Math.Min(a, b)</code></td><td>Số nhỏ hơn</td><td><code>Math.Min(3, 8)</code> → 3</td></tr>
+      </table>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          // Khoảng cách giữa 2 điểm A(x1,y1), B(x2,y2)
+          double x1 = 1, y1 = 2, x2 = 4, y2 = 6;
+          double d = Math.Sqrt(Math.Pow(x2 - x1, 2)
+                             + Math.Pow(y2 - y1, 2));
+          Console.WriteLine($"AB = {d}");
+        </script>
+        <script type="text/x-out">AB = 5</script>
+        <div class="callout tip small"><b>Ứng dụng kinh tế:</b> lãi kép <code>A = P * Math.Pow(1 + r, n)</code>, với P là vốn gốc, r là lãi suất/kỳ, n là số kỳ.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide divider">
+  <div class="num">THỰC HÀNH</div>
+  <h2>Ví dụ mẫu</h2>
+  <p>Phân tích Input, Process, Output, rồi viết code hoàn chỉnh.</p>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 1</span><h2>Hóa đơn bán hàng có thuế VAT</h2></header>
+  <div class="s-body">
+    <p class="small"><strong>Đề:</strong> nhập tên sản phẩm, số lượng, đơn giá. Tính thành tiền, thuế VAT 10%, tổng thanh toán.</p>
+    <div class="cols c-64">
+      <script type="text/x-csharp" data-size="sm">
+        using System;
+        using System.Text;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                Console.OutputEncoding = Encoding.UTF8;
+                const double VAT = 0.1;
+
+                Console.Write("Tên sản phẩm: ");
+                string tenSP = Console.ReadLine();
+                Console.Write("Số lượng: ");
+                int soLuong = int.Parse(Console.ReadLine());
+                Console.Write("Đơn giá: ");
+                double donGia = double.Parse(Console.ReadLine());
+
+                double thanhTien = soLuong * donGia;
+                double thue = thanhTien * VAT;
+                double tongTien = thanhTien + thue;
+
+                Console.WriteLine("===== HÓA ĐƠN =====");
+                Console.WriteLine($"Sản phẩm  : {tenSP}");
+                Console.WriteLine($"Thành tiền: {thanhTien:N0} đ");
+                Console.WriteLine($"Thuế VAT  : {thue:N0} đ");
+                Console.WriteLine($"Tổng cộng : {tongTien:N0} đ");
+            }
+        }
+      </script>
+      <div>
+        <script type="text/x-out">
+          Tên sản phẩm: {{Bút bi}}
+          Số lượng: {{12}}
+          Đơn giá: {{5500}}
+          ===== HÓA ĐƠN =====
+          Sản phẩm  : Bút bi
+          Thành tiền: 66,000 đ
+          Thuế VAT  : 6,600 đ
+          Tổng cộng : 72,600 đ
+        </script>
+        <div class="card small"><h4><span class="ic">IPO</span>Phân tích</h4>
+          <p><strong>I:</strong> tenSP, soLuong, donGia<br><strong>P:</strong> thanhTien = SL × ĐG; thue = thanhTien × 10%<br><strong>O:</strong> hóa đơn</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 2</span><h2>Đổi số giây ra giờ : phút : giây</h2></header>
+  <div class="s-body">
+    <p class="small"><strong>Đề:</strong> nhập tổng số giây (ví dụ 3725), đổi ra dạng <code>1 giờ 2 phút 5 giây</code>. Bài này luyện <code>/</code> và <code>%</code>, rất hay gặp trong đề thi.</p>
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          Console.Write("Nhập số giây: ");
+          int tongGiay = int.Parse(Console.ReadLine());
+
+          int gio  = tongGiay / 3600;
+          int phut = (tongGiay % 3600) / 60;
+          int giay = tongGiay % 60;
+
+          Console.WriteLine($"{gio} giờ {phut} phút {giay} giây");
+          Console.WriteLine($"{gio:D2}:{phut:D2}:{giay:D2}");
+        </script>
+        <script type="text/x-out">
+          Nhập số giây: {{3725}}
+          1 giờ 2 phút 5 giây
+          01:02:05
+        </script>
+      </div>
+      <div>
+        <h3>Lần vết với 3725</h3>
+        <table class="tbl small">
+          <tr><th>Biểu thức</th><th>Tính</th><th>Kết quả</th></tr>
+          <tr><td><code>3725 / 3600</code></td><td>chia nguyên</td><td>1</td></tr>
+          <tr><td><code>3725 % 3600</code></td><td>dư</td><td>125</td></tr>
+          <tr><td><code>125 / 60</code></td><td>chia nguyên</td><td>2</td></tr>
+          <tr><td><code>3725 % 60</code></td><td>dư</td><td>5</td></tr>
+        </table>
+        <div class="callout tip small"><code>{x:D2}</code> in số nguyên đủ 2 chữ số, thêm số 0 phía trước: 5 → "05".</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 3</span><h2>Tính lãi kép tiền gửi tiết kiệm</h2></header>
+  <div class="s-body">
+    <p class="small"><strong>Đề:</strong> nhập số tiền gửi P, lãi suất năm r (%), số năm n. Tính số tiền nhận được sau n năm theo lãi kép: A = P × (1 + r)ⁿ.</p>
+    <div class="cols c-64">
+      <script type="text/x-csharp" data-size="sm">
+        Console.Write("Số tiền gửi (đ): ");
+        double P = double.Parse(Console.ReadLine());
+        Console.Write("Lãi suất năm (%): ");
+        double r = double.Parse(Console.ReadLine()) / 100;  // 6.5 -> 0.065
+        Console.Write("Số năm: ");
+        int n = int.Parse(Console.ReadLine());
+
+        double A = P * Math.Pow(1 + r, n);
+        double tienLai = A - P;
+
+        Console.WriteLine($"Số tiền sau {n} năm: {A:N0} đ");
+        Console.WriteLine($"Tiền lãi: {tienLai:N0} đ");
+      </script>
+      <div>
+        <script type="text/x-out">
+          Số tiền gửi (đ): {{100000000}}
+          Lãi suất năm (%): {{6.5}}
+          Số năm: {{5}}
+          Số tiền sau 5 năm: 137,008,666 đ
+          Tiền lãi: 37,008,666 đ
+        </script>
+        <div class="callout small">Người dùng nhập <strong>6.5</strong> (%) nên cần <strong>chia 100</strong> để ra 0.065 trước khi tính.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lưu ý</span><h2>Lỗi thường gặp</h2></header>
+  <div class="s-body">
+    <table class="tbl">
+      <tr><th>Lỗi</th><th>Ví dụ</th><th>Cách sửa</th></tr>
+      <tr><td>Gán chuỗi cho biến số</td><td><code>int x = Console.ReadLine();</code></td><td><code>int x = int.Parse(Console.ReadLine());</code></td></tr>
+      <tr><td>Chia nguyên ngoài ý muốn</td><td><code>double tb = (a + b) / 2;</code> (a, b là int)</td><td><code>(a + b) / 2.0</code></td></tr>
+      <tr><td>Dùng biến chưa gán giá trị</td><td><code>int tong; tong = tong + 5;</code></td><td>Khởi tạo: <code>int tong = 0;</code></td></tr>
+      <tr><td>Thiếu hậu tố</td><td><code>float f = 2.5;</code> / <code>decimal m = 9.9;</code></td><td><code>2.5f</code> / <code>9.9m</code></td></tr>
+      <tr><td>Nhầm thứ tự placeholder</td><td><code>WriteLine("{1} {0}", a)</code></td><td>Chỉ số bắt đầu từ 0 và phải có đủ đối số</td></tr>
+      <tr><td>Tràn số <code>int</code></td><td><code>int x = 50000 * 50000;</code></td><td>Dùng <code>long</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Bài tập vận dụng</span><h2>Luyện tập (1/2)</h2></header>
+  <div class="s-body">
+    <div class="ex"><div class="ex-h"><b>Bài 1.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Nhập chiều dài, chiều rộng hình chữ nhật. Tính chu vi, diện tích, độ dài đường chéo (làm tròn 2 chữ số).</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          Console.Write("Dài: "); double a = double.Parse(Console.ReadLine());
+          Console.Write("Rộng: "); double b = double.Parse(Console.ReadLine());
+          double cv = (a + b) * 2, dt = a * b, cheo = Math.Sqrt(a * a + b * b);
+          Console.WriteLine($"Chu vi = {cv:F2}, Diện tích = {dt:F2}, Chéo = {cheo:F2}");
+        </script>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 2.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Nhập điểm giữa kỳ (40%) và cuối kỳ (60%). Tính điểm tổng kết học phần, in 1 chữ số thập phân.</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          double gk = double.Parse(Console.ReadLine());
+          double ck = double.Parse(Console.ReadLine());
+          double tk = gk * 0.4 + ck * 0.6;
+          Console.WriteLine($"Điểm tổng kết: {tk:F1}");
+        </script>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 3.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Nhập một số nguyên có 3 chữ số (ví dụ 472). In ra từng chữ số hàng trăm, chục, đơn vị và tổng các chữ số.</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          int n = int.Parse(Console.ReadLine());   // 472
+          int tram = n / 100;          // 4
+          int chuc = (n / 10) % 10;    // 7
+          int donVi = n % 10;          // 2
+          Console.WriteLine($"Trăm={tram}, Chục={chuc}, Đơn vị={donVi}, Tổng={tram + chuc + donVi}");
+        </script>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Bài tập vận dụng</span><h2>Luyện tập (2/2)</h2></header>
+  <div class="s-body">
+    <div class="ex"><div class="ex-h"><b>Bài 4.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Nhập số tiền cần rút (bội số của 10.000). Tính số tờ 500k, 200k, 100k, 50k, 20k, 10k ít nhất mà ATM phải trả.</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          int tien = int.Parse(Console.ReadLine());
+          int t500 = tien / 500000; tien %= 500000;
+          int t200 = tien / 200000; tien %= 200000;
+          int t100 = tien / 100000; tien %= 100000;
+          int t50  = tien / 50000;  tien %= 50000;
+          int t20  = tien / 20000;  tien %= 20000;
+          int t10  = tien / 10000;
+          Console.WriteLine($"500k:{t500} 200k:{t200} 100k:{t100} 50k:{t50} 20k:{t20} 10k:{t10}");
+        </script>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 5.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Nhập cân nặng (kg) và chiều cao (m). Tính chỉ số BMI = cân nặng / chiều cao², in 2 chữ số thập phân.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 6.</b><span class="lvl l3">Nâng cao</span></div>
+      <p>Nhập khoản vay P, lãi suất năm (%), số tháng n. Tính tiền trả góp đều mỗi tháng theo công thức: <code>M = P·i·(1+i)ⁿ / ((1+i)ⁿ − 1)</code>, với i = lãi suất năm / 12 / 100.</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          double P = double.Parse(Console.ReadLine());
+          double i = double.Parse(Console.ReadLine()) / 12 / 100;
+          int n = int.Parse(Console.ReadLine());
+          double luy = Math.Pow(1 + i, n);
+          double M = P * i * luy / (luy - 1);
+          Console.WriteLine($"Trả mỗi tháng: {M:N0} đ");
+        </script>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-hw">Bài tập về nhà</span><h2>Chuẩn bị cho buổi 3</h2></header>
+  <div class="s-body">
+    <ol class="steps">
+      <li>Nhập nhiệt độ độ C, đổi sang độ F (F = C × 9/5 + 32). Cẩn thận phép chia <code>9/5</code>!</li>
+      <li>Nhập số phút gọi điện và đơn giá/phút, tính cước điện thoại có VAT 10%.</li>
+      <li>Nhập một số nguyên dương có 4 chữ số, in ra số đảo ngược (1234 → 4321) chỉ dùng <code>/</code> và <code>%</code>.</li>
+      <li>Nhập 2 số nguyên a, b. Hoán đổi giá trị a và b (dùng biến tạm), in kết quả trước và sau.</li>
+      <li>Nhập bán kính, tính thể tích hình cầu V = 4/3·π·r³ (dùng <code>Math.PI</code>, <code>Math.Pow</code>).</li>
+    </ol>
+    <div class="callout warn small"><b>Câu hỏi suy nghĩ:</b> vì sao <code>4/3 * Math.PI * r * r * r</code> cho kết quả sai? Sửa thế nào?</div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-sum">Tổng kết</span><h2>Ghi nhớ của buổi 2</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <ul>
+        <li>Khai báo: <code>kiểu tên = giá trị;</code>. Hằng dùng <code>const</code>.</li>
+        <li>Số nguyên dùng <code>int</code>/<code>long</code>, số thực dùng <code>double</code>, tiền dùng <code>decimal</code>.</li>
+        <li><code>ReadLine()</code> trả về <code>string</code>, cần <code>Parse</code>/<code>Convert</code> để ra số.</li>
+        <li>Xuất: <code>$"...{x:F2}..."</code>, <code>{x:N0}</code> cho tiền.</li>
+      </ul>
+      <ul>
+        <li><code>int / int</code> là chia nguyên. Muốn ra số thực, ép một vế sang <code>double</code>.</li>
+        <li><code>%</code> lấy dư: kiểm tra chẵn lẻ, tách chữ số.</li>
+        <li><code>(int)x</code> cắt bỏ phần lẻ; <code>Math.Round</code> làm tròn.</li>
+        <li>Lớp <code>Math</code>: <code>Sqrt</code>, <code>Pow</code>, <code>Abs</code>, <code>Round</code>, <code>Max</code>, <code>Min</code>.</li>
+      </ul>
+    </div>
+    <div class="callout ok"><b>Buổi tiếp theo:</b> Cấu trúc rẽ nhánh <code>if</code>, <code>else</code>, <code>switch</code>, để chương trình biết "ra quyết định".</div>
+  </div>
+</section>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/slides.js"></script>
+</body>
+</html>

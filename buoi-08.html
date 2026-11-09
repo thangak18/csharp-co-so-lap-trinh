@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buổi 8 · Tìm kiếm và Sắp xếp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="assets/slides.css">
+<style>
+  .tr td.k { background: var(--brand-soft); font-weight: 700; color: var(--brand); }
+  .tr td.done { background: var(--ok-soft); color: #15803d; font-weight: 700; }
+  .tr td { font-family: var(--mono); text-align: center; }
+</style>
+</head>
+<body data-lesson="Buổi 8" data-title="Tìm kiếm và sắp xếp mảng">
+<div class="deck">
+
+<section class="slide cover">
+  <div class="badge"><span class="dot"></span>Cơ sở lập trình C# · Buổi 08</div>
+  <h1><em>Tìm kiếm</em> và<br><em>sắp xếp</em> mảng</h1>
+  <p class="sub">Tìm tuần tự, tìm nhị phân, ba thuật toán sắp xếp cơ bản, cùng thao tác thêm và xóa phần tử trong mảng.</p>
+  <div class="meta"><span>⏱ 90–120 phút</span><span>🔎 Linear · Binary</span><span>↕ Selection · Bubble · Insertion</span></div>
+  <div class="big-num">08</div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mục tiêu</span><h2>Sau buổi học này, bạn có thể</h2></header>
+  <div class="s-body">
+    <ul class="goals">
+      <li>Cài đặt <strong>tìm kiếm tuần tự</strong> và <strong>tìm kiếm nhị phân</strong>, biết khi nào dùng loại nào.</li>
+      <li>Cài đặt và lần vết 3 thuật toán: <strong>chọn trực tiếp, nổi bọt, chèn trực tiếp</strong>.</li>
+      <li>Sắp xếp tăng/giảm dần và theo tiêu chí tùy ý.</li>
+      <li>Thêm, xóa phần tử tại vị trí k; chèn giữ thứ tự tăng.</li>
+      <li>Biết dùng các hàm có sẵn <code>Array.Sort</code>, <code>Array.Reverse</code>, <code>Array.IndexOf</code>.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Tìm kiếm tuần tự (Linear Search)</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p class="small">Duyệt <strong>lần lượt từng phần tử</strong> từ đầu đến cuối, so sánh với giá trị cần tìm <code>x</code>.</p>
+        <script type="text/x-csharp" data-size="sm">
+          // Trả về vị trí ĐẦU TIÊN của x, không có trả về -1
+          static int TimTuanTu(int[] a, int x)
+          {
+              for (int i = 0; i < a.Length; i++)
+                  if (a[i] == x)
+                      return i;
+              return -1;
+          }
+
+          // Trả về vị trí CUỐI CÙNG của x
+          static int TimCuoi(int[] a, int x)
+          {
+              for (int i = a.Length - 1; i >= 0; i--)
+                  if (a[i] == x) return i;
+              return -1;
+          }
+        </script>
+      </div>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          int[] a = { 8, 3, 5, 3, 9 };
+          int vt = TimTuanTu(a, 3);
+          if (vt != -1)
+              Console.WriteLine($"Tìm thấy 3 tại vị trí {vt}");
+          else
+              Console.WriteLine("Không tìm thấy");
+          Console.WriteLine(TimCuoi(a, 3));   // 3
+          Console.WriteLine(TimTuanTu(a, 7)); // -1
+        </script>
+        <script type="text/x-out">
+          Tìm thấy 3 tại vị trí 1
+          3
+          -1
+        </script>
+        <div class="card small"><h4><span class="ic">⏱</span>Đánh giá</h4>
+          <p>Áp dụng cho <strong>mọi mảng</strong> (không cần sắp xếp). Trường hợp xấu nhất duyệt hết n phần tử: độ phức tạp <strong>O(n)</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Tìm kiếm nhị phân (Binary Search)</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p class="small"><strong>Điều kiện:</strong> mảng đã <strong>sắp xếp tăng dần</strong>. Mỗi bước so x với phần tử giữa rồi loại bỏ <strong>một nửa</strong> mảng.</p>
+        <script type="text/x-csharp" data-size="sm">
+          static int TimNhiPhan(int[] a, int x)
+          {
+              int left = 0, right = a.Length - 1;
+              while (left <= right)
+              {
+                  int mid = (left + right) / 2;
+                  if (a[mid] == x)
+                      return mid;          // tìm thấy
+                  else if (x < a[mid])
+                      right = mid - 1;     // tìm nửa trái
+                  else
+                      left = mid + 1;      // tìm nửa phải
+              }
+              return -1;
+          }
+        </script>
+        <div class="callout tip small">Mảng 1 triệu phần tử: tuần tự cần tới 1.000.000 phép so sánh, nhị phân chỉ cần khoảng <strong>20</strong> (O(log₂n)).</div>
+      </div>
+      <div>
+        <h3>Lần vết: tìm x = 23</h3>
+        <p class="small" style="font-family:var(--mono)">a = {2, 5, 8, 12, 16, 23, 38, 56, 72, 91}</p>
+        <table class="tbl small center">
+          <tr><th>Bước</th><th>left</th><th>right</th><th>mid</th><th>a[mid]</th><th>So sánh</th></tr>
+          <tr><td>1</td><td>0</td><td>9</td><td>4</td><td>16</td><td>23 &gt; 16 → phải</td></tr>
+          <tr><td>2</td><td>5</td><td>9</td><td>7</td><td>56</td><td>23 &lt; 56 → trái</td></tr>
+          <tr><td>3</td><td>5</td><td>6</td><td>5</td><td>23</td><td>✓ Tìm thấy</td></tr>
+        </table>
+        <p class="small">Kết quả: vị trí <strong>5</strong>, chỉ sau 3 bước.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide divider">
+  <div class="num">PHẦN 2</div>
+  <h2>Ba thuật toán sắp xếp cơ bản</h2>
+  <p>Cả ba đều có độ phức tạp O(n²), dễ cài đặt và rất hay xuất hiện trong đề thi dạng "lần vết".</p>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Sắp xếp chọn trực tiếp (Selection Sort)</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p class="small"><strong>Ý tưởng:</strong> ở lượt i, tìm phần tử <strong>nhỏ nhất</strong> trong đoạn [i..n−1] rồi đổi chỗ nó với a[i].</p>
+        <script type="text/x-csharp" data-size="sm">
+          static void HoanVi(ref int x, ref int y)
+          {
+              int tam = x; x = y; y = tam;
+          }
+
+          static void SelectionSort(int[] a)
+          {
+              for (int i = 0; i < a.Length - 1; i++)
+              {
+                  int vtMin = i;
+                  for (int j = i + 1; j < a.Length; j++)
+                      if (a[j] < a[vtMin])
+                          vtMin = j;
+                  if (vtMin != i)
+                      HoanVi(ref a[i], ref a[vtMin]);
+              }
+          }
+        </script>
+      </div>
+      <div>
+        <h3>Lần vết a = {29, 10, 14, 37, 13}</h3>
+        <table class="tbl small tr">
+          <tr><th>Lượt</th><th>[0]</th><th>[1]</th><th>[2]</th><th>[3]</th><th>[4]</th></tr>
+          <tr><td>Đầu</td><td>29</td><td>10</td><td>14</td><td>37</td><td>13</td></tr>
+          <tr><td>i=0</td><td class="done">10</td><td>29</td><td>14</td><td>37</td><td>13</td></tr>
+          <tr><td>i=1</td><td class="done">10</td><td class="done">13</td><td>14</td><td>37</td><td>29</td></tr>
+          <tr><td>i=2</td><td class="done">10</td><td class="done">13</td><td class="done">14</td><td>37</td><td>29</td></tr>
+          <tr><td>i=3</td><td class="done">10</td><td class="done">13</td><td class="done">14</td><td class="done">29</td><td class="done">37</td></tr>
+        </table>
+        <p class="small">Lượt i=2: min của [14, 37, 29] là 14, đã đúng chỗ nên không đổi.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Sắp xếp nổi bọt (Bubble Sort)</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p class="small"><strong>Ý tưởng:</strong> so sánh <strong>từng cặp kề nhau</strong>, nếu sai thứ tự thì đổi chỗ. Sau mỗi lượt, phần tử lớn nhất "nổi" về cuối.</p>
+        <script type="text/x-csharp" data-size="sm">
+          static void BubbleSort(int[] a)
+          {
+              for (int i = 0; i < a.Length - 1; i++)
+              {
+                  bool coDoi = false;
+                  for (int j = 0; j < a.Length - 1 - i; j++)
+                  {
+                      if (a[j] > a[j + 1])
+                      {
+                          int tam = a[j];
+                          a[j] = a[j + 1];
+                          a[j + 1] = tam;
+                          coDoi = true;
+                      }
+                  }
+                  if (!coDoi) break;   // không đổi lần nào → đã sắp xong
+              }
+          }
+        </script>
+      </div>
+      <div>
+        <h3>Lần vết a = {5, 1, 4, 2, 8}</h3>
+        <table class="tbl small tr">
+          <tr><th>Lượt</th><th>[0]</th><th>[1]</th><th>[2]</th><th>[3]</th><th>[4]</th></tr>
+          <tr><td>Đầu</td><td>5</td><td>1</td><td>4</td><td>2</td><td>8</td></tr>
+          <tr><td>i=0</td><td>1</td><td>4</td><td>2</td><td>5</td><td class="done">8</td></tr>
+          <tr><td>i=1</td><td>1</td><td>2</td><td>4</td><td class="done">5</td><td class="done">8</td></tr>
+          <tr><td>i=2</td><td colspan="5" style="font-family:var(--font)">Không có cặp nào đổi → <code>break</code></td></tr>
+        </table>
+        <div class="callout small">Lượt i=0 chi tiết: (5,1) đổi → (5,4) đổi → (5,2) đổi → (5,8) giữ.</div>
+        <div class="callout tip small">Biến <code>coDoi</code> giúp dừng sớm khi mảng đã có thứ tự.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Sắp xếp chèn trực tiếp (Insertion Sort)</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p class="small"><strong>Ý tưởng:</strong> giống xếp bài trên tay. Đoạn đầu [0..i−1] đã có thứ tự; lấy a[i] chèn vào đúng vị trí trong đoạn đó bằng cách dời các phần tử lớn hơn sang phải.</p>
+        <script type="text/x-csharp" data-size="sm">
+          static void InsertionSort(int[] a)
+          {
+              for (int i = 1; i < a.Length; i++)
+              {
+                  int x = a[i];          // phần tử cần chèn
+                  int j = i - 1;
+                  while (j >= 0 && a[j] > x)
+                  {
+                      a[j + 1] = a[j];   // dời sang phải
+                      j--;
+                  }
+                  a[j + 1] = x;          // chèn vào chỗ trống
+              }
+          }
+        </script>
+      </div>
+      <div>
+        <h3>Lần vết a = {12, 11, 13, 5, 6}</h3>
+        <table class="tbl small tr">
+          <tr><th>i (x)</th><th>[0]</th><th>[1]</th><th>[2]</th><th>[3]</th><th>[4]</th></tr>
+          <tr><td>Đầu</td><td>12</td><td>11</td><td>13</td><td>5</td><td>6</td></tr>
+          <tr><td>1 (11)</td><td class="k">11</td><td>12</td><td>13</td><td>5</td><td>6</td></tr>
+          <tr><td>2 (13)</td><td>11</td><td>12</td><td class="k">13</td><td>5</td><td>6</td></tr>
+          <tr><td>3 (5)</td><td class="k">5</td><td>11</td><td>12</td><td>13</td><td>6</td></tr>
+          <tr><td>4 (6)</td><td>5</td><td class="k">6</td><td>11</td><td>12</td><td>13</td></tr>
+        </table>
+        <p class="small">Ô tô màu là vị trí phần tử x vừa được chèn vào.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Tổng hợp</span><h2>So sánh và mở rộng</h2></header>
+  <div class="s-body">
+    <table class="tbl small">
+      <tr><th>Thuật toán</th><th>Ý tưởng chính</th><th>Số lần đổi chỗ</th><th>Khi mảng gần có thứ tự</th></tr>
+      <tr><td>Chọn trực tiếp</td><td>Chọn min đưa lên đầu</td><td>Ít (tối đa n−1)</td><td>Vẫn chậm như thường</td></tr>
+      <tr><td>Nổi bọt</td><td>Đổi cặp kề nhau sai thứ tự</td><td>Nhiều</td><td>Nhanh (nhờ <code>coDoi</code>)</td></tr>
+      <tr><td>Chèn trực tiếp</td><td>Chèn vào đoạn đã sắp</td><td>Dời, không đổi chỗ</td><td><strong>Rất nhanh</strong></td></tr>
+    </table>
+    <div class="cols">
+      <div>
+        <h3>Sắp xếp giảm dần</h3>
+        <p class="small">Chỉ cần đổi dấu so sánh. Ví dụ Selection Sort: <code>if (a[j] &gt; a[vtMax])</code>.</p>
+        <h3>Sắp xếp theo tiêu chí khác</h3>
+        <p class="small">Ví dụ: số chẵn lên trước, số lẻ ra sau; hoặc sắp theo tổng chữ số. Chỉ thay <strong>điều kiện đổi chỗ</strong>.</p>
+      </div>
+      <script type="text/x-csharp" data-size="sm">
+        // Sắp tăng theo tổng chữ số (dùng hàm buổi 6)
+        for (int i = 0; i < a.Length - 1; i++)
+            for (int j = i + 1; j < a.Length; j++)
+                if (TongChuSo(a[i]) > TongChuSo(a[j]))
+                {
+                    int t = a[i]; a[i] = a[j]; a[j] = t;
+                }
+      </script>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Hàm có sẵn trong lớp Array</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          int[] a = { 7, 2, 9, 4, 1 };
+
+          Array.Sort(a);                 // {1, 2, 4, 7, 9}
+          Array.Reverse(a);              // {9, 7, 4, 2, 1} → giảm dần
+          int vt = Array.IndexOf(a, 4);  // 2  (-1 nếu không có)
+          int bs = Array.BinarySearch(new[] { 1, 3, 5 }, 5); // 2
+          int[] b = new int[a.Length];
+          Array.Copy(a, b, a.Length);    // sao chép
+          Array.Resize(ref a, 7);        // mở rộng thành 7 phần tử
+
+          int max = a.Max();   // cần using System.Linq;
+          int sum = a.Sum();
+        </script>
+      </div>
+      <div>
+        <div class="callout warn"><b>Khi làm bài thi:</b> đề thường yêu cầu <strong>tự cài đặt</strong> thuật toán. Nếu đề không cấm, có thể dùng <code>Array.Sort</code> để kiểm tra lại kết quả của mình.</div>
+        <table class="tbl small">
+          <tr><th>Hàm</th><th>Tác dụng</th></tr>
+          <tr><td><code>Array.Sort(a)</code></td><td>Sắp tăng dần</td></tr>
+          <tr><td><code>Array.Reverse(a)</code></td><td>Đảo ngược</td></tr>
+          <tr><td><code>Array.IndexOf(a, x)</code></td><td>Tìm tuần tự</td></tr>
+          <tr><td><code>Array.BinarySearch(a, x)</code></td><td>Tìm nhị phân (mảng phải đã sắp)</td></tr>
+          <tr><td><code>Array.Resize(ref a, n)</code></td><td>Đổi kích thước</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide divider">
+  <div class="num">PHẦN 3</div>
+  <h2>Thêm và xóa phần tử</h2>
+  <p>Mảng có kích thước cố định, nên ta quản lý thêm một biến n = số phần tử đang dùng.</p>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Xóa phần tử tại vị trí k</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p class="small"><strong>Ý tưởng:</strong> dời các phần tử sau k <strong>sang trái</strong> 1 ô, rồi giảm n.</p>
+        <script type="text/x-csharp" data-size="sm">
+          static void XoaTaiViTri(int[] a, ref int n, int k)
+          {
+              if (k < 0 || k >= n) return;
+              for (int i = k; i < n - 1; i++)
+                  a[i] = a[i + 1];
+              n--;
+          }
+
+          // Xóa TẤT CẢ phần tử có giá trị x
+          static void XoaGiaTri(int[] a, ref int n, int x)
+          {
+              for (int i = n - 1; i >= 0; i--)   // duyệt ngược!
+                  if (a[i] == x)
+                      XoaTaiViTri(a, ref n, i);
+          }
+        </script>
+      </div>
+      <div>
+        <h3>Xóa k = 1 trong {4, 7, 2, 9, 5}</h3>
+        <table class="tbl small tr">
+          <tr><th>Bước</th><th>[0]</th><th>[1]</th><th>[2]</th><th>[3]</th><th>[4]</th><th>n</th></tr>
+          <tr><td>Đầu</td><td>4</td><td class="k">7</td><td>2</td><td>9</td><td>5</td><td>5</td></tr>
+          <tr><td>Dời</td><td>4</td><td>2</td><td>9</td><td>5</td><td style="color:var(--muted)">5</td><td>5</td></tr>
+          <tr><td>n--</td><td>4</td><td>2</td><td>9</td><td>5</td><td style="color:var(--muted)">–</td><td>4</td></tr>
+        </table>
+        <div class="callout tip small">Khi xóa nhiều phần tử, duyệt <strong>ngược</strong> từ cuối để không bỏ sót phần tử vừa bị dời lên.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Thêm phần tử tại vị trí k và chèn giữ thứ tự</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p class="small"><strong>Thêm tại k:</strong> dời các phần tử từ k <strong>sang phải</strong> 1 ô (duyệt từ cuối), đặt x vào k, tăng n.</p>
+        <script type="text/x-csharp" data-size="sm">
+          static void ThemTaiViTri(int[] a, ref int n, int k, int x)
+          {
+              if (n >= a.Length || k < 0 || k > n) return;  // đầy / sai vị trí
+              for (int i = n; i > k; i--)
+                  a[i] = a[i - 1];
+              a[k] = x;
+              n++;
+          }
+
+          // Mảng đã tăng dần, chèn x mà vẫn tăng dần
+          static void ChenGiuThuTu(int[] a, ref int n, int x)
+          {
+              int k = 0;
+              while (k < n && a[k] < x) k++;   // tìm vị trí đầu tiên >= x
+              ThemTaiViTri(a, ref n, k, x);
+          }
+        </script>
+      </div>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          int[] a = new int[100];      // dư chỗ để thêm
+          int n = 0;
+          int[] init = { 2, 5, 9, 14 };
+          foreach (int v in init) a[n++] = v;
+
+          ChenGiuThuTu(a, ref n, 7);
+          for (int i = 0; i < n; i++) Console.Write(a[i] + " ");
+        </script>
+        <script type="text/x-out">2 5 7 9 14</script>
+        <div class="callout warn small">Khi xuất mảng có biến n, vòng lặp chạy đến <code>i &lt; n</code>, <strong>không</strong> phải <code>a.Length</code>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu tổng hợp</span><h2>Xếp hạng điểm thi</h2></header>
+  <div class="s-body">
+    <p class="small"><strong>Đề:</strong> có mảng mã sinh viên và mảng điểm tương ứng. Sắp xếp giảm dần theo điểm (đổi chỗ <strong>cả hai mảng</strong> cùng lúc), in bảng xếp hạng, rồi tìm điểm của một mã SV.</p>
+    <div class="cols c-64">
+      <script type="text/x-csharp" data-size="sm">
+        string[] ma = { "SV01", "SV02", "SV03", "SV04", "SV05" };
+        double[] diem = { 7.5, 9.0, 6.0, 8.5, 9.0 };
+
+        for (int i = 0; i < diem.Length - 1; i++)
+            for (int j = i + 1; j < diem.Length; j++)
+                if (diem[j] > diem[i])
+                {
+                    (diem[i], diem[j]) = (diem[j], diem[i]);   // hoán vị gọn (tuple)
+                    (ma[i], ma[j]) = (ma[j], ma[i]);           // đổi luôn mã SV
+                }
+
+        Console.WriteLine("Hạng | Mã SV | Điểm");
+        for (int i = 0; i < ma.Length; i++)
+            Console.WriteLine($"{i + 1,4} | {ma[i],-5} | {diem[i],4:F1}");
+
+        Console.Write("Nhập mã cần tra: ");
+        int vt = Array.IndexOf(ma, Console.ReadLine().ToUpper());
+        Console.WriteLine(vt >= 0 ? $"Điểm: {diem[vt]}, hạng {vt + 1}" : "Không có mã này");
+      </script>
+      <div>
+        <script type="text/x-out">
+          Hạng | Mã SV | Điểm
+             1 | SV02  |  9.0
+             2 | SV05  |  9.0
+             3 | SV04  |  8.5
+             4 | SV01  |  7.5
+             5 | SV03  |  6.0
+          Nhập mã cần tra: {{sv04}}
+          Điểm: 8.5, hạng 3
+        </script>
+        <div class="callout small">Mảng "song song": phần tử cùng chỉ số ở các mảng thuộc về cùng một đối tượng. Đổi chỗ thì phải đổi ở <strong>tất cả</strong> các mảng.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lưu ý</span><h2>Lỗi thường gặp</h2></header>
+  <div class="s-body">
+    <table class="tbl">
+      <tr><th>Lỗi</th><th>Hậu quả</th><th>Cách sửa</th></tr>
+      <tr><td>Tìm nhị phân trên mảng chưa sắp xếp</td><td>Kết quả sai</td><td>Sắp xếp trước, hoặc dùng tìm tuần tự</td></tr>
+      <tr><td><code>while (left &lt; right)</code></td><td>Bỏ sót trường hợp còn 1 phần tử</td><td><code>left &lt;= right</code></td></tr>
+      <tr><td>Bubble: <code>j &lt; a.Length</code></td><td><code>a[j + 1]</code> vượt mảng</td><td><code>j &lt; a.Length - 1 - i</code></td></tr>
+      <tr><td>Hoán vị không dùng biến tạm</td><td><code>a[i] = a[j]; a[j] = a[i];</code> mất giá trị</td><td>Dùng <code>tam</code> hoặc tuple</td></tr>
+      <tr><td>Thêm phần tử: dời từ đầu</td><td>Ghi đè, mọi phần tử thành giống nhau</td><td>Dời từ <strong>cuối</strong> về k</td></tr>
+      <tr><td>Quên <code>ref n</code></td><td>Hàm thêm/xóa không cập nhật n ở Main</td><td>Truyền <code>ref n</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Bài tập vận dụng</span><h2>Luyện tập</h2></header>
+  <div class="s-body">
+    <div class="ex"><div class="ex-h"><b>Bài 1.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Lần vết (trên giấy) cả 3 thuật toán sắp xếp tăng dần với mảng {8, 3, 6, 1, 4}. Ghi trạng thái mảng sau mỗi lượt i.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 2.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Sắp xếp mảng sao cho các số chẵn ở đầu (tăng dần), các số lẻ ở cuối (giảm dần).</p>
+      <details class="sol"><summary>Xem gợi ý</summary>
+        <p class="small">Cách dễ: tách thành 2 mảng chẵn/lẻ, sắp riêng, rồi ghép. Cách 1 vòng: viết hàm so sánh <code>bool DungTruoc(int x, int y)</code> trả về true nếu x phải đứng trước y, dùng trong Selection Sort.</p>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 3.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Xóa tất cả các phần tử trùng nhau, chỉ giữ lại lần xuất hiện đầu tiên: {3, 1, 3, 2, 1, 5} → {3, 1, 2, 5}.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 4.</b><span class="lvl l3">Nâng cao</span></div>
+      <p>Trộn 2 mảng đã tăng dần thành 1 mảng tăng dần mà <strong>không</strong> sắp xếp lại (merge).</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          static int[] Tron(int[] a, int[] b)
+          {
+              int[] c = new int[a.Length + b.Length];
+              int i = 0, j = 0, k = 0;
+              while (i < a.Length && j < b.Length)
+                  c[k++] = (a[i] <= b[j]) ? a[i++] : b[j++];
+              while (i < a.Length) c[k++] = a[i++];
+              while (j < b.Length) c[k++] = b[j++];
+              return c;
+          }
+        </script>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-hw">Bài tập về nhà</span><h2>Chuẩn bị cho buổi 9</h2></header>
+  <div class="s-body">
+    <ol class="steps">
+      <li>Viết chương trình menu quản lý mảng số nguyên: nhập, xuất, thêm, xóa, tìm kiếm, sắp xếp (chọn thuật toán).</li>
+      <li>Đếm số lần so sánh của Selection, Bubble, Insertion trên cùng một mảng ngẫu nhiên 1000 phần tử. Thuật toán nào ít nhất?</li>
+      <li>Tìm kiếm nhị phân bằng <strong>đệ quy</strong>.</li>
+      <li>Nhập danh sách giá n sản phẩm, in 3 sản phẩm đắt nhất và 3 sản phẩm rẻ nhất.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-sum">Tổng kết</span><h2>Ghi nhớ của buổi 8</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <ul>
+        <li>Tuần tự: mọi mảng, O(n). Nhị phân: mảng <strong>đã sắp</strong>, O(log n).</li>
+        <li>Chọn trực tiếp: tìm min đưa về đầu.</li>
+        <li>Nổi bọt: đổi cặp kề nhau, phần tử lớn nổi về cuối.</li>
+        <li>Chèn trực tiếp: chèn a[i] vào đoạn đã sắp phía trước.</li>
+      </ul>
+      <ul>
+        <li>Giảm dần: đảo dấu so sánh.</li>
+        <li>Xóa: dời trái, <code>n--</code>. Thêm: dời phải từ cuối, <code>n++</code>.</li>
+        <li>Mảng song song: đổi chỗ đồng thời mọi mảng.</li>
+        <li><code>Array.Sort</code>, <code>Array.IndexOf</code> để kiểm tra lại kết quả.</li>
+      </ul>
+    </div>
+    <div class="callout ok"><b>Buổi tiếp theo:</b> Mảng hai chiều (ma trận): dữ liệu dạng bảng.</div>
+  </div>
+</section>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/slides.js"></script>
+</body>
+</html>

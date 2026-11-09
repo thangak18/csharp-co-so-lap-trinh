@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buổi 1 · Tổng quan và Thuật toán</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="assets/slides.css">
+</head>
+<body data-lesson="Buổi 1" data-title="Tổng quan lập trình và Thuật toán">
+<div class="deck">
+
+<!-- 1. Cover -->
+<section class="slide cover">
+  <div class="badge"><span class="dot"></span>Cơ sở lập trình C# · Buổi 01</div>
+  <h1>Tổng quan lập trình<br>và <em>Thuật toán</em></h1>
+  <p class="sub">Máy tính giải bài toán như thế nào? Cách mô tả thuật toán bằng mã giả và lưu đồ, rồi viết chương trình C# đầu tiên.</p>
+  <div class="meta"><span>⏱ 90–120 phút</span><span>🧩 Thuật toán · Lưu đồ · Hello World</span><span>💻 Visual Studio</span></div>
+  <div class="big-num">01</div>
+</section>
+
+<!-- 2. Goals -->
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mục tiêu</span><h2>Sau buổi học này, bạn có thể</h2></header>
+  <div class="s-body">
+    <ul class="goals">
+      <li>Giải thích được chương trình, ngôn ngữ lập trình và trình biên dịch là gì.</li>
+      <li>Nêu được định nghĩa và 5 tính chất của thuật toán.</li>
+      <li>Biểu diễn một thuật toán bằng <strong>mã giả</strong> và <strong>lưu đồ</strong>.</li>
+      <li>Chạy tay (lần vết) một thuật toán với dữ liệu cụ thể.</li>
+      <li>Tạo project Console App trong Visual Studio, viết và chạy chương trình C# đầu tiên.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 3. Agenda -->
+<section class="slide">
+  <header class="s-head"><span class="kicker">Nội dung</span><h2>Lộ trình buổi học</h2></header>
+  <div class="s-body">
+    <ol class="agenda">
+      <li>Chương trình và ngôn ngữ lập trình</li>
+      <li>Quy trình giải bài toán bằng máy tính</li>
+      <li>Thuật toán và các tính chất</li>
+      <li>Mã giả và lưu đồ</li>
+      <li>Ví dụ: rẽ nhánh và vòng lặp</li>
+      <li>Giới thiệu C# và .NET</li>
+      <li>Chương trình C# đầu tiên</li>
+      <li>Bài tập vận dụng và bài về nhà</li>
+    </ol>
+  </div>
+</section>
+
+<!-- 4. Program -->
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Chương trình và ngôn ngữ lập trình</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p><strong>Chương trình (program)</strong> là tập hợp các <strong>câu lệnh</strong> được viết theo một ngôn ngữ lập trình, ra lệnh cho máy tính thực hiện một công việc cụ thể.</p>
+        <p><strong>Ngôn ngữ lập trình</strong> là ngôn ngữ có cú pháp chặt chẽ để con người "nói chuyện" với máy tính.</p>
+        <div class="callout tip"><b>Ví dụ đời thường:</b> công thức nấu ăn là một "chương trình". Đầu bếp (máy tính) làm đúng từng bước, không tự suy diễn.</div>
+      </div>
+      <div>
+        <table class="tbl">
+          <tr><th>Cấp độ</th><th>Đặc điểm</th></tr>
+          <tr><td><strong>Ngôn ngữ máy</strong></td><td>Dãy bit 0/1, máy hiểu trực tiếp, con người khó đọc</td></tr>
+          <tr><td><strong>Hợp ngữ</strong> (Assembly)</td><td>Dùng từ gợi nhớ: <code>MOV</code>, <code>ADD</code>…</td></tr>
+          <tr><td><strong>Bậc cao</strong></td><td>Gần ngôn ngữ con người: C#, Java, Python, C++</td></tr>
+        </table>
+        <p class="small">Máy chỉ hiểu ngôn ngữ máy, nên chương trình bậc cao cần được <strong>dịch</strong>: <em>biên dịch</em> (compiler: dịch cả chương trình rồi chạy) hoặc <em>thông dịch</em> (interpreter: dịch đến đâu chạy đến đó). C# là ngôn ngữ <strong>biên dịch</strong>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Process -->
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Quy trình giải bài toán bằng máy tính</h2></header>
+  <div class="s-body">
+    <div class="cols c-64">
+      <ol class="steps">
+        <li><strong>Xác định bài toán:</strong> đầu vào (Input) là gì? Đầu ra (Output) cần gì?</li>
+        <li><strong>Thiết kế thuật toán:</strong> các bước để biến Input thành Output.</li>
+        <li><strong>Viết chương trình:</strong> chuyển thuật toán thành mã nguồn C#.</li>
+        <li><strong>Chạy thử và sửa lỗi:</strong> kiểm tra với nhiều bộ dữ liệu, kể cả trường hợp đặc biệt.</li>
+        <li><strong>Hoàn thiện và bảo trì:</strong> tối ưu, viết chú thích, cập nhật khi yêu cầu thay đổi.</li>
+      </ol>
+      <div class="card">
+        <h4><span class="ic">IO</span>Ví dụ xác định bài toán</h4>
+        <p><em>"Tính diện tích hình chữ nhật"</em></p>
+        <ul class="small">
+          <li><strong>Input:</strong> chiều dài <code>a</code>, chiều rộng <code>b</code> (số thực, &gt; 0)</li>
+          <li><strong>Output:</strong> diện tích <code>S</code></li>
+          <li><strong>Xử lý:</strong> <code>S = a × b</code></li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout warn"><b>Lời khuyên:</b> đừng mở Visual Studio ngay. Luôn làm bước 1 và 2 trên giấy trước. Đây là thói quen giúp làm bài thi nhanh và ít sai.</div>
+  </div>
+</section>
+
+<!-- 6. Algorithm -->
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Thuật toán là gì?</h2></header>
+  <div class="s-body">
+    <p><strong>Thuật toán (algorithm)</strong> là một dãy <strong>hữu hạn</strong> các bước, được sắp xếp theo <strong>trình tự xác định</strong>, để từ Input tìm ra Output của bài toán.</p>
+    <div class="cols c3" style="margin-top:14px">
+      <div class="card"><h4><span class="ic">1</span>Tính hữu hạn</h4><p>Phải dừng sau một số bước hữu hạn.</p></div>
+      <div class="card"><h4><span class="ic">2</span>Tính xác định</h4><p>Mỗi bước rõ ràng, chỉ có một cách hiểu.</p></div>
+      <div class="card"><h4><span class="ic">3</span>Tính đúng đắn</h4><p>Cho kết quả đúng với mọi dữ liệu hợp lệ.</p></div>
+      <div class="card"><h4><span class="ic">4</span>Tính phổ dụng</h4><p>Giải được cả lớp bài toán, không chỉ 1 bộ số.</p></div>
+      <div class="card"><h4><span class="ic">5</span>Tính hiệu quả</h4><p>Tốn ít thời gian và bộ nhớ nhất có thể.</p></div>
+      <div class="card"><h4><span class="ic">+</span>Có Input / Output</h4><p>Nhận dữ liệu vào và cho ra kết quả.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Representation -->
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Ba cách biểu diễn thuật toán</h2></header>
+  <div class="s-body">
+    <table class="tbl">
+      <tr><th style="width:22%">Cách</th><th>Mô tả</th><th style="width:30%">Ưu / nhược</th></tr>
+      <tr><td><strong>Ngôn ngữ tự nhiên</strong></td><td>Liệt kê các bước bằng lời: "Bước 1: nhập a, b. Bước 2: …"</td><td>Dễ viết; dài dòng, dễ hiểu sai</td></tr>
+      <tr><td><strong>Mã giả</strong> (pseudocode)</td><td>Pha trộn ngôn ngữ tự nhiên và cấu trúc lập trình: <code>Nếu … thì …</code>, <code>Lặp khi …</code></td><td>Ngắn gọn, gần với code; được dùng nhiều nhất</td></tr>
+      <tr><td><strong>Lưu đồ</strong> (flowchart)</td><td>Dùng các hình khối chuẩn nối bằng mũi tên</td><td>Trực quan; vẽ lâu với thuật toán lớn</td></tr>
+    </table>
+    <div class="cols">
+      <div class="card"><h4><span class="ic">✎</span>Ví dụ mã giả</h4>
+        <p style="font-family:var(--mono);font-size:16px;line-height:1.7;margin:0">Nhập a, b<br>S ← a * b<br>Xuất S</p>
+      </div>
+      <div class="callout tip mt0"><b>Quy ước mã giả:</b> dùng <code>←</code> cho phép gán, <code>Nếu / Ngược lại</code>, <code>Lặp với i từ 1 đến n</code>, <code>Trong khi … thực hiện</code>.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. Flowchart symbols -->
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Các ký hiệu lưu đồ chuẩn</h2></header>
+  <div class="s-body">
+    <div class="cols c-46">
+      <div class="flow" style="gap:16px">
+        <div class="n term">Bắt đầu / Kết thúc</div>
+        <div class="n io"><span>Nhập / Xuất dữ liệu</span></div>
+        <div class="n">Xử lý / Tính toán</div>
+        <div class="n dec">Điều kiện?</div>
+      </div>
+      <table class="tbl">
+        <tr><th>Hình</th><th>Ý nghĩa</th></tr>
+        <tr><td>Hình bầu dục</td><td>Điểm <strong>bắt đầu</strong> và <strong>kết thúc</strong> thuật toán</td></tr>
+        <tr><td>Hình bình hành</td><td><strong>Nhập</strong> dữ liệu (Input) hoặc <strong>xuất</strong> kết quả (Output)</td></tr>
+        <tr><td>Hình chữ nhật</td><td>Một bước <strong>xử lý</strong>: phép gán, tính toán</td></tr>
+        <tr><td>Hình thoi</td><td><strong>Kiểm tra điều kiện</strong>, có 2 nhánh ra: Đúng / Sai</td></tr>
+        <tr><td>Mũi tên</td><td>Chỉ <strong>hướng đi</strong> của thuật toán</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 9. Example 1 -->
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 1</span><h2>Tính chu vi và diện tích hình tròn</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p><strong>Input:</strong> bán kính r &nbsp;·&nbsp; <strong>Output:</strong> chu vi C, diện tích S</p>
+        <h3>Ngôn ngữ tự nhiên</h3>
+        <ol class="small">
+          <li>Nhập bán kính r.</li>
+          <li>Tính C = 2 × π × r.</li>
+          <li>Tính S = π × r².</li>
+          <li>Xuất C và S. Kết thúc.</li>
+        </ol>
+        <h3>Mã giả</h3>
+        <p style="font-family:var(--mono);font-size:16px;line-height:1.7;background:#fafafe;border:1px solid var(--line);border-radius:10px;padding:10px 16px">Nhập r<br>C ← 2 * 3.14 * r<br>S ← 3.14 * r * r<br>Xuất C, S</p>
+      </div>
+      <div class="flow">
+        <div class="n term">Bắt đầu</div><div class="arr"></div>
+        <div class="n io"><span>Nhập r</span></div><div class="arr"></div>
+        <div class="n">C ← 2 × 3.14 × r</div><div class="arr"></div>
+        <div class="n">S ← 3.14 × r × r</div><div class="arr"></div>
+        <div class="n io"><span>Xuất C, S</span></div><div class="arr"></div>
+        <div class="n term">Kết thúc</div>
+      </div>
+    </div>
+    <div class="callout">Đây là thuật toán <strong>tuần tự</strong>: các bước chạy lần lượt từ trên xuống, không rẽ nhánh, không lặp.</div>
+  </div>
+</section>
+
+<!-- 10. Example 2 -->
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 2</span><h2>Giải phương trình bậc nhất ax + b = 0</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3>Phân tích</h3>
+        <ul class="small">
+          <li>Nếu a ≠ 0: nghiệm duy nhất x = −b / a</li>
+          <li>Nếu a = 0 và b = 0: vô số nghiệm</li>
+          <li>Nếu a = 0 và b ≠ 0: vô nghiệm</li>
+        </ul>
+        <h3>Mã giả</h3>
+        <p style="font-family:var(--mono);font-size:15.5px;line-height:1.65;background:#fafafe;border:1px solid var(--line);border-radius:10px;padding:10px 16px">Nhập a, b<br>Nếu a ≠ 0 thì<br>&nbsp;&nbsp;Xuất "x =", -b / a<br>Ngược lại nếu b = 0 thì<br>&nbsp;&nbsp;Xuất "Vô số nghiệm"<br>Ngược lại<br>&nbsp;&nbsp;Xuất "Vô nghiệm"</p>
+      </div>
+      <div class="flow">
+        <div class="n term">Bắt đầu</div><div class="arr"></div>
+        <div class="n io"><span>Nhập a, b</span></div><div class="arr"></div>
+        <div class="n dec">a ≠ 0 ?</div>
+        <div style="display:flex;gap:18px;margin-top:8px;font-size:14px">
+          <div class="flow"><b style="color:var(--ok)">Đúng</b><div class="arr"></div><div class="n io" style="min-width:130px"><span>x = −b/a</span></div></div>
+          <div class="flow"><b style="color:var(--danger)">Sai</b><div class="arr"></div><div class="n dec" style="min-width:150px;padding:20px 26px">b = 0 ?</div>
+            <div style="display:flex;gap:8px;margin-top:6px"><div class="n io" style="min-width:90px;font-size:13px"><span>Vô số n.</span></div><div class="n io" style="min-width:90px;font-size:13px"><span>Vô nghiệm</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="callout">Đây là cấu trúc <strong>rẽ nhánh</strong>: tùy điều kiện đúng/sai mà thuật toán đi theo các hướng khác nhau.</div>
+  </div>
+</section>
+
+<!-- 11. Example 3 -->
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 3</span><h2>Tính tổng S = 1 + 2 + … + n và lần vết</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3>Mã giả (cấu trúc lặp)</h3>
+        <p style="font-family:var(--mono);font-size:16px;line-height:1.7;background:#fafafe;border:1px solid var(--line);border-radius:10px;padding:10px 16px">Nhập n<br>S ← 0<br>i ← 1<br>Trong khi i ≤ n thực hiện<br>&nbsp;&nbsp;S ← S + i<br>&nbsp;&nbsp;i ← i + 1<br>Xuất S</p>
+        <div class="callout tip"><b>Lần vết (trace)</b> là chạy tay thuật toán trên giấy, ghi lại giá trị biến sau mỗi bước. Đề thi giấy rất hay hỏi dạng này.</div>
+      </div>
+      <div>
+        <h3>Bảng lần vết với n = 4</h3>
+        <table class="tbl center">
+          <tr><th>Lần lặp</th><th>i ≤ n ?</th><th>S</th><th>i</th></tr>
+          <tr><td>Khởi tạo</td><td>–</td><td>0</td><td>1</td></tr>
+          <tr><td>1</td><td>1 ≤ 4 ✓</td><td>1</td><td>2</td></tr>
+          <tr><td>2</td><td>2 ≤ 4 ✓</td><td>3</td><td>3</td></tr>
+          <tr><td>3</td><td>3 ≤ 4 ✓</td><td>6</td><td>4</td></tr>
+          <tr><td>4</td><td>4 ≤ 4 ✓</td><td>10</td><td>5</td></tr>
+          <tr><td>Dừng</td><td>5 ≤ 4 ✗</td><td><strong>10</strong></td><td>5</td></tr>
+        </table>
+        <p class="small">Kết quả: <strong>S = 10</strong>. Kiểm tra lại: 1+2+3+4 = 10 ✓</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12. Three structures -->
+<section class="slide">
+  <header class="s-head"><span class="kicker">Tổng hợp</span><h2>Ba cấu trúc điều khiển cơ bản</h2></header>
+  <div class="s-body">
+    <p>Mọi thuật toán, dù phức tạp đến đâu, đều được xây dựng từ 3 cấu trúc (định lý Böhm–Jacopini):</p>
+    <div class="cols c3">
+      <div class="card"><h4><span class="ic">↓</span>Tuần tự</h4><p>Các lệnh chạy lần lượt từ trên xuống.</p><p class="small"><em>Ví dụ: tính diện tích hình tròn.</em></p><p class="small">Học ở <strong>Buổi 2</strong></p></div>
+      <div class="card"><h4><span class="ic">⑂</span>Rẽ nhánh</h4><p>Chọn hướng đi theo điều kiện đúng/sai.</p><p class="small"><em>Ví dụ: giải PT bậc nhất.</em></p><p class="small">Học ở <strong>Buổi 3</strong> (<code>if</code>, <code>switch</code>)</p></div>
+      <div class="card"><h4><span class="ic">↻</span>Lặp</h4><p>Lặp lại một khối lệnh nhiều lần.</p><p class="small"><em>Ví dụ: tính tổng 1..n.</em></p><p class="small">Học ở <strong>Buổi 4–5</strong> (<code>for</code>, <code>while</code>)</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13. Divider -->
+<section class="slide divider">
+  <div class="num">PHẦN 2</div>
+  <h2>Làm quen với C# và .NET</h2>
+  <p>Từ thuật toán trên giấy đến chương trình chạy được trên máy tính.</p>
+</section>
+
+<!-- 14. C# & .NET -->
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>C# và .NET là gì?</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p><strong>C#</strong> (đọc là "C Sharp") là ngôn ngữ lập trình hiện đại, hướng đối tượng, do <strong>Microsoft</strong> phát triển (năm 2000, Anders Hejlsberg).</p>
+        <p><strong>.NET</strong> là nền tảng để chạy chương trình C#: cung cấp thư viện có sẵn (nhập/xuất, toán học, chuỗi, tệp…) và môi trường thực thi CLR.</p>
+        <div class="callout tip"><b>C# dùng để làm gì?</b> Ứng dụng desktop (WinForms, WPF), web (ASP.NET), game (Unity), ứng dụng doanh nghiệp, di động (MAUI).</div>
+      </div>
+      <div>
+        <h3>Chương trình C# chạy như thế nào?</h3>
+        <ol class="steps small">
+          <li>Viết mã nguồn trong tệp <code>.cs</code></li>
+          <li>Trình biên dịch dịch sang mã trung gian <strong>IL</strong></li>
+          <li><strong>CLR</strong> dịch IL thành mã máy (JIT) và chạy</li>
+        </ol>
+        <p class="small">Nhờ cơ chế này, CLR lo việc quản lý bộ nhớ (thu gom rác, garbage collection) thay cho lập trình viên.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15. Visual Studio -->
+<section class="slide">
+  <header class="s-head"><span class="kicker">Thực hành</span><h2>Tạo project Console App trong Visual Studio</h2></header>
+  <div class="s-body">
+    <div class="cols c-64">
+      <ol class="steps">
+        <li>Cài <strong>Visual Studio Community</strong> (miễn phí), chọn workload <em>.NET desktop development</em>.</li>
+        <li>Mở Visual Studio → <strong>Create a new project</strong>.</li>
+        <li>Chọn mẫu <strong>Console App</strong> (ngôn ngữ C#) → Next.</li>
+        <li>Đặt tên project, ví dụ <code>Buoi01</code>, chọn thư mục lưu → Next → Create.</li>
+        <li>Viết code trong <code>Program.cs</code>, nhấn <strong>Ctrl + F5</strong> để chạy.</li>
+      </ol>
+      <div>
+        <div class="card"><h4><span class="ic">⌨</span>Phím tắt hay dùng</h4>
+          <table class="tbl small" style="margin:0">
+            <tr><td><code>Ctrl+F5</code></td><td>Chạy (không debug)</td></tr>
+            <tr><td><code>F5</code></td><td>Chạy có debug</td></tr>
+            <tr><td><code>F9</code></td><td>Đặt breakpoint</td></tr>
+            <tr><td><code>F10</code></td><td>Chạy từng dòng</td></tr>
+            <tr><td><code>Ctrl+K, D</code></td><td>Căn lề code</td></tr>
+          </table>
+        </div>
+        <div class="callout warn small"><b>Dùng Mac?</b> Cài .NET SDK và VS Code với extension <em>C# Dev Kit</em>, tạo project bằng lệnh <code>dotnet new console</code>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 16. Hello world -->
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Cấu trúc một chương trình C#</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <script type="text/x-csharp" data-file="Program.cs">
+        using System;               // khai báo thư viện
+
+        namespace Buoi01            // không gian tên
+        {
+            class Program           // lớp chứa chương trình
+            {
+                static void Main(string[] args)   // điểm bắt đầu
+                {
+                    Console.WriteLine("Xin chào C#!");
+                }
+            }
+        }
+      </script>
+      <div>
+        <table class="tbl small">
+          <tr><th>Thành phần</th><th>Ý nghĩa</th></tr>
+          <tr><td><code>using System;</code></td><td>Dùng các lớp có sẵn trong thư viện System (như <code>Console</code>)</td></tr>
+          <tr><td><code>namespace</code></td><td>Nhóm các lớp liên quan, tránh trùng tên</td></tr>
+          <tr><td><code>class Program</code></td><td>Mọi đoạn code C# phải nằm trong một lớp</td></tr>
+          <tr><td><code>static void Main</code></td><td><strong>Hàm chính</strong>: chương trình luôn bắt đầu chạy từ đây</td></tr>
+          <tr><td><code>{ }</code> và <code>;</code></td><td>Ngoặc nhọn bao khối lệnh; mỗi lệnh kết thúc bằng dấu chấm phẩy</td></tr>
+        </table>
+      </div>
+    </div>
+    <script type="text/x-out">Xin chào C#!</script>
+  </div>
+</section>
+
+<!-- 17. Top-level -->
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lưu ý</span><h2>Hai kiểu viết: truyền thống và top-level</h2></header>
+  <div class="s-body">
+    <p>Từ .NET 6, Visual Studio tạo sẵn kiểu <strong>top-level statements</strong> (viết lệnh trực tiếp, không cần <code>class</code> và <code>Main</code>). Hai kiểu chạy giống hệt nhau.</p>
+    <div class="cols">
+      <div><h3>Kiểu truyền thống (giáo trình, đề thi)</h3>
+        <script type="text/x-csharp" data-size="sm">
+          class Program
+          {
+              static void Main(string[] args)
+              {
+                  Console.WriteLine("Hello");
+              }
+          }
+        </script>
+      </div>
+      <div><h3>Kiểu top-level (.NET 6+)</h3>
+        <script type="text/x-csharp" data-size="sm">
+          Console.WriteLine("Hello");
+        </script>
+        <div class="callout warn small"><b>Khuyến nghị:</b> nên viết theo <strong>kiểu truyền thống</strong> vì giáo trình và đề thi UEH dùng kiểu này, và sau này khi học hàm sẽ dễ tổ chức code hơn. Khi tạo project, tích chọn <em>"Do not use top-level statements"</em>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 18. Output & comments -->
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Xuất dữ liệu và chú thích</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          // Chú thích 1 dòng
+          /* Chú thích
+             nhiều dòng */
+          Console.Write("A");      // in, KHÔNG xuống dòng
+          Console.Write("B");
+          Console.WriteLine("C");  // in rồi xuống dòng
+          Console.WriteLine("D");
+          Console.WriteLine("Tab:\tX");    // \t tab
+          Console.WriteLine("Dòng 1\nDòng 2"); // \n xuống dòng
+        </script>
+        <script type="text/x-out">
+          ABC
+          D
+          Tab:	X
+          Dòng 1
+          Dòng 2
+        </script>
+      </div>
+      <div>
+        <table class="tbl small">
+          <tr><th>Lệnh</th><th>Tác dụng</th></tr>
+          <tr><td><code>Console.Write(x)</code></td><td>In x, con trỏ ở cuối dòng</td></tr>
+          <tr><td><code>Console.WriteLine(x)</code></td><td>In x rồi xuống dòng</td></tr>
+          <tr><td><code>Console.ReadLine()</code></td><td>Đọc một dòng người dùng nhập (học kỹ ở buổi 2)</td></tr>
+          <tr><td><code>Console.ReadKey()</code></td><td>Chờ người dùng bấm phím</td></tr>
+        </table>
+        <div class="callout tip small"><b>Tiếng Việt bị lỗi font?</b> Thêm dòng <code>Console.OutputEncoding = System.Text.Encoding.UTF8;</code> ở đầu <code>Main</code>.</div>
+        <div class="callout small"><b>C# phân biệt hoa thường:</b> <code>Console</code> ≠ <code>console</code>, <code>WriteLine</code> ≠ <code>writeline</code>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 19. Example program -->
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 4</span><h2>Chương trình chào hỏi</h2></header>
+  <div class="s-body">
+    <p>Yêu cầu: nhập tên người dùng, in ra lời chào kèm tên.</p>
+    <div class="cols c-64">
+      <script type="text/x-csharp">
+        using System;
+        using System.Text;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                Console.OutputEncoding = Encoding.UTF8;
+                Console.InputEncoding = Encoding.UTF8;
+
+                Console.Write("Nhập tên của bạn: ");
+                string ten = Console.ReadLine();
+
+                Console.WriteLine("Xin chào, " + ten + "!");
+                Console.WriteLine("Chào mừng đến với C#.");
+            }
+        }
+      </script>
+      <div>
+        <script type="text/x-out">
+          Nhập tên của bạn: {{Minh Anh}}
+          Xin chào, Minh Anh!
+          Chào mừng đến với C#.
+        </script>
+        <div class="callout small"><code>string ten</code> khai báo một <strong>biến</strong> tên <code>ten</code> để lưu chuỗi người dùng nhập. Biến và kiểu dữ liệu học kỹ ở buổi 2.</div>
+        <div class="callout tip small">Toán tử <code>+</code> giữa các chuỗi dùng để <strong>nối chuỗi</strong>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 20. Common errors -->
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lưu ý</span><h2>Lỗi thường gặp của người mới</h2></header>
+  <div class="s-body">
+    <table class="tbl">
+      <tr><th>Lỗi</th><th>Code sai</th><th>Sửa thành</th></tr>
+      <tr><td>Thiếu dấu <code>;</code></td><td><code>Console.WriteLine("Hi")</code></td><td><code>Console.WriteLine("Hi");</code></td></tr>
+      <tr><td>Sai hoa thường</td><td><code>console.writeline("Hi");</code></td><td><code>Console.WriteLine("Hi");</code></td></tr>
+      <tr><td>Thiếu dấu nháy kép</td><td><code>Console.WriteLine(Hi);</code></td><td><code>Console.WriteLine("Hi");</code></td></tr>
+      <tr><td>Dùng nháy đơn cho chuỗi</td><td><code>Console.WriteLine('Hi');</code></td><td><code>'</code> chỉ dùng cho 1 ký tự: <code>'H'</code></td></tr>
+      <tr><td>Thiếu / thừa ngoặc nhọn</td><td>Mở <code>{</code> mà không đóng <code>}</code></td><td>Mỗi <code>{</code> phải có một <code>}</code> tương ứng</td></tr>
+    </table>
+    <div class="callout warn"><b>Mẹo đọc lỗi:</b> mở <em>Error List</em> (View → Error List), double-click vào lỗi để nhảy đến dòng sai. Sửa <strong>lỗi đầu tiên</strong> trước, vì nhiều lỗi sau chỉ là hệ quả của lỗi đầu.</div>
+  </div>
+</section>
+
+<!-- 21. Exercises A -->
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Bài tập vận dụng</span><h2>Phần A: Thuật toán (làm trên giấy)</h2></header>
+  <div class="s-body">
+    <div class="ex"><div class="ex-h"><b>Bài 1.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Viết mã giả và vẽ lưu đồ: nhập điểm Toán, Lý, Hóa; tính và xuất điểm trung bình.</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <p style="font-family:var(--mono);font-size:15.5px">Nhập toan, ly, hoa<br>tb ← (toan + ly + hoa) / 3<br>Xuất tb</p>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 2.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Viết mã giả: nhập 2 số a, b; xuất ra số lớn hơn.</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <p style="font-family:var(--mono);font-size:15.5px">Nhập a, b<br>Nếu a &gt; b thì Xuất a<br>Ngược lại Xuất b</p>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 3.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Viết mã giả tính <strong>n!</strong> = 1 × 2 × … × n. Lập bảng lần vết với n = 5.</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <p style="font-family:var(--mono);font-size:15.5px">Nhập n<br>gt ← 1; i ← 1<br>Trong khi i ≤ n thực hiện<br>&nbsp;&nbsp;gt ← gt * i<br>&nbsp;&nbsp;i ← i + 1<br>Xuất gt</p>
+        <p class="small">Lần vết: gt lần lượt = 1 → 2 → 6 → 24 → <strong>120</strong>; i dừng ở 6.</p>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 4.</b><span class="lvl l3">Nâng cao</span></div>
+      <p>Vẽ lưu đồ giải phương trình bậc hai ax² + bx + c = 0 (xét đủ các trường hợp, kể cả a = 0).</p>
+      <details class="sol"><summary>Xem gợi ý</summary>
+        <ul class="small"><li>a = 0 → quay về giải PT bậc nhất bx + c = 0.</li><li>a ≠ 0 → tính Δ = b² − 4ac. Δ &lt; 0: vô nghiệm; Δ = 0: nghiệm kép x = −b/2a; Δ &gt; 0: hai nghiệm x₁,₂ = (−b ± √Δ) / 2a.</li></ul>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- 22. Exercises B -->
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Bài tập vận dụng</span><h2>Phần B: Viết chương trình C#</h2></header>
+  <div class="s-body">
+    <div class="ex"><div class="ex-h"><b>Bài 5.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>In ra màn hình thông tin cá nhân (họ tên, lớp, trường) trên 3 dòng, sau đó in một đường kẻ <code>==========</code>.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 6.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Dùng <code>Console.Write</code> và <code>\n</code>, <code>\t</code> để in bảng sau (chỉ dùng <strong>một</strong> lệnh):</p>
+      <script type="text/x-out">
+        STT	Môn học	Tín chỉ
+        1	Cơ sở lập trình	3
+        2	Cơ sở dữ liệu	3
+      </script>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          Console.Write("STT\tMôn học\tTín chỉ\n1\tCơ sở lập trình\t3\n2\tCơ sở dữ liệu\t3\n");
+        </script>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 7.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Nhập họ tên và tên trường của người dùng, in ra: <code>Bạn [tên] đang học tại [trường].</code></p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          Console.Write("Họ tên: ");
+          string ten = Console.ReadLine();
+          Console.Write("Trường: ");
+          string truong = Console.ReadLine();
+          Console.WriteLine("Bạn " + ten + " đang học tại " + truong + ".");
+        </script>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 8.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Vẽ hình tam giác bằng dấu <code>*</code> (4 dòng: 1, 2, 3, 4 dấu sao) bằng các lệnh <code>WriteLine</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 23. Homework -->
+<section class="slide">
+  <header class="s-head"><span class="kicker k-hw">Bài tập về nhà</span><h2>Chuẩn bị cho buổi 2</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <ol class="steps">
+          <li>Cài đặt xong Visual Studio, chạy lại tất cả ví dụ trong buổi.</li>
+          <li>Viết mã giả và vẽ lưu đồ: nhập số giờ làm và đơn giá/giờ, tính tiền lương.</li>
+          <li>Viết mã giả: nhập một số nguyên, cho biết số đó chẵn hay lẻ.</li>
+          <li>Lần vết thuật toán tính tổng các số lẻ từ 1 đến n với n = 7.</li>
+          <li>Viết chương trình in ra danh thiếp (business card) của bạn, có khung viền bằng ký tự <code>*</code>.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h4><span class="ic">★</span>Thử thách</h4>
+        <p>Vẽ lưu đồ: nhập 3 số a, b, c; in ra số lớn nhất. Hãy thử tìm cách dùng <strong>ít phép so sánh nhất</strong>.</p>
+        <p class="small" style="color:var(--muted)">Gợi ý: gán max ← a, sau đó lần lượt so max với b và c.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 24. Summary -->
+<section class="slide">
+  <header class="s-head"><span class="kicker k-sum">Tổng kết</span><h2>Ghi nhớ của buổi 1</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <ul>
+        <li><strong>Thuật toán</strong> = dãy hữu hạn bước xác định, biến Input thành Output.</li>
+        <li>Biểu diễn bằng <strong>ngôn ngữ tự nhiên, mã giả, lưu đồ</strong>.</li>
+        <li>Ba cấu trúc nền tảng: <strong>tuần tự, rẽ nhánh, lặp</strong>.</li>
+        <li>Lần vết = chạy tay, ghi lại giá trị biến qua từng bước.</li>
+      </ul>
+      <ul>
+        <li>Chương trình C# bắt đầu chạy từ hàm <code>Main</code>.</li>
+        <li>Mỗi lệnh kết thúc bằng <code>;</code>, khối lệnh nằm trong <code>{ }</code>.</li>
+        <li><code>Write</code> không xuống dòng, <code>WriteLine</code> có xuống dòng.</li>
+        <li>C# <strong>phân biệt chữ hoa, chữ thường</strong>.</li>
+      </ul>
+    </div>
+    <div class="callout ok"><b>Buổi tiếp theo:</b> Biến, kiểu dữ liệu, nhập/xuất và các phép toán trong C#.</div>
+  </div>
+</section>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/slides.js"></script>
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buổi 11 · Tệp tin và Struct</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="assets/slides.css">
+<style>
+  .file { background: #fffdf5; border: 1px solid #eadfb8; border-radius: 10px; font-family: var(--mono); font-size: 15px; padding: 10px 16px; white-space: pre; line-height: 1.55; color: #5b4a12; margin: 6px 0 12px; overflow-x: auto; }
+  .file::before { content: attr(data-name); display: block; font-family: var(--font); font-size: 12px; font-weight: 700; color: #a8892a; margin-bottom: 4px; letter-spacing: .04em; }
+</style>
+</head>
+<body data-lesson="Buổi 11" data-title="Tệp tin và kiểu cấu trúc">
+<div class="deck">
+
+<section class="slide cover">
+  <div class="badge"><span class="dot"></span>Cơ sở lập trình C# · Buổi 11</div>
+  <h1>Làm việc với <em>tệp tin</em><br>và kiểu cấu trúc</h1>
+  <p class="sub">Dữ liệu không còn mất khi tắt chương trình: đọc danh sách từ file, xử lý, rồi ghi báo cáo ra file. Gom thông tin một đối tượng vào struct.</p>
+  <div class="meta"><span>⏱ 90–120 phút</span><span>📄 File · StreamReader/Writer</span><span>🧱 struct</span><span>🛡 try…catch</span></div>
+  <div class="big-num">11</div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mục tiêu</span><h2>Sau buổi học này, bạn có thể</h2></header>
+  <div class="s-body">
+    <ul class="goals">
+      <li>Hiểu đường dẫn tệp, tệp văn bản và vì sao cần lưu trữ trên tệp.</li>
+      <li>Đọc/ghi tệp nhanh bằng lớp <code>File</code>: <code>ReadAllLines</code>, <code>WriteAllLines</code>, <code>AppendAllText</code>…</li>
+      <li>Đọc/ghi từng dòng bằng <code>StreamReader</code>, <code>StreamWriter</code> với <code>using</code>.</li>
+      <li>Xử lý lỗi khi làm việc với tệp bằng <code>try…catch</code>.</li>
+      <li>Định nghĩa <code>struct</code> để lưu thông tin một đối tượng (sinh viên, sản phẩm) và đọc danh sách từ file CSV.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Tại sao cần tệp tin?</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p>Biến và mảng nằm trong <strong>RAM</strong>: tắt chương trình là <strong>mất hết</strong>. Tệp tin lưu trên <strong>ổ đĩa</strong>, tồn tại lâu dài.</p>
+        <ul class="small">
+          <li><strong>Tệp văn bản</strong> (.txt, .csv): mở bằng Notepad đọc được, môn học này chỉ dùng loại này.</li>
+          <li><strong>Tệp nhị phân</strong> (.exe, .jpg, .dat): lưu dạng byte.</li>
+        </ul>
+        <div class="file" data-name="diem.csv">MaSV,HoTen,GiuaKy,CuoiKy
+SV001,Nguyen Van An,7.5,8.0
+SV002,Tran Thi Binh,6.0,6.0
+SV003,Le Minh Chau,9.0,9.5</div>
+        <p class="small"><strong>CSV</strong> (Comma-Separated Values): mỗi dòng là một bản ghi, các trường cách nhau bằng dấu phẩy. Excel mở được.</p>
+      </div>
+      <div>
+        <h3>Đường dẫn tệp</h3>
+        <script type="text/x-csharp" data-size="sm">
+          using System.IO;   // bắt buộc để dùng File, StreamReader...
+
+          // Đường dẫn tuyệt đối (Windows), dùng @ để \ không bị hiểu là ký tự đặc biệt
+          string p1 = @"D:\BaiTap\diem.csv";
+          string p2 = "D:\\BaiTap\\diem.csv";   // tương đương
+
+          // Đường dẫn tương đối: cùng thư mục chạy chương trình
+          string p3 = "diem.csv";
+        </script>
+        <div class="callout warn small"><b>File nằm ở đâu?</b> Với đường dẫn tương đối, Visual Studio tìm file trong thư mục <code>bin\Debug\net8.0\</code> của project. Trong Solution Explorer, chọn file → Properties → <em>Copy to Output Directory: Copy if newer</em>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Lớp File: đọc/ghi nhanh trong 1 dòng lệnh</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <table class="tbl small">
+        <tr><th>Phương thức</th><th>Tác dụng</th></tr>
+        <tr><td><code>File.Exists(path)</code></td><td>Kiểm tra file có tồn tại</td></tr>
+        <tr><td><code>File.ReadAllText(path)</code></td><td>Đọc cả file thành 1 chuỗi</td></tr>
+        <tr><td><code>File.ReadAllLines(path)</code></td><td>Đọc thành mảng <code>string[]</code>, mỗi phần tử 1 dòng</td></tr>
+        <tr><td><code>File.WriteAllText(path, s)</code></td><td>Ghi chuỗi (ghi đè nếu đã có)</td></tr>
+        <tr><td><code>File.WriteAllLines(path, arr)</code></td><td>Ghi mảng, mỗi phần tử 1 dòng</td></tr>
+        <tr><td><code>File.AppendAllText(path, s)</code></td><td>Ghi thêm vào <strong>cuối</strong> file</td></tr>
+        <tr><td><code>File.Delete(path)</code></td><td>Xóa file</td></tr>
+      </table>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          string path = "ghichu.txt";
+
+          // Ghi mới (ghi đè)
+          File.WriteAllText(path, "Dòng 1\n");
+          // Ghi thêm
+          File.AppendAllText(path, "Dòng 2\n");
+          File.AppendAllText(path, $"Lúc {DateTime.Now:HH:mm}\n");
+
+          // Đọc lại
+          if (File.Exists(path))
+          {
+              string[] dong = File.ReadAllLines(path);
+              Console.WriteLine($"File có {dong.Length} dòng:");
+              foreach (string d in dong)
+                  Console.WriteLine("  " + d);
+          }
+        </script>
+        <script type="text/x-out">
+          File có 3 dòng:
+            Dòng 1
+            Dòng 2
+            Lúc 14:30
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>StreamWriter và StreamReader</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3>Ghi từng dòng</h3>
+        <script type="text/x-csharp" data-size="sm">
+          using (StreamWriter sw = new StreamWriter("binhphuong.txt"))
+          {
+              sw.WriteLine("n\tn^2");
+              for (int i = 1; i <= 5; i++)
+                  sw.WriteLine($"{i}\t{i * i}");
+          }   // tự động đóng file khi ra khỏi khối using
+
+          // Ghi thêm: tham số thứ 2 = true (append)
+          using (StreamWriter sw = new StreamWriter("log.txt", true))
+          {
+              sw.WriteLine("Chạy lúc " + DateTime.Now);
+          }
+        </script>
+      </div>
+      <div>
+        <h3>Đọc từng dòng</h3>
+        <script type="text/x-csharp" data-size="sm">
+          using (StreamReader sr = new StreamReader("binhphuong.txt"))
+          {
+              string line;
+              while ((line = sr.ReadLine()) != null)   // null = hết file
+              {
+                  Console.WriteLine(line);
+              }
+          }
+        </script>
+        <script type="text/x-out">
+          n	n^2
+          1	1
+          2	4
+          3	9
+          4	16
+          5	25
+        </script>
+        <div class="callout tip small"><b>Luôn dùng <code>using</code>:</b> file được đóng tự động kể cả khi có lỗi. Quên đóng file có thể làm mất dữ liệu ghi hoặc khóa file.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Xử lý lỗi khi làm việc với tệp</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          try
+          {
+              string[] lines = File.ReadAllLines("khongco.txt");
+              Console.WriteLine($"Đọc được {lines.Length} dòng");
+          }
+          catch (FileNotFoundException)
+          {
+              Console.WriteLine("Không tìm thấy file!");
+          }
+          catch (UnauthorizedAccessException)
+          {
+              Console.WriteLine("Không có quyền truy cập file!");
+          }
+          catch (IOException ex)
+          {
+              Console.WriteLine("Lỗi đọc/ghi: " + ex.Message);
+          }
+          finally
+          {
+              Console.WriteLine("Kết thúc thao tác file.");
+          }
+        </script>
+        <script type="text/x-out">
+          Không tìm thấy file!
+          Kết thúc thao tác file.
+        </script>
+      </div>
+      <div>
+        <table class="tbl small">
+          <tr><th>Ngoại lệ</th><th>Khi nào xảy ra</th></tr>
+          <tr><td><code>FileNotFoundException</code></td><td>File không tồn tại</td></tr>
+          <tr><td><code>DirectoryNotFoundException</code></td><td>Thư mục không tồn tại</td></tr>
+          <tr><td><code>UnauthorizedAccessException</code></td><td>Không có quyền, file chỉ đọc</td></tr>
+          <tr><td><code>IOException</code></td><td>File đang bị chương trình khác mở…</td></tr>
+          <tr><td><code>FormatException</code></td><td>Dữ liệu trong file sai định dạng khi Parse</td></tr>
+        </table>
+        <div class="callout small">Khối <code>finally</code> <strong>luôn chạy</strong>, dù có lỗi hay không.</div>
+        <div class="callout tip small">Đơn giản hơn: kiểm tra <code>File.Exists(path)</code> trước khi đọc.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide divider">
+  <div class="num">PHẦN 2</div>
+  <h2>Kiểu cấu trúc (struct)</h2>
+  <p>Thay vì nhiều mảng song song, gom các thông tin của một đối tượng vào một kiểu dữ liệu mới.</p>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Khai báo và sử dụng struct</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          struct SinhVien
+          {
+              public string MaSV;
+              public string HoTen;
+              public double GiuaKy;
+              public double CuoiKy;
+
+              // Hàm bên trong struct (phương thức)
+              public double DiemTK()
+              {
+                  return GiuaKy * 0.4 + CuoiKy * 0.6;
+              }
+          }
+
+          class Program
+          {
+              static void Main(string[] args)
+              {
+                  SinhVien sv;
+                  sv.MaSV = "SV001";
+                  sv.HoTen = "Nguyen Van An";
+                  sv.GiuaKy = 7.5;
+                  sv.CuoiKy = 8.0;
+                  Console.WriteLine($"{sv.HoTen}: {sv.DiemTK():F1}");
+              }
+          }
+        </script>
+        <script type="text/x-out">Nguyen Van An: 7.8</script>
+      </div>
+      <div>
+        <ul class="small">
+          <li><code>struct</code> định nghĩa một <strong>kiểu dữ liệu mới</strong> gồm nhiều trường (field).</li>
+          <li>Khai báo struct <strong>bên ngoài</strong> <code>class Program</code> (hoặc bên trong, ngang hàng Main).</li>
+          <li><code>public</code> để truy cập được từ bên ngoài.</li>
+          <li>Truy cập trường bằng dấu chấm: <code>sv.HoTen</code>.</li>
+        </ul>
+        <h3>Mảng struct thay cho mảng song song</h3>
+        <script type="text/x-csharp" data-size="sm">
+          SinhVien[] ds = new SinhVien[40];
+          ds[0].HoTen = "An";
+          ds[0].CuoiKy = 9;
+          // Đổi chỗ 2 SV: đổi cả "gói" một lần
+          (ds[0], ds[1]) = (ds[1], ds[0]);
+        </script>
+        <div class="callout tip small">Đây là bước đệm sang <strong>lập trình hướng đối tượng</strong> (class) ở học phần sau.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide divider">
+  <div class="num">THỰC HÀNH</div>
+  <h2>Dự án mini: Quản lý điểm từ file CSV</h2>
+  <p>Kết hợp mọi kiến thức: tệp tin, chuỗi, mảng, struct, hàm, sắp xếp.</p>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu (1/3)</span><h2>Đọc danh sách sinh viên từ file CSV</h2></header>
+  <div class="s-body">
+    <div class="cols c-64">
+      <script type="text/x-csharp" data-size="sm">
+        static SinhVien[] DocFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+                Console.WriteLine("Không tìm thấy file " + path);
+                return new SinhVien[0];
+            }
+            string[] lines = File.ReadAllLines(path);
+            SinhVien[] ds = new SinhVien[lines.Length - 1];   // bỏ dòng tiêu đề
+            int n = 0;
+            for (int i = 1; i < lines.Length; i++)
+            {
+                string[] f = lines[i].Split(',');
+                if (f.Length != 4) continue;                    // bỏ dòng lỗi
+                try
+                {
+                    ds[n].MaSV = f[0].Trim();
+                    ds[n].HoTen = f[1].Trim();
+                    ds[n].GiuaKy = double.Parse(f[2],
+                        System.Globalization.CultureInfo.InvariantCulture);
+                    ds[n].CuoiKy = double.Parse(f[3],
+                        System.Globalization.CultureInfo.InvariantCulture);
+                    n++;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine($"Dòng {i + 1} sai định dạng, bỏ qua.");
+                }
+            }
+            Array.Resize(ref ds, n);    // cắt bỏ phần thừa
+            return ds;
+        }
+      </script>
+      <div>
+        <div class="file" data-name="diem.csv">MaSV,HoTen,GiuaKy,CuoiKy
+SV001,Nguyen Van An,7.5,8.0
+SV002,Tran Thi Binh,6.0,6.0
+SV003,Le Minh Chau,9.0,9.5
+SV004,Pham Quoc Dung,4.0,3.5
+SV005,Vo Thu Ha,8.0,abc</div>
+        <div class="callout small"><code>CultureInfo.InvariantCulture</code> giúp đọc đúng <code>7.5</code> trên mọi máy, kể cả máy cài định dạng Việt Nam (dùng dấu phẩy thập phân).</div>
+        <div class="callout tip small">Dòng SV005 có điểm "abc" sẽ được báo lỗi và bỏ qua, chương trình không crash.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu (2/3)</span><h2>Xử lý: xếp loại, thống kê, sắp xếp</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          static string XepLoai(double d)
+          {
+              if (d >= 8.5) return "A";
+              if (d >= 7.0) return "B";
+              if (d >= 5.5) return "C";
+              if (d >= 4.0) return "D";
+              return "F";
+          }
+
+          static void SapXepGiamDan(SinhVien[] ds)
+          {
+              for (int i = 0; i < ds.Length - 1; i++)
+                  for (int j = i + 1; j < ds.Length; j++)
+                      if (ds[j].DiemTK() > ds[i].DiemTK())
+                          (ds[i], ds[j]) = (ds[j], ds[i]);
+          }
+
+          static void InBang(SinhVien[] ds)
+          {
+              Console.WriteLine($"{"Mã",-6}{"Họ tên",-18}{"TK",6}{"Loại",6}");
+              foreach (SinhVien sv in ds)
+                  Console.WriteLine($"{sv.MaSV,-6}{sv.HoTen,-18}" +
+                                    $"{sv.DiemTK(),6:F1}{XepLoai(sv.DiemTK()),6}");
+          }
+        </script>
+      </div>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          static void ThongKe(SinhVien[] ds)
+          {
+              int dau = 0; double tong = 0;
+              foreach (SinhVien sv in ds)
+              {
+                  tong += sv.DiemTK();
+                  if (sv.DiemTK() >= 4.0) dau++;
+              }
+              Console.WriteLine($"Sĩ số: {ds.Length}");
+              Console.WriteLine($"Điểm TB lớp: {tong / ds.Length:F2}");
+              Console.WriteLine($"Tỷ lệ đậu: {(double)dau / ds.Length:P0}");
+          }
+        </script>
+        <div class="callout small">Mọi hàm nhận vào <code>SinhVien[]</code>, tận dụng phương thức <code>DiemTK()</code> trong struct. Code ngắn và dễ đọc hơn hẳn mảng song song.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu (3/3)</span><h2>Ghi báo cáo ra file và hàm Main</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          static void GhiBaoCao(SinhVien[] ds, string path)
+          {
+              using (StreamWriter sw = new StreamWriter(path))
+              {
+                  sw.WriteLine("Hang,MaSV,HoTen,DiemTK,XepLoai");
+                  for (int i = 0; i < ds.Length; i++)
+                  {
+                      double tk = ds[i].DiemTK();
+                      sw.WriteLine($"{i + 1},{ds[i].MaSV},{ds[i].HoTen}," +
+                          $"{tk.ToString("F1", System.Globalization.CultureInfo.InvariantCulture)}," +
+                          $"{XepLoai(tk)}");
+                  }
+              }
+              Console.WriteLine($"Đã ghi báo cáo ra {path}");
+          }
+
+          static void Main(string[] args)
+          {
+              Console.OutputEncoding = System.Text.Encoding.UTF8;
+              SinhVien[] ds = DocFile("diem.csv");
+              if (ds.Length == 0) return;
+              SapXepGiamDan(ds);
+              InBang(ds);
+              ThongKe(ds);
+              GhiBaoCao(ds, "ketqua.csv");
+          }
+        </script>
+      </div>
+      <div>
+        <script type="text/x-out">
+          Dòng 6 sai định dạng, bỏ qua.
+          Mã    Họ tên                TK  Loại
+          SV003 Le Minh Chau         9.3     A
+          SV001 Nguyen Van An        7.8     B
+          SV002 Tran Thi Binh        6.0     C
+          SV004 Pham Quoc Dung       3.7     F
+          Sĩ số: 4
+          Điểm TB lớp: 6.70
+          Tỷ lệ đậu: 75%
+          Đã ghi báo cáo ra ketqua.csv
+        </script>
+        <div class="file" data-name="ketqua.csv">Hang,MaSV,HoTen,DiemTK,XepLoai
+1,SV003,Le Minh Chau,9.3,A
+2,SV001,Nguyen Van An,7.8,B
+3,SV002,Tran Thi Binh,6.0,C
+4,SV004,Pham Quoc Dung,3.7,F</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lưu ý</span><h2>Lỗi thường gặp</h2></header>
+  <div class="s-body">
+    <table class="tbl">
+      <tr><th>Lỗi</th><th>Hiện tượng</th><th>Cách sửa</th></tr>
+      <tr><td>Quên <code>using System.IO;</code></td><td>"File does not exist in the current context"</td><td>Thêm ở đầu file</td></tr>
+      <tr><td>File không ở đúng thư mục</td><td><code>FileNotFoundException</code></td><td>Dùng đường dẫn tuyệt đối hoặc Copy to Output Directory</td></tr>
+      <tr><td>Đường dẫn có <code>\</code> không dùng <code>@</code></td><td><code>"D:\new.txt"</code>: <code>\n</code> thành xuống dòng!</td><td><code>@"D:\new.txt"</code></td></tr>
+      <tr><td>Không đóng StreamWriter</td><td>File rỗng hoặc thiếu dữ liệu</td><td>Dùng khối <code>using</code></td></tr>
+      <tr><td>Dùng WriteAllText khi muốn ghi thêm</td><td>Mất dữ liệu cũ</td><td><code>AppendAllText</code> / <code>new StreamWriter(path, true)</code></td></tr>
+      <tr><td>Quên bỏ dòng tiêu đề CSV</td><td><code>FormatException</code> khi Parse "GiuaKy"</td><td>Vòng lặp bắt đầu từ <code>i = 1</code></td></tr>
+      <tr><td>Lỗi dấu thập phân giữa các máy</td><td>"7.5" đọc thành 75 hoặc lỗi</td><td><code>CultureInfo.InvariantCulture</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Bài tập vận dụng</span><h2>Luyện tập</h2></header>
+  <div class="s-body">
+    <div class="ex"><div class="ex-h"><b>Bài 1.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Ghi n số nguyên ngẫu nhiên vào file <code>so.txt</code> (mỗi số một dòng). Đọc lại file, tính tổng, max, min.</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          Random rd = new Random();
+          using (StreamWriter sw = new StreamWriter("so.txt"))
+              for (int i = 0; i < 20; i++) sw.WriteLine(rd.Next(1, 101));
+
+          string[] lines = File.ReadAllLines("so.txt");
+          int[] a = new int[lines.Length];
+          for (int i = 0; i < lines.Length; i++) a[i] = int.Parse(lines[i]);
+          Console.WriteLine($"Tổng={a.Sum()}, Max={a.Max()}, Min={a.Min()}"); // using System.Linq
+        </script>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 2.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Đọc file văn bản bất kỳ, đếm số dòng, số từ, số ký tự và từ xuất hiện nhiều nhất.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 3.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Khai báo <code>struct SanPham { MaSP, TenSP, SoLuong, DonGia }</code>. Nhập n sản phẩm từ bàn phím, ghi ra <code>sanpham.csv</code>; in sản phẩm có tổng giá trị tồn kho (SL × ĐG) lớn nhất.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 4.</b><span class="lvl l3">Nâng cao</span></div>
+      <p>Hoàn thiện dự án mini thành chương trình menu: 1. Đọc file; 2. Xem danh sách; 3. Thêm SV (ghi thêm vào file); 4. Tìm SV theo mã; 5. Sắp xếp; 6. Xuất báo cáo; 0. Thoát.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-hw">Bài tập về nhà</span><h2>Chuẩn bị cho buổi 12 (ôn thi)</h2></header>
+  <div class="s-body">
+    <ol class="steps">
+      <li>Hoàn thành bài tập vận dụng 4 (dự án mini có menu).</li>
+      <li>Ôn lại toàn bộ "Ghi nhớ" của buổi 1–11.</li>
+      <li>Tự làm lại (không xem đáp án) các ví dụ mẫu: số nguyên tố, UCLN, sắp xếp chọn, chuẩn hóa họ tên, tổng đường chéo.</li>
+      <li>Ghi lại các lỗi bạn hay mắc nhất trong quá trình học, mang theo buổi 12 để thảo luận.</li>
+      <li>Nếu có đề cương/đề thi mẫu của giảng viên trên LMS, mang theo để luyện ở buổi 12.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-sum">Tổng kết</span><h2>Ghi nhớ của buổi 11</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <ul>
+        <li><code>using System.IO;</code>; đường dẫn Windows dùng <code>@"..."</code>.</li>
+        <li><code>File.ReadAllLines</code> / <code>WriteAllLines</code> / <code>AppendAllText</code>: nhanh gọn.</li>
+        <li><code>StreamReader</code>: <code>while ((line = sr.ReadLine()) != null)</code>.</li>
+        <li>Luôn dùng khối <code>using</code> để tự đóng file.</li>
+      </ul>
+      <ul>
+        <li><code>try…catch…finally</code> bắt lỗi file và lỗi định dạng.</li>
+        <li>CSV: <code>Split(',')</code>, bỏ dòng tiêu đề, <code>InvariantCulture</code> khi Parse số thực.</li>
+        <li><code>struct</code> gom các trường của một đối tượng, có thể chứa phương thức.</li>
+        <li>Mảng struct thay cho nhiều mảng song song.</li>
+      </ul>
+    </div>
+    <div class="callout ok"><b>Buổi cuối:</b> Tổng ôn tập và luyện đề thi mẫu có bấm giờ.</div>
+  </div>
+</section>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/slides.js"></script>
+</body>
+</html>

@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buổi 4 · Cấu trúc lặp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="assets/slides.css">
+</head>
+<body data-lesson="Buổi 4" data-title="Cấu trúc lặp for, while, do…while">
+<div class="deck">
+
+<section class="slide cover">
+  <div class="badge"><span class="dot"></span>Cơ sở lập trình C# · Buổi 04</div>
+  <h1>Cấu trúc <em>lặp</em><br>for · while · do…while</h1>
+  <p class="sub">Lặp lại một công việc nhiều lần mà không phải viết lại code: tính tổng, đếm, tìm số nguyên tố, ước chung lớn nhất…</p>
+  <div class="meta"><span>⏱ 90–120 phút</span><span>↻ 3 loại vòng lặp</span><span>⛔ break · continue</span></div>
+  <div class="big-num">04</div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mục tiêu</span><h2>Sau buổi học này, bạn có thể</h2></header>
+  <div class="s-body">
+    <ul class="goals">
+      <li>Viết vòng lặp <code>for</code> khi biết trước số lần lặp.</li>
+      <li>Viết vòng lặp <code>while</code> và <code>do…while</code> khi lặp theo điều kiện.</li>
+      <li>Dùng <code>break</code> và <code>continue</code> để điều khiển vòng lặp.</li>
+      <li>Áp dụng các mẫu thuật toán: <strong>tính tổng, đếm, tích lũy, cờ hiệu, tách chữ số</strong>.</li>
+      <li>Lần vết vòng lặp và tránh vòng lặp vô hạn.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Tại sao cần vòng lặp?</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3>Không dùng vòng lặp 😩</h3>
+        <script type="text/x-csharp" data-size="sm">
+          Console.WriteLine("Dòng 1");
+          Console.WriteLine("Dòng 2");
+          Console.WriteLine("Dòng 3");
+          // ... 997 dòng nữa
+          Console.WriteLine("Dòng 1000");
+        </script>
+      </div>
+      <div>
+        <h3>Dùng vòng lặp 😎</h3>
+        <script type="text/x-csharp" data-size="sm">
+          for (int i = 1; i <= 1000; i++)
+          {
+              Console.WriteLine("Dòng " + i);
+          }
+        </script>
+      </div>
+    </div>
+    <table class="tbl small" style="margin-top:12px">
+      <tr><th>Vòng lặp</th><th>Dùng khi</th><th>Kiểm tra điều kiện</th></tr>
+      <tr><td><code>for</code></td><td><strong>Biết trước</strong> số lần lặp (1 → n)</td><td>Trước khi lặp</td></tr>
+      <tr><td><code>while</code></td><td>Lặp <strong>trong khi</strong> điều kiện còn đúng, chưa biết số lần</td><td>Trước khi lặp (có thể không chạy lần nào)</td></tr>
+      <tr><td><code>do…while</code></td><td>Cần chạy <strong>ít nhất 1 lần</strong> (nhập liệu, menu)</td><td>Sau khi lặp</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Vòng lặp for</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          for (khởi_tạo; điều_kiện; bước_nhảy)
+          {
+              // thân vòng lặp
+          }
+        </script>
+        <ol class="steps small">
+          <li>Chạy <strong>khởi tạo</strong> (chỉ 1 lần): <code>int i = 1</code></li>
+          <li>Kiểm tra <strong>điều kiện</strong>: sai thì thoát vòng lặp</li>
+          <li>Chạy <strong>thân</strong> vòng lặp</li>
+          <li>Chạy <strong>bước nhảy</strong> <code>i++</code>, quay lại bước 2</li>
+        </ol>
+      </div>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          // Đếm tăng 1 → 5
+          for (int i = 1; i <= 5; i++)
+              Console.Write(i + " ");
+          Console.WriteLine();
+
+          // Đếm giảm 10 → 1
+          for (int i = 10; i >= 1; i--)
+              Console.Write(i + " ");
+          Console.WriteLine();
+
+          // Bước nhảy 2: các số chẵn đến 10
+          for (int i = 0; i <= 10; i += 2)
+              Console.Write(i + " ");
+        </script>
+        <script type="text/x-out">
+          1 2 3 4 5
+          10 9 8 7 6 5 4 3 2 1
+          0 2 4 6 8 10
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mẫu thuật toán</span><h2>Tính tổng và tích lũy</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p class="small"><strong>Mẫu chung:</strong> khởi tạo biến tích lũy <em>trước</em> vòng lặp, cập nhật <em>trong</em> vòng lặp, in kết quả <em>sau</em> vòng lặp.</p>
+        <script type="text/x-csharp" data-size="sm">
+          Console.Write("Nhập n: ");
+          int n = int.Parse(Console.ReadLine());
+
+          long tong = 0;          // tổng: khởi tạo 0
+          long giaiThua = 1;      // tích: khởi tạo 1
+          for (int i = 1; i <= n; i++)
+          {
+              tong += i;
+              giaiThua *= i;
+          }
+          Console.WriteLine($"Tổng 1..{n} = {tong}");
+          Console.WriteLine($"{n}! = {giaiThua}");
+        </script>
+        <script type="text/x-out">
+          Nhập n: {{5}}
+          Tổng 1..5 = 15
+          5! = 120
+        </script>
+      </div>
+      <div>
+        <h3>Lần vết với n = 5</h3>
+        <table class="tbl small center">
+          <tr><th>i</th><th>tong</th><th>giaiThua</th></tr>
+          <tr><td>–</td><td>0</td><td>1</td></tr>
+          <tr><td>1</td><td>1</td><td>1</td></tr>
+          <tr><td>2</td><td>3</td><td>2</td></tr>
+          <tr><td>3</td><td>6</td><td>6</td></tr>
+          <tr><td>4</td><td>10</td><td>24</td></tr>
+          <tr><td>5</td><td>15</td><td>120</td></tr>
+        </table>
+        <div class="callout warn small">Khởi tạo tích bằng <strong>0</strong> thì kết quả luôn là 0! Dùng <code>long</code> vì giai thừa tăng rất nhanh (13! đã vượt <code>int</code>).</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mẫu thuật toán</span><h2>Đếm và tổng có điều kiện</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p class="small">Kết hợp <strong>vòng lặp + if</strong>: chỉ đếm/cộng những phần tử thỏa điều kiện.</p>
+        <script type="text/x-csharp" data-size="sm">
+          int n = 20;
+          int demChan = 0;
+          int tongLe = 0;
+          int demChia3 = 0;
+
+          for (int i = 1; i <= n; i++)
+          {
+              if (i % 2 == 0)
+                  demChan++;
+              else
+                  tongLe += i;
+
+              if (i % 3 == 0)
+                  demChia3++;
+          }
+          Console.WriteLine($"Số chẵn: {demChan}");
+          Console.WriteLine($"Tổng số lẻ: {tongLe}");
+          Console.WriteLine($"Số chia hết cho 3: {demChia3}");
+        </script>
+      </div>
+      <div>
+        <script type="text/x-out">
+          Số chẵn: 10
+          Tổng số lẻ: 100
+          Số chia hết cho 3: 6
+        </script>
+        <div class="card small"><h4><span class="ic">∑</span>Bài toán ước số</h4>
+          <script type="text/x-csharp" data-size="sm">
+            // In các ước và tổng ước của n
+            int tongUoc = 0;
+            for (int i = 1; i <= n; i++)
+                if (n % i == 0)
+                {
+                    Console.Write(i + " ");
+                    tongUoc += i;
+                }
+          </script>
+          <p>Với n = 12: in <code>1 2 3 4 6 12</code>, tổng = 28.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Vòng lặp while</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          while (điều_kiện)
+          {
+              // thân: phải có lệnh làm điều kiện
+              // dần trở thành SAI
+          }
+        </script>
+        <p class="small">Kiểm tra điều kiện <strong>trước</strong>. Nếu ngay từ đầu điều kiện sai, thân vòng lặp <strong>không chạy lần nào</strong>.</p>
+        <div class="callout danger small"><b>Vòng lặp vô hạn:</b> quên cập nhật biến trong thân thì điều kiện luôn đúng và chương trình không bao giờ dừng.</div>
+        <script type="text/x-csharp" data-size="sm">
+          int i = 1;
+          while (i <= 5)
+          {
+              Console.Write(i + " ");
+              // quên i++ → in số 1 mãi mãi!
+          }
+        </script>
+      </div>
+      <div>
+        <h3>Ví dụ: tách và đếm chữ số</h3>
+        <script type="text/x-csharp" data-size="sm">
+          Console.Write("Nhập n: ");
+          int n = int.Parse(Console.ReadLine());
+          int temp = Math.Abs(n), dem = 0, tongCS = 0;
+
+          while (temp > 0)
+          {
+              int cs = temp % 10;   // lấy chữ số cuối
+              tongCS += cs;
+              dem++;
+              temp /= 10;           // bỏ chữ số cuối
+          }
+          Console.WriteLine($"{n} có {dem} chữ số, tổng = {tongCS}");
+        </script>
+        <script type="text/x-out">
+          Nhập n: {{4728}}
+          4728 có 4 chữ số, tổng = 21
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Vòng lặp do…while</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          do
+          {
+              // thân: chạy ít nhất 1 lần
+          } while (điều_kiện);   // chú ý dấu ;
+        </script>
+        <p class="small">Chạy thân <strong>trước</strong>, kiểm tra điều kiện <strong>sau</strong>. Rất phù hợp để <strong>bắt nhập lại</strong> khi dữ liệu không hợp lệ.</p>
+        <script type="text/x-csharp" data-size="sm">
+          int n;
+          do
+          {
+              Console.Write("Nhập n (1-100): ");
+              n = int.Parse(Console.ReadLine());
+              if (n < 1 || n > 100)
+                  Console.WriteLine("Không hợp lệ, nhập lại!");
+          } while (n < 1 || n > 100);
+        </script>
+      </div>
+      <div>
+        <script type="text/x-out">
+          Nhập n (1-100): {{-5}}
+          Không hợp lệ, nhập lại!
+          Nhập n (1-100): {{250}}
+          Không hợp lệ, nhập lại!
+          Nhập n (1-100): {{42}}
+        </script>
+        <h3>So sánh while và do…while</h3>
+        <script type="text/x-csharp" data-size="sm">
+          int x = 10;
+          while (x < 5) { Console.Write("A"); }      // không in gì
+          do { Console.Write("B"); } while (x < 5);  // in "B" 1 lần
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>break và continue</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3><code>break</code>: thoát ngay khỏi vòng lặp</h3>
+        <script type="text/x-csharp" data-size="sm">
+          // Tìm số đầu tiên từ 100 chia hết cho 7 và 9
+          for (int i = 100; i <= 1000; i++)
+          {
+              if (i % 7 == 0 && i % 9 == 0)
+              {
+                  Console.WriteLine("Tìm thấy: " + i);
+                  break;
+              }
+          }
+        </script>
+        <script type="text/x-out">Tìm thấy: 126</script>
+      </div>
+      <div>
+        <h3><code>continue</code>: bỏ qua phần còn lại, sang lần lặp tiếp</h3>
+        <script type="text/x-csharp" data-size="sm">
+          // In các số từ 1 đến 10, bỏ qua số chia hết cho 3
+          for (int i = 1; i <= 10; i++)
+          {
+              if (i % 3 == 0)
+                  continue;
+              Console.Write(i + " ");
+          }
+        </script>
+        <script type="text/x-out">1 2 4 5 7 8 10</script>
+      </div>
+    </div>
+    <div class="callout tip small"><code>break</code> trong vòng lặp lồng nhau chỉ thoát khỏi vòng lặp <strong>trong cùng</strong> chứa nó.</div>
+  </div>
+</section>
+
+<section class="slide divider">
+  <div class="num">THỰC HÀNH</div>
+  <h2>Ví dụ mẫu kinh điển</h2>
+  <p>Số nguyên tố, ước chung lớn nhất, đảo số, bài toán tiết kiệm.</p>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 1</span><h2>Kiểm tra số nguyên tố (kỹ thuật cờ hiệu)</h2></header>
+  <div class="s-body">
+    <p class="small"><strong>Số nguyên tố</strong> là số tự nhiên lớn hơn 1, chỉ chia hết cho 1 và chính nó: 2, 3, 5, 7, 11, 13…</p>
+    <div class="cols c-64">
+      <script type="text/x-csharp" data-size="sm">
+        Console.Write("Nhập n: ");
+        int n = int.Parse(Console.ReadLine());
+
+        bool laNT = true;            // cờ: giả sử n là số nguyên tố
+        if (n < 2)
+            laNT = false;
+        else
+        {
+            for (int i = 2; i <= Math.Sqrt(n); i++)
+            {
+                if (n % i == 0)       // tìm thấy ước khác 1 và n
+                {
+                    laNT = false;     // hạ cờ
+                    break;            // không cần xét tiếp
+                }
+            }
+        }
+        Console.WriteLine(laNT ? $"{n} là số nguyên tố"
+                               : $"{n} không là số nguyên tố");
+      </script>
+      <div>
+        <script type="text/x-out">
+          Nhập n: {{97}}
+          97 là số nguyên tố
+        </script>
+        <div class="card small"><h4><span class="ic">⚑</span>Kỹ thuật cờ hiệu</h4>
+          <p>Dùng biến <code>bool</code> giả định ban đầu; nếu gặp phản ví dụ thì đổi giá trị. Sau vòng lặp, kiểm tra cờ để kết luận.</p>
+        </div>
+        <div class="callout tip small"><b>Vì sao chỉ xét đến √n?</b> Nếu n = a × b và a ≤ b thì a ≤ √n. Không có ước nào ≤ √n nghĩa là không có ước nào cả.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 2</span><h2>UCLN và BCNN (thuật toán Euclid)</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p class="small"><strong>Euclid:</strong> UCLN(a, b) = UCLN(b, a % b), lặp cho đến khi b = 0, lúc đó a là UCLN.</p>
+        <script type="text/x-csharp" data-size="sm">
+          Console.Write("a = "); int a = int.Parse(Console.ReadLine());
+          Console.Write("b = "); int b = int.Parse(Console.ReadLine());
+
+          int x = a, y = b;
+          while (y != 0)
+          {
+              int du = x % y;
+              x = y;
+              y = du;
+          }
+          int ucln = x;
+          int bcnn = a / ucln * b;
+
+          Console.WriteLine($"UCLN = {ucln}, BCNN = {bcnn}");
+        </script>
+        <script type="text/x-out">
+          a = {{48}}
+          b = {{18}}
+          UCLN = 6, BCNN = 144
+        </script>
+      </div>
+      <div>
+        <h3>Lần vết a = 48, b = 18</h3>
+        <table class="tbl small center">
+          <tr><th>Bước</th><th>x</th><th>y</th><th>x % y</th></tr>
+          <tr><td>1</td><td>48</td><td>18</td><td>12</td></tr>
+          <tr><td>2</td><td>18</td><td>12</td><td>6</td></tr>
+          <tr><td>3</td><td>12</td><td>6</td><td>0</td></tr>
+          <tr><td>Dừng</td><td><strong>6</strong></td><td>0</td><td>–</td></tr>
+        </table>
+        <div class="callout small">Dùng bản sao <code>x</code>, <code>y</code> để giữ nguyên <code>a</code>, <code>b</code> cho việc tính BCNN = a × b / UCLN.</div>
+        <div class="callout tip small">Ứng dụng: <strong>rút gọn phân số</strong> 48/18 = (48/6)/(18/6) = 8/3.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 3</span><h2>Đảo ngược số và kiểm tra số đối xứng</h2></header>
+  <div class="s-body">
+    <div class="cols c-64">
+      <script type="text/x-csharp" data-size="sm">
+        Console.Write("Nhập n: ");
+        int n = int.Parse(Console.ReadLine());
+
+        int temp = n, dao = 0;
+        while (temp > 0)
+        {
+            dao = dao * 10 + temp % 10;   // ghép chữ số cuối vào sau
+            temp /= 10;
+        }
+        Console.WriteLine($"Số đảo: {dao}");
+        Console.WriteLine(dao == n ? "Là số đối xứng (palindrome)"
+                                   : "Không đối xứng");
+      </script>
+      <div>
+        <script type="text/x-out">
+          Nhập n: {{12321}}
+          Số đảo: 12321
+          Là số đối xứng (palindrome)
+        </script>
+        <table class="tbl small center">
+          <tr><th>temp</th><th>temp % 10</th><th>dao</th></tr>
+          <tr><td>12321</td><td>1</td><td>1</td></tr>
+          <tr><td>1232</td><td>2</td><td>12</td></tr>
+          <tr><td>123</td><td>3</td><td>123</td></tr>
+          <tr><td>12</td><td>2</td><td>1232</td></tr>
+          <tr><td>1</td><td>1</td><td>12321</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 4</span><h2>Bao lâu thì tiền gửi tăng gấp đôi?</h2></header>
+  <div class="s-body">
+    <p class="small"><strong>Đề:</strong> gửi P đồng, lãi suất r%/năm, lãi nhập gốc. Hỏi sau bao nhiêu năm số tiền đạt ít nhất mục tiêu M? In bảng số dư từng năm.</p>
+    <div class="cols c-64">
+      <script type="text/x-csharp" data-size="sm">
+        Console.Write("Tiền gửi: ");   double P = double.Parse(Console.ReadLine());
+        Console.Write("Lãi suất %: "); double r = double.Parse(Console.ReadLine()) / 100;
+        Console.Write("Mục tiêu: ");   double M = double.Parse(Console.ReadLine());
+
+        double soDu = P;
+        int nam = 0;
+        while (soDu < M)          // chưa biết số lần → dùng while
+        {
+            soDu += soDu * r;
+            nam++;
+            Console.WriteLine($"Năm {nam,2}: {soDu,15:N0} đ");
+        }
+        Console.WriteLine($"=> Cần {nam} năm để đạt {M:N0} đ");
+      </script>
+      <div>
+        <script type="text/x-out">
+          Tiền gửi: {{100000000}}
+          Lãi suất %: {{12}}
+          Mục tiêu: {{200000000}}
+          Năm  1:     112,000,000 đ
+          Năm  2:     125,440,000 đ
+          Năm  3:     140,492,800 đ
+          Năm  4:     157,351,936 đ
+          Năm  5:     176,234,168 đ
+          Năm  6:     197,382,269 đ
+          Năm  7:     221,068,141 đ
+          => Cần 7 năm để đạt 200,000,000 đ
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lưu ý</span><h2>Lỗi thường gặp với vòng lặp</h2></header>
+  <div class="s-body">
+    <table class="tbl">
+      <tr><th>Lỗi</th><th>Code sai</th><th>Hậu quả / Sửa</th></tr>
+      <tr><td>Dấu <code>;</code> sau for/while</td><td><code>for (int i=1; i&lt;=5; i++);</code></td><td>Thân vòng lặp rỗng, khối lệnh chỉ chạy 1 lần</td></tr>
+      <tr><td>Sai biên</td><td><code>i &lt; n</code> thay vì <code>i &lt;= n</code></td><td>Thiếu phần tử cuối (lỗi lệch 1, off-by-one)</td></tr>
+      <tr><td>Khởi tạo sai</td><td><code>tich = 0</code></td><td>Tích luôn bằng 0. Sửa: <code>tich = 1</code></td></tr>
+      <tr><td>Khởi tạo trong vòng lặp</td><td><code>for (...) { int tong = 0; tong += i; }</code></td><td>Tổng bị reset mỗi vòng. Khai báo trước vòng lặp</td></tr>
+      <tr><td>Không cập nhật biến điều kiện</td><td><code>while (n &gt; 0) { tong += n % 10; }</code></td><td>Lặp vô hạn. Thêm <code>n /= 10;</code></td></tr>
+      <tr><td>Làm hỏng biến gốc</td><td>Dùng trực tiếp <code>n /= 10</code></td><td>Mất giá trị n để in. Dùng biến <code>temp</code></td></tr>
+    </table>
+    <div class="callout tip small"><b>Mẹo debug:</b> đặt breakpoint (F9) trong thân vòng lặp, nhấn F5 rồi F10 từng bước, quan sát cửa sổ <em>Locals</em>.</div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Bài tập vận dụng</span><h2>Luyện tập (1/2)</h2></header>
+  <div class="s-body">
+    <div class="ex"><div class="ex-h"><b>Bài 1.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Nhập n. Tính S = 1² + 2² + … + n² và T = 1 + 1/2 + 1/3 + … + 1/n (in 4 chữ số thập phân).</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          long S = 0; double T = 0;
+          for (int i = 1; i <= n; i++)
+          {
+              S += (long)i * i;
+              T += 1.0 / i;          // 1.0 để tránh chia nguyên!
+          }
+          Console.WriteLine($"S = {S}, T = {T:F4}");
+        </script>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 2.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>In bảng cửu chương của số n (1 ≤ n ≤ 9) nhập từ bàn phím, dạng <code>n x 1 = n</code> đến <code>n x 10</code>.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 3.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Nhập n, liệt kê tất cả số nguyên tố nhỏ hơn n và đếm có bao nhiêu số.</p>
+      <details class="sol"><summary>Xem gợi ý</summary>
+        <p class="small">Dùng 2 vòng lặp lồng nhau: vòng ngoài chạy <code>k</code> từ 2 đến n−1, vòng trong kiểm tra <code>k</code> có phải số nguyên tố (giống ví dụ mẫu 1). Hàm sẽ giúp code gọn hơn (buổi 6).</p>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 4.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Kiểm tra n có phải <strong>số hoàn hảo</strong> không (tổng các ước nhỏ hơn n bằng n, ví dụ 6 = 1+2+3, 28).</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Bài tập vận dụng</span><h2>Luyện tập (2/2)</h2></header>
+  <div class="s-body">
+    <div class="ex"><div class="ex-h"><b>Bài 5.</b><span class="lvl l2">Trung bình</span></div>
+      <p>In n số đầu tiên của dãy Fibonacci: 1, 1, 2, 3, 5, 8, 13…</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          long f1 = 1, f2 = 1;
+          for (int i = 1; i <= n; i++)
+          {
+              Console.Write(f1 + " ");
+              long f3 = f1 + f2;
+              f1 = f2;
+              f2 = f3;
+          }
+        </script>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 6.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Nhập liên tục các số nguyên cho đến khi nhập 0. In ra tổng, số lượng số dương, số lượng số âm và số lớn nhất đã nhập.</p>
+      <details class="sol"><summary>Xem gợi ý</summary>
+        <p class="small">Dùng <code>do…while (x != 0)</code> hoặc <code>while (true)</code> + <code>break</code> khi x == 0. Khởi tạo <code>max = int.MinValue</code>.</p>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 7.</b><span class="lvl l3">Nâng cao</span></div>
+      <p>Trò chơi đoán số: máy chọn ngẫu nhiên số từ 1–100 (<code>new Random().Next(1, 101)</code>). Người chơi đoán, máy báo "lớn hơn"/"nhỏ hơn" cho đến khi đúng; in số lần đoán.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-hw">Bài tập về nhà</span><h2>Chuẩn bị cho buổi 5</h2></header>
+  <div class="s-body">
+    <ol class="steps">
+      <li>Tính tổng các chữ số chẵn và đếm số chữ số lẻ của một số nguyên n.</li>
+      <li>Tính S = 1 − 2 + 3 − 4 + … ± n.</li>
+      <li>Nhập a, b; rút gọn phân số a/b và in kết quả (xử lý cả trường hợp b âm).</li>
+      <li>Tìm chữ số lớn nhất của một số nguyên dương.</li>
+      <li>Nhập số tiền vay và tiền trả mỗi tháng (lãi 1%/tháng tính trên dư nợ). In bảng dư nợ từng tháng, cho biết sau bao nhiêu tháng trả hết.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-sum">Tổng kết</span><h2>Ghi nhớ của buổi 4</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <ul>
+        <li><code>for</code>: biết trước số lần lặp.</li>
+        <li><code>while</code>: lặp theo điều kiện, có thể không chạy lần nào.</li>
+        <li><code>do…while</code>: chạy ít nhất 1 lần, dùng để bắt nhập lại.</li>
+        <li><code>break</code> thoát vòng lặp; <code>continue</code> sang vòng kế tiếp.</li>
+      </ul>
+      <ul>
+        <li>Tổng khởi tạo <strong>0</strong>, tích khởi tạo <strong>1</strong>, đếm khởi tạo <strong>0</strong>.</li>
+        <li>Tách chữ số: <code>n % 10</code> và <code>n /= 10</code>.</li>
+        <li>Cờ hiệu <code>bool</code> để kết luận "có tồn tại / tất cả đều".</li>
+        <li>Luôn đảm bảo vòng lặp có điểm dừng.</li>
+      </ul>
+    </div>
+    <div class="callout ok"><b>Buổi tiếp theo:</b> Vòng lặp lồng nhau, kiểm tra dữ liệu nhập bằng <code>TryParse</code> và xây dựng menu chương trình.</div>
+  </div>
+</section>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/slides.js"></script>
+</body>
+</html>

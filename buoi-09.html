@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buổi 9 · Mảng hai chiều</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="assets/slides.css">
+<style>
+  .mx { border-collapse: collapse; font-family: var(--mono); margin: 6px 0 10px; }
+  .mx td, .mx th { width: 54px; height: 40px; text-align: center; border: 1px solid #d9d4ee; font-size: 17px; }
+  .mx th { background: none; border: 0; color: var(--muted); font-size: 13px; font-weight: 600; }
+  .mx td.d1 { background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+  .mx td.d2 { background: var(--accent-soft); color: #0b7a79; font-weight: 700; }
+  .mx td.both { background: linear-gradient(135deg, var(--brand-soft) 50%, var(--accent-soft) 50%); font-weight: 700; }
+  .mx td.row { background: var(--warn-soft); }
+</style>
+</head>
+<body data-lesson="Buổi 9" data-title="Mảng hai chiều (ma trận)">
+<div class="deck">
+
+<section class="slide cover">
+  <div class="badge"><span class="dot"></span>Cơ sở lập trình C# · Buổi 09</div>
+  <h1>Mảng <em>hai chiều</em><br>(ma trận)</h1>
+  <p class="sub">Dữ liệu dạng bảng: điểm của nhiều sinh viên qua nhiều môn, doanh thu nhiều chi nhánh qua nhiều tháng, bàn cờ, ma trận toán học.</p>
+  <div class="meta"><span>⏱ 90–120 phút</span><span>▦ int[,]</span><span>↔ Dòng · Cột · Đường chéo</span></div>
+  <div class="big-num">09</div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mục tiêu</span><h2>Sau buổi học này, bạn có thể</h2></header>
+  <div class="s-body">
+    <ul class="goals">
+      <li>Khai báo, khởi tạo mảng hai chiều <code>int[,]</code> và lấy số dòng, số cột.</li>
+      <li>Viết hàm nhập, xuất ma trận đẹp mắt.</li>
+      <li>Xử lý theo <strong>dòng</strong>, theo <strong>cột</strong>, toàn ma trận.</li>
+      <li>Xử lý <strong>đường chéo chính, đường chéo phụ</strong>, tam giác trên/dưới của ma trận vuông.</li>
+      <li>Thực hiện chuyển vị, cộng, nhân ma trận; ứng dụng vào bảng số liệu kinh doanh.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Mảng hai chiều là gì?</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p>Mảng hai chiều là một <strong>bảng</strong> gồm <strong>m dòng</strong> và <strong>n cột</strong>. Mỗi phần tử được xác định bởi <strong>2 chỉ số</strong>: <code>a[dòng, cột]</code>.</p>
+        <script type="text/x-csharp" data-size="sm">
+          // Khai báo 3 dòng, 4 cột
+          int[,] a = new int[3, 4];
+
+          // Khởi tạo trực tiếp
+          int[,] b =
+          {
+              { 1,  2,  3,  4 },
+              { 5,  6,  7,  8 },
+              { 9, 10, 11, 12 }
+          };
+
+          int soDong = b.GetLength(0);  // 3
+          int soCot  = b.GetLength(1);  // 4
+          int tongPT = b.Length;        // 12
+          Console.WriteLine(b[1, 2]);   // 7
+          b[2, 0] = 99;
+        </script>
+      </div>
+      <div>
+        <table class="mx">
+          <tr><th></th><th>cột 0</th><th>cột 1</th><th>cột 2</th><th>cột 3</th></tr>
+          <tr><th>dòng 0</th><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+          <tr><th>dòng 1</th><td>5</td><td>6</td><td class="d1">7</td><td>8</td></tr>
+          <tr><th>dòng 2</th><td>9</td><td>10</td><td>11</td><td>12</td></tr>
+        </table>
+        <p class="small"><code>b[1, 2]</code> = dòng 1, cột 2 = <strong>7</strong></p>
+        <div class="callout warn small"><code>GetLength(0)</code> là số <strong>dòng</strong>, <code>GetLength(1)</code> là số <strong>cột</strong>. Còn <code>Length</code> là <strong>tổng số phần tử</strong> (dòng × cột).</div>
+        <div class="callout small">C# viết <code>a[i, j]</code> (dấu phẩy), khác với C/Java viết <code>a[i][j]</code>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mẫu chương trình</span><h2>Nhập, xuất và tạo ma trận ngẫu nhiên</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          static int[,] NhapMaTran()
+          {
+              Console.Write("Số dòng m = "); int m = int.Parse(Console.ReadLine());
+              Console.Write("Số cột n = ");  int n = int.Parse(Console.ReadLine());
+              int[,] a = new int[m, n];
+              for (int i = 0; i < m; i++)
+                  for (int j = 0; j < n; j++)
+                  {
+                      Console.Write($"a[{i},{j}] = ");
+                      a[i, j] = int.Parse(Console.ReadLine());
+                  }
+              return a;
+          }
+
+          static int[,] TaoNgauNhien(int m, int n, int min, int max)
+          {
+              Random rd = new Random();
+              int[,] a = new int[m, n];
+              for (int i = 0; i < m; i++)
+                  for (int j = 0; j < n; j++)
+                      a[i, j] = rd.Next(min, max + 1);
+              return a;
+          }
+        </script>
+      </div>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          static void XuatMaTran(int[,] a)
+          {
+              for (int i = 0; i < a.GetLength(0); i++)
+              {
+                  for (int j = 0; j < a.GetLength(1); j++)
+                      Console.Write($"{a[i, j],5}");   // căn phải 5 ký tự
+                  Console.WriteLine();                 // hết 1 dòng
+              }
+          }
+
+          int[,] a = TaoNgauNhien(3, 4, -9, 50);
+          XuatMaTran(a);
+        </script>
+        <script type="text/x-out">
+             12   -3   45    7
+             30    0   -9   18
+              5   41   22   36
+        </script>
+        <div class="callout tip small">Vòng ngoài <code>i</code> chạy theo dòng, vòng trong <code>j</code> chạy theo cột, giống in hình chữ nhật ở buổi 5.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Xử lý theo toàn ma trận, theo dòng, theo cột</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3>Toàn ma trận</h3>
+        <script type="text/x-csharp" data-size="sm">
+          static int TongMaTran(int[,] a)
+          {
+              int tong = 0;
+              foreach (int x in a) tong += x;   // foreach duyệt hết
+              return tong;
+          }
+          static int DemAm(int[,] a)
+          {
+              int dem = 0;
+              for (int i = 0; i < a.GetLength(0); i++)
+                  for (int j = 0; j < a.GetLength(1); j++)
+                      if (a[i, j] < 0) dem++;
+              return dem;
+          }
+        </script>
+      </div>
+      <div>
+        <h3>Theo từng dòng / từng cột</h3>
+        <script type="text/x-csharp" data-size="sm">
+          // Tổng dòng k: cố định i = k, chạy j
+          static int TongDong(int[,] a, int k)
+          {
+              int tong = 0;
+              for (int j = 0; j < a.GetLength(1); j++)
+                  tong += a[k, j];
+              return tong;
+          }
+          // Max cột k: cố định j = k, chạy i
+          static int MaxCot(int[,] a, int k)
+          {
+              int max = a[0, k];
+              for (int i = 1; i < a.GetLength(0); i++)
+                  if (a[i, k] > max) max = a[i, k];
+              return max;
+          }
+        </script>
+      </div>
+    </div>
+    <div class="callout small"><b>Mẹo nhớ:</b> xử lý <strong>dòng k</strong> thì cố định chỉ số đầu <code>a[k, j]</code>; xử lý <strong>cột k</strong> thì cố định chỉ số sau <code>a[i, k]</code>.</div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Ma trận vuông và đường chéo</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p class="small">Ma trận vuông cấp n: số dòng = số cột = n.</p>
+        <table class="mx">
+          <tr><th></th><th>0</th><th>1</th><th>2</th><th>3</th></tr>
+          <tr><th>0</th><td class="d1">1</td><td>2</td><td>3</td><td class="d2">4</td></tr>
+          <tr><th>1</th><td>5</td><td class="d1">6</td><td class="d2">7</td><td>8</td></tr>
+          <tr><th>2</th><td>9</td><td class="d2">10</td><td class="d1">11</td><td>12</td></tr>
+          <tr><th>3</th><td class="d2">13</td><td>14</td><td>15</td><td class="d1">16</td></tr>
+        </table>
+        <table class="tbl small">
+          <tr><th>Vùng</th><th>Điều kiện</th></tr>
+          <tr><td><span class="pill">Chéo chính</span></td><td><code>i == j</code></td></tr>
+          <tr><td><span class="pill" style="background:var(--accent-soft);color:#0b7a79">Chéo phụ</span></td><td><code>i + j == n - 1</code></td></tr>
+          <tr><td>Tam giác trên chéo chính</td><td><code>j &gt; i</code></td></tr>
+          <tr><td>Tam giác dưới chéo chính</td><td><code>j &lt; i</code></td></tr>
+        </table>
+      </div>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          static int TongCheoChinh(int[,] a)
+          {
+              int n = a.GetLength(0), tong = 0;
+              for (int i = 0; i < n; i++)
+                  tong += a[i, i];             // chỉ 1 vòng lặp!
+              return tong;
+          }
+
+          static int TongCheoPhu(int[,] a)
+          {
+              int n = a.GetLength(0), tong = 0;
+              for (int i = 0; i < n; i++)
+                  tong += a[i, n - 1 - i];
+              return tong;
+          }
+
+          static bool LaTamGiacTren(int[,] a)
+          {   // mọi phần tử dưới chéo chính bằng 0
+              int n = a.GetLength(0);
+              for (int i = 1; i < n; i++)
+                  for (int j = 0; j < i; j++)
+                      if (a[i, j] != 0) return false;
+              return true;
+          }
+        </script>
+        <p class="small">Với ma trận trên: chéo chính = 1+6+11+16 = <strong>34</strong>; chéo phụ = 4+7+10+13 = <strong>34</strong>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Chuyển vị, cộng và nhân ma trận</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          // Chuyển vị: dòng thành cột (m×n → n×m)
+          static int[,] ChuyenVi(int[,] a)
+          {
+              int m = a.GetLength(0), n = a.GetLength(1);
+              int[,] t = new int[n, m];
+              for (int i = 0; i < m; i++)
+                  for (int j = 0; j < n; j++)
+                      t[j, i] = a[i, j];
+              return t;
+          }
+
+          // Cộng: 2 ma trận cùng kích thước
+          static int[,] Cong(int[,] a, int[,] b)
+          {
+              int m = a.GetLength(0), n = a.GetLength(1);
+              int[,] c = new int[m, n];
+              for (int i = 0; i < m; i++)
+                  for (int j = 0; j < n; j++)
+                      c[i, j] = a[i, j] + b[i, j];
+              return c;
+          }
+        </script>
+      </div>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          // Nhân: A(m×p) × B(p×n) = C(m×n)
+          static int[,] Nhan(int[,] a, int[,] b)
+          {
+              int m = a.GetLength(0), p = a.GetLength(1), n = b.GetLength(1);
+              if (p != b.GetLength(0)) return null;   // không nhân được
+              int[,] c = new int[m, n];
+              for (int i = 0; i < m; i++)
+                  for (int j = 0; j < n; j++)
+                      for (int k = 0; k < p; k++)
+                          c[i, j] += a[i, k] * b[k, j];
+              return c;
+          }
+        </script>
+        <div class="callout small"><b>Quy tắc nhân:</b> phần tử c[i, j] = tổng tích dòng i của A với cột j của B. Số cột của A phải bằng số dòng của B.</div>
+        <p class="small">Ví dụ: [[1,2],[3,4]] × [[5,6],[7,8]] = [[19,22],[43,50]].</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide divider">
+  <div class="num">THỰC HÀNH</div>
+  <h2>Ứng dụng bảng số liệu</h2>
+  <p>Mảng hai chiều là công cụ tự nhiên cho dữ liệu kinh tế dạng bảng.</p>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 1</span><h2>Bảng doanh thu chi nhánh × quý</h2></header>
+  <div class="s-body">
+    <div class="cols c-64">
+      <script type="text/x-csharp" data-size="sm">
+        string[] cn = { "Q.1", "Q.3", "Thủ Đức", "Bình Thạnh" };
+        double[,] dt =                     // tỷ đồng, 4 chi nhánh × 4 quý
+        {
+            { 5.2, 6.1, 5.8, 7.4 },
+            { 3.9, 4.2, 4.0, 4.8 },
+            { 6.5, 7.0, 7.9, 8.6 },
+            { 2.8, 3.1, 2.6, 3.5 }
+        };
+        int m = dt.GetLength(0), n = dt.GetLength(1);
+
+        Console.WriteLine($"{"Chi nhánh",-12}{"Q1",7}{"Q2",7}{"Q3",7}{"Q4",7}{"Cả năm",9}");
+        double tongMax = 0; int cnMax = 0;
+        for (int i = 0; i < m; i++)
+        {
+            double tongCN = 0;
+            Console.Write($"{cn[i],-12}");
+            for (int j = 0; j < n; j++)
+            {
+                Console.Write($"{dt[i, j],7:F1}");
+                tongCN += dt[i, j];
+            }
+            Console.WriteLine($"{tongCN,9:F1}");
+            if (tongCN > tongMax) { tongMax = tongCN; cnMax = i; }
+        }
+
+        Console.Write($"{"Tổng quý",-12}");
+        for (int j = 0; j < n; j++)
+        {
+            double tongQuy = 0;
+            for (int i = 0; i < m; i++) tongQuy += dt[i, j];
+            Console.Write($"{tongQuy,7:F1}");
+        }
+        Console.WriteLine($"\nChi nhánh dẫn đầu: {cn[cnMax]} ({tongMax:F1} tỷ)");
+      </script>
+      <div>
+        <script type="text/x-out">
+          Chi nhánh        Q1     Q2     Q3     Q4   Cả năm
+          Q.1             5.2    6.1    5.8    7.4     24.5
+          Q.3             3.9    4.2    4.0    4.8     16.9
+          Thủ Đức         6.5    7.0    7.9    8.6     30.0
+          Bình Thạnh      2.8    3.1    2.6    3.5     12.0
+          Tổng quý       18.4   20.4   20.3   24.3
+          Chi nhánh dẫn đầu: Thủ Đức (30.0 tỷ)
+        </script>
+        <div class="callout small">Kết hợp <strong>mảng 1 chiều</strong> (tên chi nhánh) với <strong>mảng 2 chiều</strong> (số liệu): dòng i của ma trận ứng với <code>cn[i]</code>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 2</span><h2>Bảng điểm sinh viên × môn học</h2></header>
+  <div class="s-body">
+    <div class="cols c-64">
+      <script type="text/x-csharp" data-size="sm">
+        string[] mon = { "CSLT", "CSDL", "Toán", "Anh" };
+        int[] tinChi = { 3, 3, 3, 4 };
+        double[,] diem =
+        {
+            { 8.0, 7.5, 9.0, 6.5 },   // SV 0
+            { 5.5, 4.0, 6.0, 7.0 },   // SV 1
+            { 9.5, 8.5, 8.0, 9.0 }    // SV 2
+        };
+
+        for (int i = 0; i < diem.GetLength(0); i++)
+        {
+            double tongDiem = 0; int tongTC = 0; int soMonRot = 0;
+            for (int j = 0; j < diem.GetLength(1); j++)
+            {
+                tongDiem += diem[i, j] * tinChi[j];   // điểm × tín chỉ
+                tongTC += tinChi[j];
+                if (diem[i, j] < 5) soMonRot++;
+            }
+            double dtb = tongDiem / tongTC;           // trung bình có trọng số
+            Console.WriteLine($"SV {i}: ĐTB = {dtb:F2}, số môn rớt = {soMonRot}");
+        }
+
+        // Môn có điểm trung bình thấp nhất
+        int monKho = 0; double tbMin = double.MaxValue;
+        for (int j = 0; j < diem.GetLength(1); j++)
+        {
+            double t = 0;
+            for (int i = 0; i < diem.GetLength(0); i++) t += diem[i, j];
+            t /= diem.GetLength(0);
+            if (t < tbMin) { tbMin = t; monKho = j; }
+        }
+        Console.WriteLine($"Môn khó nhất: {mon[monKho]} (TB {tbMin:F2})");
+      </script>
+      <div>
+        <script type="text/x-out">
+          SV 0: ĐTB = 7.65, số môn rớt = 0
+          SV 1: ĐTB = 5.73, số môn rớt = 1
+          SV 2: ĐTB = 8.77, số môn rớt = 0
+          Môn khó nhất: CSDL (TB 6.67)
+        </script>
+        <div class="callout tip small"><b>Trung bình có trọng số:</b> ĐTB = Σ(điểm × tín chỉ) / Σ tín chỉ, đúng cách tính GPA thực tế.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mở rộng</span><h2>Mảng răng cưa (jagged array)</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p class="small"><strong>Mảng của mảng</strong>: mỗi dòng là một mảng 1 chiều riêng, có thể <strong>dài ngắn khác nhau</strong>.</p>
+        <script type="text/x-csharp" data-size="sm">
+          int[][] j = new int[3][];
+          j[0] = new int[] { 1, 2 };
+          j[1] = new int[] { 3, 4, 5, 6 };
+          j[2] = new int[] { 7 };
+
+          for (int i = 0; i < j.Length; i++)
+          {
+              for (int k = 0; k < j[i].Length; k++)
+                  Console.Write(j[i][k] + " ");
+              Console.WriteLine();
+          }
+        </script>
+        <script type="text/x-out">
+          1 2
+          3 4 5 6
+          7
+        </script>
+      </div>
+      <div>
+        <table class="tbl small">
+          <tr><th></th><th><code>int[,]</code></th><th><code>int[][]</code></th></tr>
+          <tr><td>Hình dạng</td><td>Chữ nhật</td><td>Mỗi dòng dài khác nhau</td></tr>
+          <tr><td>Truy cập</td><td><code>a[i, j]</code></td><td><code>a[i][j]</code></td></tr>
+          <tr><td>Số dòng</td><td><code>GetLength(0)</code></td><td><code>a.Length</code></td></tr>
+          <tr><td>Số cột dòng i</td><td><code>GetLength(1)</code></td><td><code>a[i].Length</code></td></tr>
+        </table>
+        <div class="callout small">Ở môn Cơ sở lập trình, chủ yếu dùng <code>int[,]</code>. Mảng răng cưa chỉ cần nhận biết.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lưu ý</span><h2>Lỗi thường gặp</h2></header>
+  <div class="s-body">
+    <table class="tbl">
+      <tr><th>Lỗi</th><th>Code sai</th><th>Cách sửa</th></tr>
+      <tr><td>Nhầm cú pháp</td><td><code>a[i][j]</code> với <code>int[,]</code></td><td><code>a[i, j]</code></td></tr>
+      <tr><td>Dùng <code>Length</code> làm số dòng</td><td><code>for (i = 0; i &lt; a.Length; i++)</code></td><td><code>a.GetLength(0)</code></td></tr>
+      <tr><td>Đảo dòng/cột</td><td><code>j &lt; a.GetLength(0)</code> cho cột</td><td>Cột dùng <code>GetLength(1)</code></td></tr>
+      <tr><td>Xử lý đường chéo bằng 2 vòng lặp + if</td><td>Đúng nhưng chậm, dễ rối</td><td>1 vòng lặp: <code>a[i, i]</code>, <code>a[i, n-1-i]</code></td></tr>
+      <tr><td>Quên reset tổng mỗi dòng</td><td>Khai báo <code>tongDong</code> ngoài cả 2 vòng</td><td>Khởi tạo đầu vòng <code>i</code></td></tr>
+      <tr><td>Xử lý đường chéo cho ma trận không vuông</td><td><code>a[i, i]</code> vượt cột</td><td>Kiểm tra <code>GetLength(0) == GetLength(1)</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Bài tập vận dụng</span><h2>Luyện tập</h2></header>
+  <div class="s-body">
+    <div class="ex"><div class="ex-h"><b>Bài 1.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Nhập ma trận m × n. Tính tổng các phần tử dương, đếm số chẵn, tìm max và vị trí (dòng, cột) của max.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 2.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>In tổng từng dòng và cho biết dòng nào có tổng lớn nhất.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 3.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Kiểm tra ma trận vuông có <strong>đối xứng</strong> qua đường chéo chính không (a[i, j] == a[j, i] với mọi i, j).</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          static bool DoiXung(int[,] a)
+          {
+              int n = a.GetLength(0);
+              for (int i = 0; i < n; i++)
+                  for (int j = i + 1; j < n; j++)
+                      if (a[i, j] != a[j, i]) return false;
+              return true;
+          }
+        </script>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 4.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Sắp xếp từng dòng của ma trận tăng dần (gợi ý: sắp xếp chọn trực tiếp với chỉ số <code>a[i, j]</code>).</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 5.</b><span class="lvl l3">Nâng cao</span></div>
+      <p>Tìm các <strong>điểm yên ngựa</strong>: phần tử nhỏ nhất trên dòng của nó và lớn nhất trên cột của nó.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-hw">Bài tập về nhà</span><h2>Chuẩn bị cho buổi 10</h2></header>
+  <div class="s-body">
+    <ol class="steps">
+      <li>Viết chương trình menu xử lý ma trận vuông: nhập, xuất, tổng 2 đường chéo, kiểm tra tam giác trên, chuyển vị.</li>
+      <li>Tạo ma trận đơn vị cấp n (chéo chính bằng 1, còn lại bằng 0).</li>
+      <li>Hoán đổi hai dòng p và q của ma trận.</li>
+      <li>Bảng giá cổ phiếu 5 mã × 10 ngày: tìm mã có mức tăng % cao nhất từ ngày đầu đến ngày cuối, và ngày có tổng giá trị thị trường cao nhất.</li>
+      <li>In ma trận xoắn ốc n × n (1 → n²) theo chiều kim đồng hồ. <em>(Thử thách)</em></li>
+    </ol>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-sum">Tổng kết</span><h2>Ghi nhớ của buổi 9</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <ul>
+        <li>Khai báo: <code>int[,] a = new int[m, n];</code>, truy cập <code>a[i, j]</code>.</li>
+        <li>Số dòng <code>GetLength(0)</code>, số cột <code>GetLength(1)</code>.</li>
+        <li>Duyệt: 2 vòng lặp lồng, <code>i</code> dòng, <code>j</code> cột.</li>
+        <li>Dòng k: <code>a[k, j]</code>; cột k: <code>a[i, k]</code>.</li>
+      </ul>
+      <ul>
+        <li>Chéo chính <code>i == j</code>; chéo phụ <code>i + j == n − 1</code>.</li>
+        <li>Tam giác trên <code>j &gt; i</code>, dưới <code>j &lt; i</code>.</li>
+        <li>Nhân ma trận: 3 vòng lặp, cột A = dòng B.</li>
+        <li>Kết hợp mảng 1 chiều (nhãn) + 2 chiều (số liệu).</li>
+      </ul>
+    </div>
+    <div class="callout ok"><b>Buổi tiếp theo:</b> Chuỗi ký tự: xử lý văn bản, chuẩn hóa họ tên, đếm từ.</div>
+  </div>
+</section>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/slides.js"></script>
+</body>
+</html>

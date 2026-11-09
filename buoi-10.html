@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buổi 10 · Chuỗi ký tự</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="assets/slides.css">
+<style>
+  .arr-viz { display: flex; margin: 10px 0 4px; font-family: var(--mono); }
+  .arr-viz div { width: 46px; text-align: center; }
+  .arr-viz .v { border: 2px solid var(--accent); border-right-width: 0; padding: 8px 0; font-size: 19px; font-weight: 700; color: var(--ink); }
+  .arr-viz div:last-child .v { border-right-width: 2px; }
+  .arr-viz .i { font-size: 13px; color: var(--muted); margin-top: 4px; }
+</style>
+</head>
+<body data-lesson="Buổi 10" data-title="Chuỗi ký tự (string)">
+<div class="deck">
+
+<section class="slide cover">
+  <div class="badge"><span class="dot"></span>Cơ sở lập trình C# · Buổi 10</div>
+  <h1>Xử lý <em>chuỗi</em> ký tự</h1>
+  <p class="sub">Đếm ký tự, chuẩn hóa họ tên, tách từ, kiểm tra mật khẩu, đảo chuỗi: những bài toán văn bản xuất hiện trong hầu hết đề thi.</p>
+  <div class="meta"><span>⏱ 90–120 phút</span><span>🔤 char · string</span><span>✂ Split · Substring · Trim</span></div>
+  <div class="big-num">10</div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Mục tiêu</span><h2>Sau buổi học này, bạn có thể</h2></header>
+  <div class="s-body">
+    <ul class="goals">
+      <li>Truy cập và duyệt từng ký tự của chuỗi; dùng các hàm kiểm tra của <code>char</code>.</li>
+      <li>Sử dụng thành thạo các phương thức: <code>Length</code>, <code>ToUpper</code>, <code>Trim</code>, <code>Substring</code>, <code>IndexOf</code>, <code>Replace</code>, <code>Split</code>, <code>Join</code>…</li>
+      <li>Hiểu tính <strong>bất biến</strong> của string và khi nào dùng <code>StringBuilder</code>.</li>
+      <li>Giải bài toán: đếm nguyên âm, đếm từ, đảo chuỗi, chuỗi đối xứng, chuẩn hóa họ tên, tách họ/tên.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Chuỗi là dãy các ký tự</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          string s = "Hello C#";
+          Console.WriteLine(s.Length);    // 8
+          Console.WriteLine(s[0]);        // 'H'
+          Console.WriteLine(s[s.Length - 1]);  // '#'
+
+          // Duyệt từng ký tự
+          for (int i = 0; i < s.Length; i++)
+              Console.Write(s[i] + "-");
+
+          foreach (char c in s)
+              Console.Write(c);
+        </script>
+        <script type="text/x-out">
+          8
+          H
+          #
+          H-e-l-l-o- -C-#-Hello C#
+        </script>
+      </div>
+      <div>
+        <div class="arr-viz">
+          <div><div class="v">H</div><div class="i">0</div></div>
+          <div><div class="v">e</div><div class="i">1</div></div>
+          <div><div class="v">l</div><div class="i">2</div></div>
+          <div><div class="v">l</div><div class="i">3</div></div>
+          <div><div class="v">o</div><div class="i">4</div></div>
+          <div><div class="v">␣</div><div class="i">5</div></div>
+          <div><div class="v">C</div><div class="i">6</div></div>
+          <div><div class="v">#</div><div class="i">7</div></div>
+        </div>
+        <ul class="small">
+          <li>Chuỗi giống <strong>mảng các char</strong>: chỉ số từ 0 đến Length − 1.</li>
+          <li><code>char</code> dùng nháy đơn <code>'a'</code>; <code>string</code> dùng nháy kép <code>"a"</code>.</li>
+          <li>Khoảng trắng cũng là một ký tự.</li>
+        </ul>
+        <div class="callout danger small"><b>Chuỗi là bất biến (immutable):</b> <code>s[0] = 'h';</code> báo lỗi. Muốn sửa phải tạo chuỗi mới.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Các hàm kiểm tra và chuyển đổi ký tự (char)</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <table class="tbl small">
+        <tr><th>Hàm</th><th>Trả về true khi c là…</th></tr>
+        <tr><td><code>char.IsLetter(c)</code></td><td>Chữ cái (kể cả tiếng Việt có dấu)</td></tr>
+        <tr><td><code>char.IsDigit(c)</code></td><td>Chữ số 0–9</td></tr>
+        <tr><td><code>char.IsLetterOrDigit(c)</code></td><td>Chữ cái hoặc chữ số</td></tr>
+        <tr><td><code>char.IsUpper(c)</code> / <code>IsLower(c)</code></td><td>Chữ hoa / chữ thường</td></tr>
+        <tr><td><code>char.IsWhiteSpace(c)</code></td><td>Khoảng trắng, tab, xuống dòng</td></tr>
+        <tr><td><code>char.IsPunctuation(c)</code></td><td>Dấu câu . , ! ?</td></tr>
+        <tr><td><code>char.ToUpper(c)</code> / <code>ToLower(c)</code></td><td>Trả về ký tự hoa / thường</td></tr>
+      </table>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          string s = "Mat khau: Abc123!";
+          int hoa = 0, thuong = 0, so = 0, khac = 0;
+          foreach (char c in s)
+          {
+              if (char.IsUpper(c)) hoa++;
+              else if (char.IsLower(c)) thuong++;
+              else if (char.IsDigit(c)) so++;
+              else if (!char.IsWhiteSpace(c)) khac++;
+          }
+          Console.WriteLine($"Hoa:{hoa} Thường:{thuong} Số:{so} Khác:{khac}");
+
+          // Ký tự cũng là số (mã Unicode)
+          char c1 = '7';
+          int giaTri = c1 - '0';        // 7
+          char c2 = (char)('a' + 2);    // 'c'
+        </script>
+        <script type="text/x-out">Hoa:2 Thường:8 Số:3 Khác:2</script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Phương thức xử lý chuỗi (1/2)</h2></header>
+  <div class="s-body">
+    <table class="tbl small">
+      <tr><th>Phương thức</th><th>Ý nghĩa</th><th>Ví dụ với <code>s = "  Lap Trinh C#  "</code></th></tr>
+      <tr><td><code>s.Length</code></td><td>Độ dài</td><td>16</td></tr>
+      <tr><td><code>s.ToUpper()</code> / <code>ToLower()</code></td><td>Chuyển hoa / thường</td><td><code>"  LAP TRINH C#  "</code></td></tr>
+      <tr><td><code>s.Trim()</code></td><td>Bỏ khoảng trắng 2 đầu</td><td><code>"Lap Trinh C#"</code></td></tr>
+      <tr><td><code>s.TrimStart()</code> / <code>TrimEnd()</code></td><td>Bỏ khoảng trắng đầu / cuối</td><td><code>"Lap Trinh C#  "</code></td></tr>
+      <tr><td><code>s.Trim().Substring(4, 5)</code></td><td>Lấy 5 ký tự từ vị trí 4</td><td><code>"Trinh"</code></td></tr>
+      <tr><td><code>s.Trim().Substring(4)</code></td><td>Lấy từ vị trí 4 đến hết</td><td><code>"Trinh C#"</code></td></tr>
+      <tr><td><code>s.IndexOf("C#")</code></td><td>Vị trí xuất hiện đầu tiên (−1 nếu không có)</td><td>12</td></tr>
+      <tr><td><code>s.LastIndexOf('n')</code></td><td>Vị trí xuất hiện cuối cùng</td><td>9</td></tr>
+      <tr><td><code>s.Contains("Trinh")</code></td><td>Có chứa chuỗi con không</td><td><code>true</code></td></tr>
+    </table>
+    <div class="callout warn small">Các phương thức <strong>trả về chuỗi mới</strong>, không sửa chuỗi gốc. Phải gán lại: <code>s = s.Trim();</code></div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Phương thức xử lý chuỗi (2/2)</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <table class="tbl small">
+        <tr><th>Phương thức</th><th>Ví dụ → Kết quả</th></tr>
+        <tr><td><code>Replace(a, b)</code></td><td><code>"a-b-c".Replace("-", "")</code> → <code>"abc"</code></td></tr>
+        <tr><td><code>Insert(i, t)</code></td><td><code>"abc".Insert(1, "X")</code> → <code>"aXbc"</code></td></tr>
+        <tr><td><code>Remove(i, n)</code></td><td><code>"abcdef".Remove(2, 3)</code> → <code>"abf"</code></td></tr>
+        <tr><td><code>StartsWith</code> / <code>EndsWith</code></td><td><code>"bai1.cs".EndsWith(".cs")</code> → true</td></tr>
+        <tr><td><code>Split(c)</code></td><td><code>"a,b,c".Split(',')</code> → <code>{"a","b","c"}</code></td></tr>
+        <tr><td><code>string.Join(sep, arr)</code></td><td><code>string.Join("-", arr)</code> → <code>"a-b-c"</code></td></tr>
+        <tr><td><code>PadLeft(n, c)</code></td><td><code>"7".PadLeft(3, '0')</code> → <code>"007"</code></td></tr>
+        <tr><td><code>string.Compare(a, b)</code></td><td>&lt;0 nếu a đứng trước b theo thứ tự từ điển</td></tr>
+        <tr><td><code>ToCharArray()</code></td><td><code>"abc".ToCharArray()</code> → <code>{'a','b','c'}</code></td></tr>
+        <tr><td><code>new string(c, n)</code></td><td><code>new string('*', 5)</code> → <code>"*****"</code></td></tr>
+      </table>
+      <div>
+        <h3>So sánh chuỗi</h3>
+        <script type="text/x-csharp" data-size="sm">
+          string a = "UEH", b = "ueh";
+          Console.WriteLine(a == b);                    // False
+          Console.WriteLine(a.ToLower() == b.ToLower()); // True
+          Console.WriteLine(a.Equals(b,
+              StringComparison.OrdinalIgnoreCase));     // True
+          Console.WriteLine(string.Compare("An", "Binh")); // -1
+        </script>
+        <h3>Split nhiều dấu phân cách</h3>
+        <script type="text/x-csharp" data-size="sm">
+          string cau = "Hoc  lap trinh,   that vui!";
+          string[] tu = cau.Split(new char[] { ' ', ',', '!' },
+                           StringSplitOptions.RemoveEmptyEntries);
+          Console.WriteLine(tu.Length);   // 5
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lý thuyết</span><h2>Ghép chuỗi trong vòng lặp: StringBuilder</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <p class="small">Vì chuỗi bất biến, mỗi lần <code>s += ...</code> sẽ <strong>tạo chuỗi mới</strong> và sao chép lại toàn bộ. Ghép hàng nghìn lần sẽ rất chậm.</p>
+        <script type="text/x-csharp" data-size="sm">
+          using System.Text;
+
+          StringBuilder sb = new StringBuilder();
+          for (int i = 1; i <= 5; i++)
+          {
+              sb.Append(i);
+              if (i < 5) sb.Append(", ");
+          }
+          string kq = sb.ToString();
+          Console.WriteLine(kq);
+
+          // StringBuilder cho phép sửa ký tự
+          StringBuilder t = new StringBuilder("hello");
+          t[0] = 'H';
+          Console.WriteLine(t);
+        </script>
+        <script type="text/x-out">
+          1, 2, 3, 4, 5
+          Hello
+        </script>
+      </div>
+      <div>
+        <table class="tbl small">
+          <tr><th>Phương thức</th><th>Tác dụng</th></tr>
+          <tr><td><code>Append(x)</code></td><td>Thêm vào cuối</td></tr>
+          <tr><td><code>Insert(i, x)</code></td><td>Chèn tại vị trí i</td></tr>
+          <tr><td><code>Remove(i, n)</code></td><td>Xóa n ký tự từ i</td></tr>
+          <tr><td><code>sb[i] = c</code></td><td>Sửa ký tự</td></tr>
+          <tr><td><code>ToString()</code></td><td>Chuyển về string</td></tr>
+        </table>
+        <div class="callout tip small">Với bài tập nhỏ dùng <code>+=</code> vẫn được. Khi ghép nhiều lần trong vòng lặp hoặc cần sửa từng ký tự, hãy dùng <code>StringBuilder</code>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide divider">
+  <div class="num">THỰC HÀNH</div>
+  <h2>Các bài toán chuỗi kinh điển</h2>
+  <p>Đếm, đảo, kiểm tra đối xứng, tách từ, chuẩn hóa.</p>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 1</span><h2>Đếm nguyên âm, đảo chuỗi, chuỗi đối xứng</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          static int DemNguyenAm(string s)
+          {
+              int dem = 0;
+              foreach (char c in s.ToLower())
+                  if ("aeiou".Contains(c))   // c có nằm trong "aeiou"?
+                      dem++;
+              return dem;
+          }
+
+          static string DaoChuoi(string s)
+          {
+              string kq = "";
+              for (int i = s.Length - 1; i >= 0; i--)
+                  kq += s[i];
+              return kq;
+          }
+
+          static bool DoiXung(string s)
+          {
+              s = s.ToLower().Replace(" ", "");
+              int l = 0, r = s.Length - 1;
+              while (l < r)
+              {
+                  if (s[l] != s[r]) return false;
+                  l++; r--;
+              }
+              return true;
+          }
+        </script>
+      </div>
+      <div>
+        <script type="text/x-csharp" data-size="sm">
+          Console.WriteLine(DemNguyenAm("Lap Trinh Co So"));
+          Console.WriteLine(DaoChuoi("CSharp"));
+          Console.WriteLine(DoiXung("Never odd or even"));
+          Console.WriteLine(DoiXung("UEH"));
+        </script>
+        <script type="text/x-out">
+          4
+          prahSC
+          True
+          False
+        </script>
+        <div class="callout tip small">Cách ngắn đảo chuỗi: <code>char[] a = s.ToCharArray(); Array.Reverse(a); string kq = new string(a);</code></div>
+        <div class="callout small">Kiểm tra đối xứng bằng 2 con trỏ <code>l</code>, <code>r</code> tiến vào giữa, chỉ duyệt nửa chuỗi.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 2</span><h2>Đếm từ và tìm từ dài nhất</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3>Cách 1: dùng Split</h3>
+        <script type="text/x-csharp" data-size="sm">
+          static string[] TachTu(string s)
+          {
+              return s.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+          }
+
+          string cau = "  Truong   Dai hoc  Kinh te  ";
+          string[] tu = TachTu(cau);
+          Console.WriteLine($"Số từ: {tu.Length}");
+
+          string dai = "";
+          foreach (string w in tu)
+              if (w.Length > dai.Length) dai = w;
+          Console.WriteLine($"Từ dài nhất: {dai}");
+        </script>
+        <script type="text/x-out">
+          Số từ: 5
+          Từ dài nhất: Truong
+        </script>
+      </div>
+      <div>
+        <h3>Cách 2: duyệt ký tự (không dùng Split)</h3>
+        <script type="text/x-csharp" data-size="sm">
+          static int DemTu(string s)
+          {
+              int dem = 0;
+              for (int i = 0; i < s.Length; i++)
+              {
+                  // bắt đầu một từ: ký tự khác trắng
+                  // và (là ký tự đầu hoặc trước nó là trắng)
+                  if (s[i] != ' ' && (i == 0 || s[i - 1] == ' '))
+                      dem++;
+              }
+              return dem;
+          }
+        </script>
+        <div class="callout warn small">Đề thi đôi khi <strong>cấm dùng hàm có sẵn</strong> như Split. Khi đó phải biết cách 2.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 3</span><h2>Chuẩn hóa họ tên</h2></header>
+  <div class="s-body">
+    <p class="small"><strong>Đề:</strong> nhập họ tên có thể thừa khoảng trắng, viết hoa/thường lộn xộn. Chuẩn hóa: bỏ khoảng trắng thừa, viết hoa chữ cái đầu mỗi từ, các chữ còn lại viết thường.</p>
+    <div class="cols c-64">
+      <script type="text/x-csharp" data-size="sm">
+        static string ChuanHoaHoTen(string s)
+        {
+            string[] tu = s.Trim().ToLower()
+                           .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < tu.Length; i++)
+            {
+                tu[i] = char.ToUpper(tu[i][0]) + tu[i].Substring(1);
+            }
+            return string.Join(" ", tu);
+        }
+
+        static string LayTen(string hoTen)      // từ cuối cùng
+        {
+            hoTen = hoTen.Trim();
+            int vt = hoTen.LastIndexOf(' ');
+            return vt == -1 ? hoTen : hoTen.Substring(vt + 1);
+        }
+
+        static string LayHo(string hoTen)       // từ đầu tiên
+        {
+            hoTen = hoTen.Trim();
+            int vt = hoTen.IndexOf(' ');
+            return vt == -1 ? hoTen : hoTen.Substring(0, vt);
+        }
+
+        // Main
+        Console.InputEncoding = Console.OutputEncoding = System.Text.Encoding.UTF8;
+        Console.Write("Họ tên: ");
+        string ht = ChuanHoaHoTen(Console.ReadLine());
+        Console.WriteLine($"Chuẩn hóa: [{ht}]");
+        Console.WriteLine($"Họ: {LayHo(ht)} | Tên: {LayTen(ht)}");
+      </script>
+      <div>
+        <script type="text/x-out">
+          Họ tên: {{   nGUYỄN   thị   minh  ANH }}
+          Chuẩn hóa: [Nguyễn Thị Minh Anh]
+          Họ: Nguyễn | Tên: Anh
+        </script>
+        <div class="card small"><h4><span class="ic">⚙</span>Các bước</h4>
+          <ol>
+            <li><code>Trim</code> bỏ trắng 2 đầu</li>
+            <li><code>ToLower</code> toàn bộ</li>
+            <li><code>Split</code> bỏ phần tử rỗng</li>
+            <li>Viết hoa ký tự <code>[0]</code> của từng từ</li>
+            <li><code>Join</code> lại bằng 1 khoảng trắng</li>
+          </ol>
+        </div>
+        <div class="callout tip small">Bài này gần như chắc chắn xuất hiện trong đề thi phần chuỗi.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Ví dụ mẫu 4</span><h2>Thống kê tần suất ký tự và kiểm tra mật khẩu</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <div>
+        <h3>Tần suất chữ cái (a–z)</h3>
+        <script type="text/x-csharp" data-size="sm">
+          string s = "programming";
+          int[] dem = new int[26];          // dem[0] cho 'a', dem[1] cho 'b'...
+          foreach (char c in s.ToLower())
+              if (c >= 'a' && c <= 'z')
+                  dem[c - 'a']++;
+
+          for (int i = 0; i < 26; i++)
+              if (dem[i] > 0)
+                  Console.Write($"{(char)('a' + i)}:{dem[i]} ");
+        </script>
+        <script type="text/x-out">a:1 g:2 i:1 m:2 n:1 o:1 p:1 r:2</script>
+        <div class="callout small">Kỹ thuật <strong>mảng đếm</strong>: dùng ký tự làm chỉ số (<code>c - 'a'</code>).</div>
+      </div>
+      <div>
+        <h3>Mật khẩu mạnh?</h3>
+        <script type="text/x-csharp" data-size="sm">
+          static bool MatKhauManh(string mk)
+          {
+              if (mk.Length < 8) return false;
+              bool coHoa = false, coThuong = false, coSo = false, coDB = false;
+              foreach (char c in mk)
+              {
+                  if (char.IsUpper(c)) coHoa = true;
+                  else if (char.IsLower(c)) coThuong = true;
+                  else if (char.IsDigit(c)) coSo = true;
+                  else coDB = true;
+              }
+              return coHoa && coThuong && coSo && coDB;
+          }
+          Console.WriteLine(MatKhauManh("ueh2025"));     // False
+          Console.WriteLine(MatKhauManh("Ueh@2025"));    // True
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker">Lưu ý</span><h2>Lỗi thường gặp với chuỗi</h2></header>
+  <div class="s-body">
+    <table class="tbl">
+      <tr><th>Lỗi</th><th>Code sai</th><th>Cách sửa</th></tr>
+      <tr><td>Quên gán lại kết quả</td><td><code>s.ToUpper();</code> (s không đổi)</td><td><code>s = s.ToUpper();</code></td></tr>
+      <tr><td>Sửa trực tiếp ký tự</td><td><code>s[0] = 'A';</code></td><td>Tạo chuỗi mới hoặc dùng <code>StringBuilder</code></td></tr>
+      <tr><td>Substring vượt độ dài</td><td><code>"abc".Substring(1, 5)</code></td><td>Đảm bảo <code>start + length &lt;= s.Length</code></td></tr>
+      <tr><td>Nhầm char và string</td><td><code>if (c == "a")</code> với <code>c</code> là char</td><td><code>c == 'a'</code></td></tr>
+      <tr><td>Truy cập <code>s[0]</code> khi chuỗi rỗng</td><td>Người dùng nhấn Enter ngay</td><td>Kiểm tra <code>string.IsNullOrWhiteSpace(s)</code> trước</td></tr>
+      <tr><td>Split ra phần tử rỗng</td><td><code>"a  b".Split(' ')</code> → 3 phần tử</td><td>Thêm <code>StringSplitOptions.RemoveEmptyEntries</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-ex">Bài tập vận dụng</span><h2>Luyện tập</h2></header>
+  <div class="s-body">
+    <div class="ex"><div class="ex-h"><b>Bài 1.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Nhập một chuỗi, đếm số chữ cái, chữ số, khoảng trắng. In chuỗi ở dạng toàn chữ hoa và toàn chữ thường.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 2.</b><span class="lvl l1">Cơ bản</span></div>
+      <p>Đếm số lần xuất hiện của một từ trong câu (không phân biệt hoa thường).</p>
+      <details class="sol"><summary>Xem gợi ý</summary>
+        <p class="small">Tách câu thành mảng từ bằng <code>Split</code>, so sánh từng từ với từ cần tìm sau khi cùng <code>ToLower()</code>.</p>
+      </details>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 3.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Tính tổng các chữ số có trong chuỗi: "a1b2c34" → 1 + 2 + 3 + 4 = 10. Mở rộng: tính tổng các <strong>số</strong> trong chuỗi: "a1b2c34" → 1 + 2 + 34 = 37.</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 4.</b><span class="lvl l2">Trung bình</span></div>
+      <p>Tạo email sinh viên từ họ tên: "Nguyễn Văn An" → <code>annv@st.ueh.edu.vn</code> (tên + chữ cái đầu các từ còn lại, bỏ dấu tiếng Việt là phần mở rộng).</p>
+    </div>
+    <div class="ex"><div class="ex-h"><b>Bài 5.</b><span class="lvl l3">Nâng cao</span></div>
+      <p>Mã hóa Caesar: dịch mỗi chữ cái đi k vị trí trong bảng chữ cái (vòng tròn), giữ nguyên ký tự khác. Viết cả hàm giải mã.</p>
+      <details class="sol"><summary>Xem đáp án</summary>
+        <script type="text/x-csharp" data-size="sm">
+          static string MaHoa(string s, int k)
+          {
+              StringBuilder sb = new StringBuilder();
+              foreach (char c in s)
+              {
+                  if (c >= 'a' && c <= 'z') sb.Append((char)('a' + (c - 'a' + k) % 26));
+                  else if (c >= 'A' && c <= 'Z') sb.Append((char)('A' + (c - 'A' + k) % 26));
+                  else sb.Append(c);
+              }
+              return sb.ToString();
+          }
+          static string GiaiMa(string s, int k) => MaHoa(s, 26 - k % 26);
+        </script>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-hw">Bài tập về nhà</span><h2>Chuẩn bị cho buổi 11</h2></header>
+  <div class="s-body">
+    <ol class="steps">
+      <li>Nhập danh sách n họ tên, chuẩn hóa tất cả và sắp xếp theo <strong>tên</strong> (từ cuối), trùng tên thì xét họ.</li>
+      <li>Xóa các ký tự trùng lặp liên tiếp: "aaabbbcca" → "abca".</li>
+      <li>Nén chuỗi: "aaabbc" → "a3b2c1".</li>
+      <li>Kiểm tra 2 chuỗi có phải <strong>đảo chữ</strong> (anagram) không: "listen" và "silent".</li>
+      <li>Nhập một chuỗi dạng <code>"SV001;Nguyen Van A;8.5"</code>, tách ra mã, họ tên, điểm (chuẩn bị cho đọc file CSV ở buổi 11).</li>
+    </ol>
+  </div>
+</section>
+
+<section class="slide">
+  <header class="s-head"><span class="kicker k-sum">Tổng kết</span><h2>Ghi nhớ của buổi 10</h2></header>
+  <div class="s-body">
+    <div class="cols">
+      <ul>
+        <li>Chuỗi như mảng char: <code>s[i]</code>, <code>s.Length</code>; nhưng <strong>bất biến</strong>.</li>
+        <li><code>char.IsDigit / IsLetter / IsUpper…</code> để phân loại ký tự.</li>
+        <li><code>c - '0'</code> ra giá trị số; <code>c - 'a'</code> ra chỉ số chữ cái.</li>
+        <li><code>StringBuilder</code> khi ghép/sửa nhiều lần.</li>
+      </ul>
+      <ul>
+        <li><code>Trim</code>, <code>ToUpper/ToLower</code>, <code>Substring</code>, <code>IndexOf</code>, <code>Replace</code>.</li>
+        <li><code>Split(…, RemoveEmptyEntries)</code> tách từ; <code>string.Join</code> ghép lại.</li>
+        <li>Mọi phương thức trả về <strong>chuỗi mới</strong>: nhớ gán lại.</li>
+        <li>Chuẩn hóa họ tên = Trim + ToLower + Split + viết hoa đầu từ + Join.</li>
+      </ul>
+    </div>
+    <div class="callout ok"><b>Buổi tiếp theo:</b> Làm việc với tệp tin: lưu và đọc dữ liệu lâu dài.</div>
+  </div>
+</section>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/slides.js"></script>
+</body>
+</html>
