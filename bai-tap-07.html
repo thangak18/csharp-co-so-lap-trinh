@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bài tập Buổi 7 · Mảng một chiều</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="assets/practice.css">
+</head>
+<body>
+<noscript>Trang bài tập cần bật JavaScript.</noscript>
+<script>
+const C = String.raw;
+window.PRACTICE = {
+  lesson: 7,
+  title: "Mảng một chiều",
+  codeNote: "Dữ liệu vào của các bài mảng: <b>dòng 1</b> là số phần tử n, <b>dòng 2</b> là n số nguyên cách nhau dấu cách. Khung code đã có sẵn hàm <code>NhapMang()</code> đọc đúng định dạng này.",
+  quiz: [
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int[] a = { 4, 8, 15, 16, 23, 42 };
+        Console.WriteLine(a[2] + a[a.Length - 1]);`,
+      opts: ["57", "19", "65", "Lỗi IndexOutOfRange"], ans: 0,
+      why: "a[2] = 15 (chỉ số bắt đầu từ 0), phần tử cuối a[5] = 42. 15 + 42 = 57." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int[] a = new int[5];
+        a[1] = 7;
+        Console.WriteLine(a[1] + a[3]);`,
+      opts: ["7", "Lỗi: a[3] chưa có giá trị", "0", "10"], ans: 0,
+      why: "Mảng số tạo bằng <code>new int[5]</code> có mọi phần tử mặc định bằng 0, nên 7 + 0 = 7." },
+    { q: "Đoạn code tìm max sau in ra gì?", run: true, mono: true,
+      code: C`
+        int[] a = { -5, -2, -9 };
+        int max = 0;
+        foreach (int x in a)
+            if (x > max) max = x;
+        Console.WriteLine(max);`,
+      opts: ["-2", "-9", "0", "-5"], ans: 2,
+      why: "Khởi tạo <code>max = 0</code> là <b>sai</b> với mảng toàn số âm: không phần tử nào lớn hơn 0. Phải khởi tạo <code>max = a[0]</code>." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int[] a = { 1, 2, 3 };
+        int[] b = a;
+        b[0] = 9;
+        Console.WriteLine(a[0]);`,
+      opts: ["1", "9", "0", "Lỗi biên dịch"], ans: 1,
+      why: "Mảng là kiểu <b>tham chiếu</b>: <code>b = a</code> không tạo mảng mới, a và b cùng trỏ một vùng nhớ." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int[] a = { 1, 2, 3, 4, 5 };
+        for (int i = 0; i < a.Length / 2; i++)
+        {
+            int t = a[i];
+            a[i] = a[a.Length - 1 - i];
+            a[a.Length - 1 - i] = t;
+        }
+        Console.WriteLine(string.Join(" ", a));`,
+      opts: ["5 4 3 2 1", "1 2 3 4 5", "5 2 3 4 1", "5 4 3 4 5"], ans: 0,
+      why: "Đổi chỗ cặp đầu–cuối, đi dần vào giữa (chỉ cần Length / 2 lượt): đảo ngược mảng." },
+    { q: "Biến d bằng bao nhiêu?", run: true, mono: true,
+      code: C`
+        int[] a = { 3, 6, 9, 12, 15 };
+        int d = 0;
+        foreach (int x in a)
+            if (x % 2 == 0 || x > 10) d++;
+        Console.WriteLine(d);`,
+      opts: ["2", "3", "4", "1"], ans: 1,
+      why: "Thỏa điều kiện: 6 (chẵn), 12 (chẵn), 15 (&gt; 10). Có 3 phần tử." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        static void F(int[] a)
+        {
+            a[0] = 100;
+            a = new int[] { 7 };
+        }
+
+        int[] m = { 1, 2 };
+        F(m);
+        Console.WriteLine(m[0]);`,
+      opts: ["1", "7", "100", "Lỗi"], ans: 2,
+      why: "Hàm nhận địa chỉ mảng nên <code>a[0] = 100</code> sửa mảng gốc. Lệnh <code>a = new …</code> chỉ cho biến cục bộ a trỏ sang mảng khác, không ảnh hưởng m." },
+    { q: "Vòng lặp sau gây lỗi gì khi chạy?",
+      code: C`
+        int[] a = { 1, 2, 3 };
+        for (int i = 0; i <= a.Length; i++)
+            Console.WriteLine(a[i]);`,
+      opts: ["Không lỗi", "In thiếu phần tử cuối", "IndexOutOfRangeException khi i = 3", "Vòng lặp vô hạn"], ans: 2,
+      why: "Chỉ số hợp lệ là 0..Length − 1. Điều kiện phải là <code>i &lt; a.Length</code>." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int[] a = { 2, 7, 1, 8, 2, 8 };
+        int vt = 0;
+        for (int i = 1; i < a.Length; i++)
+            if (a[i] >= a[vt]) vt = i;
+        Console.WriteLine(vt);`,
+      opts: ["3", "5", "8", "0"], ans: 1,
+      why: "Dùng <code>&gt;=</code> nên khi gặp giá trị bằng max sẽ cập nhật tiếp: trả về vị trí <b>cuối cùng</b> của max (8 ở vị trí 5). Dùng <code>&gt;</code> sẽ ra vị trí đầu tiên (3)." },
+    { q: "Lệnh nào <b>sửa được</b> phần tử của mảng?",
+      opts: ["foreach (int x in a) x = 0;", "for (int i = 0; i < a.Length; i++) a[i] = 0;", "Cả hai", "Không lệnh nào"], ans: 1, mono: true,
+      why: "Biến lặp của <code>foreach</code> chỉ đọc (gán vào sẽ lỗi biên dịch). Muốn sửa phải dùng <code>for</code> với chỉ số." }
+  ],
+  problems: [
+    { id: "thongke", title: "Tổng, trung bình, lớn nhất, nhỏ nhất", level: 1,
+      desc: "<p>In 4 dòng: <code>Tổng: …</code>, <code>Trung bình: …</code> (2 chữ số thập phân), <code>Max: …</code>, <code>Min: …</code>. Biết n ≥ 1.</p>",
+      samples: [{ in: "5\n5 -2 8 3 1", out: "Tổng: 15\nTrung bình: 3.00\nMax: 8\nMin: -2" }],
+      tests: ["1\n-7", "4\n-5 -2 -9 -1", "6\n10 20 30 40 50 61"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static int[] NhapMang()
+            {
+                int n = int.Parse(Console.ReadLine());
+                int[] a = new int[n];
+                string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < n; i++) a[i] = int.Parse(p[i]);
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[] a = NhapMang();
+                // TODO
+            }
+        }`,
+      hint: "Ép kiểu khi tính trung bình: <code>(double)tong / a.Length</code>. Khởi tạo max, min bằng <code>a[0]</code>.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int[] NhapMang()
+            {
+                int n = int.Parse(Console.ReadLine());
+                int[] a = new int[n];
+                string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < n; i++) a[i] = int.Parse(p[i]);
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[] a = NhapMang();
+                int tong = 0, max = a[0], min = a[0];
+                foreach (int x in a)
+                {
+                    tong += x;
+                    if (x > max) max = x;
+                    if (x < min) min = x;
+                }
+                Console.WriteLine($"Tổng: {tong}");
+                Console.WriteLine($"Trung bình: {(double)tong / a.Length:F2}");
+                Console.WriteLine($"Max: {max}");
+                Console.WriteLine($"Min: {min}");
+            }
+        }` },
+    { id: "demso", title: "Đếm âm, dương, bằng 0", level: 1,
+      desc: "<p>In 3 dòng: <code>Âm: …</code>, <code>Dương: …</code>, <code>Bằng 0: …</code>. Dòng 4 in các phần tử chia hết cho 3 (giữ thứ tự, cách nhau dấu cách), hoặc <code>Không có</code>.</p>",
+      samples: [{ in: "6\n3 -6 0 7 -1 9", out: "Âm: 2\nDương: 3\nBằng 0: 1\n3 -6 0 9" }],
+      tests: ["3\n1 2 4", "1\n0", "5\n-3 -3 -3 5 5"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static int[] NhapMang()
+            {
+                int n = int.Parse(Console.ReadLine());
+                int[] a = new int[n];
+                string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < n; i++) a[i] = int.Parse(p[i]);
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[] a = NhapMang();
+                // TODO
+            }
+        }`,
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int[] NhapMang()
+            {
+                int n = int.Parse(Console.ReadLine());
+                int[] a = new int[n];
+                string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < n; i++) a[i] = int.Parse(p[i]);
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[] a = NhapMang();
+                int am = 0, duong = 0, khong = 0;
+                string chia3 = "";
+                foreach (int x in a)
+                {
+                    if (x < 0) am++;
+                    else if (x > 0) duong++;
+                    else khong++;
+                    if (x % 3 == 0) chia3 += (chia3 == "" ? "" : " ") + x;
+                }
+                Console.WriteLine($"Âm: {am}");
+                Console.WriteLine($"Dương: {duong}");
+                Console.WriteLine($"Bằng 0: {khong}");
+                Console.WriteLine(chia3 == "" ? "Không có" : chia3);
+            }
+        }` },
+    { id: "vitrimax", title: "Các vị trí đạt giá trị lớn nhất", level: 2,
+      desc: "<p>In giá trị lớn nhất ở dòng 1 dạng <code>Max = …</code>, dòng 2 in <b>tất cả</b> các vị trí (chỉ số bắt đầu từ 0) có giá trị bằng max, cách nhau dấu cách.</p>",
+      samples: [{ in: "6\n5 2 9 1 9 6", out: "Max = 9\n2 4" }],
+      tests: ["1\n3", "5\n7 7 7 7 7", "4\n-1 -5 -1 -3"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static int[] NhapMang()
+            {
+                int n = int.Parse(Console.ReadLine());
+                int[] a = new int[n];
+                string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < n; i++) a[i] = int.Parse(p[i]);
+                return a;
+            }
+
+            static int TimMax(int[] a)
+            {
+                // TODO
+                return 0;
+            }
+
+            static void Main(string[] args)
+            {
+                int[] a = NhapMang();
+                // TODO: in Max, sau đó in các vị trí
+            }
+        }`,
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int[] NhapMang()
+            {
+                int n = int.Parse(Console.ReadLine());
+                int[] a = new int[n];
+                string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < n; i++) a[i] = int.Parse(p[i]);
+                return a;
+            }
+
+            static int TimMax(int[] a)
+            {
+                int max = a[0];
+                for (int i = 1; i < a.Length; i++)
+                    if (a[i] > max) max = a[i];
+                return max;
+            }
+
+            static void Main(string[] args)
+            {
+                int[] a = NhapMang();
+                int max = TimMax(a);
+                Console.WriteLine($"Max = {max}");
+                string vt = "";
+                for (int i = 0; i < a.Length; i++)
+                    if (a[i] == max) vt += (vt == "" ? "" : " ") + i;
+                Console.WriteLine(vt);
+            }
+        }` },
+    { id: "dao", title: "Đảo ngược mảng tại chỗ", level: 1,
+      desc: "<p>Đảo ngược mảng <b>không dùng mảng phụ</b> rồi in mảng trên một dòng, cách nhau dấu cách.</p>",
+      samples: [{ in: "5\n1 2 3 4 5", out: "5 4 3 2 1" }],
+      tests: ["1\n42", "2\n-1 1", "6\n9 8 7 6 5 4"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static int[] NhapMang()
+            {
+                int n = int.Parse(Console.ReadLine());
+                int[] a = new int[n];
+                string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < n; i++) a[i] = int.Parse(p[i]);
+                return a;
+            }
+
+            static void DaoMang(int[] a)
+            {
+                // TODO
+            }
+
+            static void Main(string[] args)
+            {
+                int[] a = NhapMang();
+                DaoMang(a);
+                Console.WriteLine(string.Join(" ", a));
+            }
+        }`,
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int[] NhapMang()
+            {
+                int n = int.Parse(Console.ReadLine());
+                int[] a = new int[n];
+                string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < n; i++) a[i] = int.Parse(p[i]);
+                return a;
+            }
+
+            static void DaoMang(int[] a)
+            {
+                for (int i = 0; i < a.Length / 2; i++)
+                {
+                    int t = a[i];
+                    a[i] = a[a.Length - 1 - i];
+                    a[a.Length - 1 - i] = t;
+                }
+            }
+
+            static void Main(string[] args)
+            {
+                int[] a = NhapMang();
+                DaoMang(a);
+                Console.WriteLine(string.Join(" ", a));
+            }
+        }` },
+    { id: "lonnhi", title: "Giá trị lớn thứ hai", level: 2,
+      desc: "<p>In giá trị lớn thứ hai (phải <b>khác</b> giá trị lớn nhất). Nếu mọi phần tử bằng nhau in <code>Không có</code>.</p>",
+      samples: [{ in: "6\n5 9 1 9 7 3", out: "7" }, { in: "3\n4 4 4", out: "Không có" }],
+      tests: ["2\n1 2", "2\n2 1", "5\n-3 -1 -1 -7 -3", "1\n10"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static int[] NhapMang()
+            {
+                int n = int.Parse(Console.ReadLine());
+                int[] a = new int[n];
+                string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < n; i++) a[i] = int.Parse(p[i]);
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[] a = NhapMang();
+                // TODO
+            }
+        }`,
+      hint: "Tìm max trước. Sau đó tìm giá trị lớn nhất trong các phần tử <b>khác</b> max, dùng biến cờ để biết có tìm thấy hay không.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int[] NhapMang()
+            {
+                int n = int.Parse(Console.ReadLine());
+                int[] a = new int[n];
+                string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < n; i++) a[i] = int.Parse(p[i]);
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[] a = NhapMang();
+                int max = a[0];
+                foreach (int x in a) if (x > max) max = x;
+                bool co = false;
+                int nhi = 0;
+                foreach (int x in a)
+                    if (x != max && (!co || x > nhi)) { nhi = x; co = true; }
+                Console.WriteLine(co ? nhi.ToString() : "Không có");
+            }
+        }` },
+    { id: "doantang", title: "Đoạn con tăng dài nhất", level: 3,
+      desc: "<p>Tìm đoạn các phần tử <b>liên tiếp, tăng ngặt</b> dài nhất. In <code>Bắt đầu: &lt;vị trí&gt;, độ dài: &lt;k&gt;</code> (vị trí từ 0). Nếu có nhiều đoạn dài bằng nhau, chọn đoạn xuất hiện trước.</p>",
+      samples: [{ in: "8\n1 2 3 1 2 3 4 0", out: "Bắt đầu: 3, độ dài: 4" }],
+      tests: ["1\n5", "4\n4 3 2 1", "6\n1 2 1 2 1 2", "7\n-5 -4 -3 -2 -1 0 1"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static int[] NhapMang()
+            {
+                int n = int.Parse(Console.ReadLine());
+                int[] a = new int[n];
+                string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < n; i++) a[i] = int.Parse(p[i]);
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[] a = NhapMang();
+                // TODO
+            }
+        }`,
+      hint: "Duyệt một lượt, giữ độ dài đoạn hiện tại <code>len</code> và vị trí bắt đầu <code>start</code>. Nếu a[i] &gt; a[i−1] thì len++, ngược lại bắt đầu đoạn mới.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int[] NhapMang()
+            {
+                int n = int.Parse(Console.ReadLine());
+                int[] a = new int[n];
+                string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < n; i++) a[i] = int.Parse(p[i]);
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[] a = NhapMang();
+                int bestStart = 0, bestLen = 1, start = 0, len = 1;
+                for (int i = 1; i < a.Length; i++)
+                {
+                    if (a[i] > a[i - 1]) len++;
+                    else { start = i; len = 1; }
+                    if (len > bestLen) { bestLen = len; bestStart = start; }
+                }
+                Console.WriteLine($"Bắt đầu: {bestStart}, độ dài: {bestLen}");
+            }
+        }` }
+  ]
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="assets/cs-runner.js"></script>
+<script src="assets/practice.js"></script>
+</body>
+</html>

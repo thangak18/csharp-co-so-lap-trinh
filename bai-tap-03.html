@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bài tập Buổi 3 · Cấu trúc rẽ nhánh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="assets/practice.css">
+</head>
+<body>
+<noscript>Trang bài tập cần bật JavaScript.</noscript>
+<script>
+const C = String.raw;
+window.PRACTICE = {
+  lesson: 3,
+  title: "Cấu trúc rẽ nhánh",
+  quiz: [
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int x = 7;
+        if (x > 5) Console.Write("A");
+        if (x > 3) Console.Write("B");
+        else Console.Write("C");`,
+      opts: ["A", "AB", "ABC", "B"], ans: 1,
+      why: "Hai câu <code>if</code> độc lập nhau: x > 5 đúng nên in A; x > 3 đúng nên in B (không chạy else)." },
+    { q: "Điểm 85 được xếp loại gì?", run: true, mono: true,
+      code: C`
+        int d = 85;
+        if (d >= 50) Console.WriteLine("D");
+        else if (d >= 65) Console.WriteLine("C");
+        else if (d >= 80) Console.WriteLine("B");
+        else Console.WriteLine("F");`,
+      opts: ["B", "C", "D", "F"], ans: 2,
+      why: "<code>else if</code> dừng ở nhánh đúng <b>đầu tiên</b>: 85 ≥ 50 nên in D luôn. Đây là lỗi sắp sai thứ tự điều kiện, phải xét từ cao xuống thấp." },
+    { q: "Với x = −3, kết quả in ra?", run: true, mono: true,
+      code: C`
+        int x = -3;
+        if (x > 0);
+        {
+            Console.WriteLine("Dương");
+        }`,
+      opts: ["(không in gì)", "Dương", "Lỗi biên dịch", "-3"], ans: 1,
+      why: "Dấu <code>;</code> ngay sau <code>if (x &gt; 0)</code> là một câu lệnh rỗng. Khối <code>{ }</code> phía sau không thuộc if nên <b>luôn chạy</b>." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int a = 5, b = 10;
+        Console.WriteLine(a > 3 && b < 5 || a == 5);`,
+      opts: ["True", "False", "1", "Lỗi biên dịch"], ans: 0,
+      why: "<code>&amp;&amp;</code> được tính trước <code>||</code>: (true &amp;&amp; false) = false, rồi false || true = <b>True</b>." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int a = 4, b = 9;
+        string s = a % 2 == 0 ? (b > 5 ? "X" : "Y") : "Z";
+        Console.WriteLine(s);`,
+      opts: ["X", "Y", "Z", "XY"], ans: 0,
+      why: "a chẵn nên xét tiếp b &gt; 5 → đúng → \"X\"." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int t = 7;
+        switch (t)
+        {
+            case 2: case 3: case 4: case 5: case 6:
+                Console.WriteLine("Ngày thường"); break;
+            case 7: case 8:
+                Console.WriteLine("Cuối tuần"); break;
+            default:
+                Console.WriteLine("Không hợp lệ"); break;
+        }`,
+      opts: ["Ngày thường", "Cuối tuần", "Không hợp lệ", "Cuối tuần\nKhông hợp lệ"], ans: 1,
+      why: "Các case viết liền nhau là gộp case. t = 7 khớp nhóm <code>case 7: case 8:</code>, in xong gặp <code>break</code> thì thoát." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int a = 2, b = 5;
+        if (a > 3)
+            if (b > 3) Console.Write("P");
+            else Console.Write("Q");
+        Console.Write("R");`,
+      opts: ["PR", "QR", "R", "Q"], ans: 2,
+      why: "<code>else</code> luôn đi với <code>if</code> <b>gần nhất</b> (if b &gt; 3), dù thụt lề thế nào. a &gt; 3 sai nên bỏ qua cả khối, chỉ in R." },
+    { q: "Năm 1900 có phải năm nhuận? Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int n = 1900;
+        bool nhuan = (n % 4 == 0 && n % 100 != 0) || n % 400 == 0;
+        Console.WriteLine(nhuan);`,
+      opts: ["True", "False"], ans: 1,
+      why: "1900 chia hết cho 4 nhưng cũng chia hết cho 100, và không chia hết cho 400, nên không nhuận." },
+    { q: "Cách viết nào đúng cho điều kiện \"x thuộc đoạn [5, 10]\"?",
+      opts: ["5 <= x <= 10", "x >= 5 || x <= 10", "x >= 5 && x <= 10", "x => 5 && x =< 10"], ans: 2,
+      mono: true,
+      why: "C# không cho viết kiểu toán học <code>5 &lt;= x &lt;= 10</code>. Dùng <code>||</code> thì mọi số đều thỏa. Toán tử đúng là <code>&gt;=</code> và <code>&lt;=</code>." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`Console.WriteLine(0.1 + 0.2 == 0.3);`,
+      opts: ["True", "False"], ans: 1,
+      why: "Số thực double có sai số nhị phân: 0.1 + 0.2 = 0.30000000000000004. So sánh số thực nên dùng <code>Math.Abs(x - y) &lt; 1e-9</code>." }
+  ],
+  problems: [
+    { id: "chanle", title: "Chẵn/lẻ và âm/dương", level: 1,
+      desc: "<p>Nhập số nguyên <i>n</i>. Dòng 1 in <code>Chẵn</code> hoặc <code>Lẻ</code>. Dòng 2 in <code>Dương</code>, <code>Âm</code> hoặc <code>Bằng 0</code>.</p>",
+      samples: [{ in: "-7", out: "Lẻ\nÂm" }, { in: "0", out: "Chẵn\nBằng 0" }],
+      tests: ["12", "1", "-100", "2147483647"],
+      hint: "Số âm lẻ có <code>n % 2 == -1</code>, nên hãy kiểm tra <code>n % 2 == 0</code> cho số chẵn và dùng else cho số lẻ.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int n = int.Parse(Console.ReadLine());
+                Console.WriteLine(n % 2 == 0 ? "Chẵn" : "Lẻ");
+                if (n > 0) Console.WriteLine("Dương");
+                else if (n < 0) Console.WriteLine("Âm");
+                else Console.WriteLine("Bằng 0");
+            }
+        }` },
+    { id: "max3", title: "Lớn nhất, nhỏ nhất của 3 số", level: 1,
+      desc: "<p>Nhập 3 số nguyên a, b, c (mỗi số một dòng). In <code>Max = …</code> và <code>Min = …</code>.</p>",
+      samples: [{ in: "3\n9\n-2", out: "Max = 9\nMin = -2" }],
+      tests: ["5\n5\n5", "-1\n-8\n-3", "100\n7\n100"],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int a = int.Parse(Console.ReadLine());
+                int b = int.Parse(Console.ReadLine());
+                int c = int.Parse(Console.ReadLine());
+                int max = a, min = a;
+                if (b > max) max = b;
+                if (c > max) max = c;
+                if (b < min) min = b;
+                if (c < min) min = c;
+                Console.WriteLine($"Max = {max}");
+                Console.WriteLine($"Min = {min}");
+            }
+        }` },
+    { id: "diemchu", title: "Quy đổi điểm chữ", level: 1,
+      desc: "<p>Nhập điểm hệ 10 (số thực). In điểm chữ: <code>A</code> (≥ 8.5), <code>B</code> (≥ 7.0), <code>C</code> (≥ 5.5), <code>D</code> (≥ 4.0), <code>F</code> (còn lại). Nếu điểm &lt; 0 hoặc &gt; 10 in <code>Không hợp lệ</code>.</p>",
+      samples: [{ in: "8.5", out: "A" }, { in: "6.9", out: "C" }, { in: "11", out: "Không hợp lệ" }],
+      tests: ["10", "0", "7", "3.99", "4", "-0.5", "8.49"],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                double d = double.Parse(Console.ReadLine());
+                if (d < 0 || d > 10) Console.WriteLine("Không hợp lệ");
+                else if (d >= 8.5) Console.WriteLine("A");
+                else if (d >= 7.0) Console.WriteLine("B");
+                else if (d >= 5.5) Console.WriteLine("C");
+                else if (d >= 4.0) Console.WriteLine("D");
+                else Console.WriteLine("F");
+            }
+        }` },
+    { id: "ptb2", title: "Giải phương trình bậc hai", level: 3,
+      desc: "<p>Nhập a, b, c (số thực, mỗi số một dòng) của phương trình ax² + bx + c = 0. In kết quả (số làm tròn 2 chữ số thập phân):</p><ul><li>a = 0, b = 0: <code>Vô số nghiệm</code> nếu c = 0, ngược lại <code>Vô nghiệm</code></li><li>a = 0, b ≠ 0: <code>x = …</code></li><li>a ≠ 0: Δ &lt; 0 in <code>Vô nghiệm</code>; Δ = 0 in <code>Nghiệm kép x = …</code>; Δ &gt; 0 in <code>x1 = …, x2 = …</code> với x1 dùng <b>dấu +</b> trước √Δ.</li></ul>",
+      samples: [{ in: "1\n-3\n2", out: "x1 = 2.00, x2 = 1.00" }, { in: "1\n2\n1", out: "Nghiệm kép x = -1.00" }],
+      tests: ["1\n1\n5", "0\n2\n-4", "0\n0\n0", "0\n0\n3", "2\n-7\n3", "-1\n2\n3"],
+      hint: "Phải viết <code>(2 * a)</code> trong ngoặc. Xét trường hợp a = 0 trước.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                double a = double.Parse(Console.ReadLine());
+                double b = double.Parse(Console.ReadLine());
+                double c = double.Parse(Console.ReadLine());
+                if (a == 0)
+                {
+                    if (b == 0) Console.WriteLine(c == 0 ? "Vô số nghiệm" : "Vô nghiệm");
+                    else Console.WriteLine($"x = {-c / b:F2}");
+                }
+                else
+                {
+                    double delta = b * b - 4 * a * c;
+                    if (delta < 0) Console.WriteLine("Vô nghiệm");
+                    else if (delta == 0) Console.WriteLine($"Nghiệm kép x = {-b / (2 * a):F2}");
+                    else
+                    {
+                        double x1 = (-b + Math.Sqrt(delta)) / (2 * a);
+                        double x2 = (-b - Math.Sqrt(delta)) / (2 * a);
+                        Console.WriteLine($"x1 = {x1:F2}, x2 = {x2:F2}");
+                    }
+                }
+            }
+        }` },
+    { id: "songay", title: "Số ngày trong tháng", level: 2,
+      desc: "<p>Dòng 1 nhập tháng, dòng 2 nhập năm. In số ngày của tháng đó (chỉ in con số). Tháng không thuộc 1..12 in <code>Tháng không hợp lệ</code>.</p>",
+      samples: [{ in: "2\n2024", out: "29" }, { in: "13\n2024", out: "Tháng không hợp lệ" }],
+      tests: ["2\n1900", "2\n2000", "2\n2023", "4\n2025", "12\n2025", "0\n2025"],
+      hint: "Năm nhuận: <code>(n % 4 == 0 &amp;&amp; n % 100 != 0) || n % 400 == 0</code>. Dùng switch với gộp case.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int thang = int.Parse(Console.ReadLine());
+                int nam = int.Parse(Console.ReadLine());
+                bool nhuan = (nam % 4 == 0 && nam % 100 != 0) || nam % 400 == 0;
+                switch (thang)
+                {
+                    case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+                        Console.WriteLine(31); break;
+                    case 4: case 6: case 9: case 11:
+                        Console.WriteLine(30); break;
+                    case 2:
+                        Console.WriteLine(nhuan ? 29 : 28); break;
+                    default:
+                        Console.WriteLine("Tháng không hợp lệ"); break;
+                }
+            }
+        }` },
+    { id: "tiendien", title: "Tiền điện bậc thang", level: 2,
+      desc: "<p>Nhập số kWh (số nguyên ≥ 0). Giá: 50 kWh đầu 1.800đ; từ 51–100: 2.000đ; từ 101–200: 2.500đ; trên 200: 3.000đ (mỗi bậc chỉ tính phần vượt). Cộng VAT 10%. In <code>Tiền điện: &lt;số tiền N0&gt; đ</code>.</p>",
+      samples: [{ in: "120", out: "Tiền điện: 264,000 đ" }],
+      tests: ["0", "50", "51", "100", "200", "350"],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int kwh = int.Parse(Console.ReadLine());
+                double tien;
+                if (kwh <= 50) tien = kwh * 1800;
+                else if (kwh <= 100) tien = 50 * 1800 + (kwh - 50) * 2000;
+                else if (kwh <= 200) tien = 50 * 1800 + 50 * 2000 + (kwh - 100) * 2500;
+                else tien = 50 * 1800 + 50 * 2000 + 100 * 2500 + (kwh - 200) * 3000;
+                tien *= 1.1;
+                Console.WriteLine($"Tiền điện: {tien:N0} đ");
+            }
+        }` }
+  ]
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="assets/cs-runner.js"></script>
+<script src="assets/practice.js"></script>
+</body>
+</html>

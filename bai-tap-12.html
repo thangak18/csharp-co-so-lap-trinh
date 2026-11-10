@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bài tập Buổi 12 · Tổng ôn tập và Luyện đề</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="assets/practice.css">
+</head>
+<body>
+<noscript>Trang bài tập cần bật JavaScript.</noscript>
+<script>
+const C = String.raw;
+window.PRACTICE = {
+  lesson: 12,
+  title: "Tổng ôn tập và Luyện đề",
+  intro: "Đề luyện tổng hợp toàn khóa. Phần 1 gồm 12 câu đọc code ở mức đề thi. Phần 2 gồm 5 bài tự luận bám theo đề thi thử ở slide buổi 12. Hãy bấm giờ khoảng <b>75 phút</b> cho phần 2.",
+  quiz: [
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int a = 17, b = 5;
+        double c = a / b;
+        Console.WriteLine($"{c} {a % b} {(double)a / b}");`,
+      opts: ["3 2 3.4", "3.4 2 3.4", "3 2 3", "3.0 2 3.4"], ans: 0,
+      why: "<code>a / b</code> chia nguyên ra 3 rồi mới gán cho double." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int s = 0;
+        for (int i = 1; i <= 10; i++)
+        {
+            if (i % 3 == 0) continue;
+            if (i > 7) break;
+            s += i;
+        }
+        Console.WriteLine(s);`,
+      opts: ["19", "22", "27", "12"], ans: 0,
+      why: "Cộng 1, 2, 4, 5, 7 (bỏ 3, 6; i = 8 thì break): 19." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int n = 2024, k = 0;
+        while (n > 0)
+        {
+            k = k * 10 + n % 10;
+            n /= 10;
+        }
+        Console.WriteLine(k);`,
+      opts: ["4202", "2024", "8", "424"], ans: 0,
+      why: "Thuật toán đảo số." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        static void F(int x, ref int y)
+        {
+            x++;
+            y += x;
+        }
+
+        int p = 1, q = 10;
+        F(p, ref q);
+        Console.WriteLine($"{p} {q}");`,
+      opts: ["1 12", "2 12", "1 11", "2 13"], ans: 0,
+      why: "p tham trị không đổi; q tham chiếu thành 12." },
+    { q: "Mảng a sau khi chạy?", run: true, mono: true,
+      code: C`
+        int[] a = { 3, 8, 1, 6 };
+        for (int i = 0; i < a.Length - 1; i++)
+            if (a[i] > a[i + 1])
+            {
+                int t = a[i]; a[i] = a[i + 1]; a[i + 1] = t;
+            }
+        Console.WriteLine(string.Join(" ", a));`,
+      opts: ["3 1 6 8", "1 3 6 8", "3 8 1 6", "1 6 3 8"], ans: 0,
+      why: "Chỉ một lượt nổi bọt, chưa sắp xếp xong." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        string s = " Kinh Te ";
+        s.Trim();
+        Console.Write(s.Length + " ");
+        s = s.Trim().ToUpper();
+        Console.Write(s.IndexOf('T') + " ");
+        Console.Write(s.Substring(0, 4));`,
+      opts: ["9 5 KINH", "7 5 KINH", "9 6 KINH", "7 4 Kinh"], ans: 0,
+      why: "Trim không gán lại nên dài vẫn 9. Sau đó s = \"KINH TE\", 'T' ở vị trí 5." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int[,] m = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+        int s = 0;
+        for (int i = 0; i < 3; i++)
+            s += m[i, i] - m[i, 2 - i];
+        Console.WriteLine(s);`,
+      opts: ["0", "15", "-15", "30"], ans: 0,
+      why: "Tổng chéo chính (1 + 5 + 9 = 15) trừ tổng chéo phụ (3 + 5 + 7 = 15) = 0." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        static int G(int n)
+        {
+            if (n <= 1) return n;
+            return G(n - 1) + G(n - 2);
+        }
+
+        Console.WriteLine(G(7));`,
+      opts: ["13", "8", "21", "7"], ans: 0,
+      why: "G là Fibonacci với G(0) = 0, G(1) = 1: 0 1 1 2 3 5 8 13 → G(7) = 13." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int x = 5;
+        string kq = x > 3 ? (x % 2 == 0 ? "A" : "B") : "C";
+        switch (kq)
+        {
+            case "A": Console.Write(1); break;
+            case "B": Console.Write(2); break;
+            default:  Console.Write(3); break;
+        }`,
+      opts: ["2", "1", "3", "B"], ans: 0,
+      why: "x &gt; 3 và x lẻ → \"B\" → switch in 2." },
+    { q: "Hàm sau có lỗi logic gì?",
+      code: C`
+        static double TBDuong(int[] a)
+        {
+            int tong = 0, dem = 0;
+            for (int i = 0; i < a.Length; i++)
+                if (a[i] > 0)
+                    tong += a[i];
+                    dem++;
+            return (double)tong / dem;
+        }`,
+      opts: ["Không có lỗi", "dem++ nằm ngoài if nên đếm cả số không dương", "Phải dùng foreach", "Thiếu ép kiểu"], ans: 1,
+      why: "Thụt lề không có ý nghĩa trong C#. Không có <code>{ }</code> nên if chỉ bao lệnh <code>tong += a[i];</code>, còn <code>dem++</code> chạy cho mọi i. Ngoài ra cần xử lý dem = 0." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int dem = 0;
+        for (int i = 1; i <= 30; i++)
+        {
+            bool nt = i >= 2;
+            for (int j = 2; j * j <= i; j++)
+                if (i % j == 0) { nt = false; break; }
+            if (nt) dem++;
+        }
+        Console.WriteLine(dem);`,
+      opts: ["10", "11", "9", "15"], ans: 0,
+      why: "Các số nguyên tố ≤ 30: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29: có 10 số." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        string s = "programming";
+        int[] dem = new int[26];
+        foreach (char c in s) dem[c - 'a']++;
+        int vt = 0;
+        for (int i = 1; i < 26; i++)
+            if (dem[i] > dem[vt]) vt = i;
+        Console.WriteLine($"{(char)('a' + vt)} {dem[vt]}");`,
+      opts: ["g 2", "r 2", "m 2", "p 1"], ans: 0,
+      why: "g, m, r đều xuất hiện 2 lần. Dùng <code>&gt;</code> ngặt nên giữ chữ cái đầu tiên theo bảng chữ cái đạt max: g." }
+  ],
+  problems: [
+    { id: "cau1", title: "Đề câu 1 · Xử lý số nguyên", level: 2,
+      desc: "<p>Nhập số nguyên dương n (≤ 10000). In 3 dòng:</p><ul><li><code>Tổng chữ số: …</code></li><li><code>Là số nguyên tố</code> hoặc <code>Không là số nguyên tố</code></li><li><code>Số hoàn hảo nhỏ hơn n: …</code> (các số cách nhau dấu cách) hoặc <code>Số hoàn hảo nhỏ hơn n: Không có</code></li></ul>",
+      samples: [{ in: "1000", out: "Tổng chữ số: 1\nKhông là số nguyên tố\nSố hoàn hảo nhỏ hơn n: 6 28 496" }],
+      tests: ["1", "2", "29", "7", "9973"],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int TongChuSo(int n) { int t = 0; while (n > 0) { t += n % 10; n /= 10; } return t; }
+
+            static bool LaSNT(int n)
+            {
+                if (n < 2) return false;
+                for (int i = 2; i * i <= n; i++) if (n % i == 0) return false;
+                return true;
+            }
+
+            static bool LaHoanHao(int n)
+            {
+                if (n < 2) return false;
+                int t = 0;
+                for (int i = 1; i <= n / 2; i++) if (n % i == 0) t += i;
+                return t == n;
+            }
+
+            static void Main(string[] args)
+            {
+                int n = int.Parse(Console.ReadLine());
+                Console.WriteLine($"Tổng chữ số: {TongChuSo(n)}");
+                Console.WriteLine(LaSNT(n) ? "Là số nguyên tố" : "Không là số nguyên tố");
+                string hh = "";
+                for (int i = 1; i < n; i++) if (LaHoanHao(i)) hh += (hh == "" ? "" : " ") + i;
+                Console.WriteLine("Số hoàn hảo nhỏ hơn n: " + (hh == "" ? "Không có" : hh));
+            }
+        }` },
+    { id: "cau2", title: "Đề câu 2 · Mảng một chiều", level: 3,
+      desc: "<p>Dòng 1: n. Dòng 2: n số nguyên. Dòng 3: x. In 4 dòng:</p><ul><li><code>Tổng lẻ: …</code> (tổng các phần tử lẻ)</li><li><code>Vị trí max cuối: …</code> (vị trí cuối cùng của giá trị lớn nhất, từ 0)</li><li><code>Giảm dần: …</code> (mảng sau khi sắp giảm dần)</li><li><code>Sau khi xóa x: …</code> (mảng giảm dần sau khi xóa mọi phần tử bằng x), hoặc <code>Sau khi xóa x: Mảng rỗng</code></li></ul>",
+      samples: [{ in: "6\n5 -3 8 2 8 5\n5", out: "Tổng lẻ: 7\nVị trí max cuối: 4\nGiảm dần: 8 8 5 5 2 -3\nSau khi xóa x: 8 8 2 -3" }],
+      tests: ["1\n4\n4", "4\n1 1 1 1\n2", "5\n-1 -7 -3 0 -7\n-7"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static int[] NhapMang()
+            {
+                int n = int.Parse(Console.ReadLine());
+                int[] a = new int[n];
+                string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < n; i++) a[i] = int.Parse(p[i]);
+                return a;
+            }
+
+            static int TongLe(int[] a, int n) { /* TODO */ return 0; }
+            static int ViTriMaxCuoi(int[] a, int n) { /* TODO */ return 0; }
+            static void SapXepGiam(int[] a, int n) { /* TODO */ }
+            static void XoaX(int[] a, ref int n, int x) { /* TODO */ }
+
+            static string Xuat(int[] a, int n)
+            {
+                if (n == 0) return "Mảng rỗng";
+                string s = "";
+                for (int i = 0; i < n; i++) s += (i > 0 ? " " : "") + a[i];
+                return s;
+            }
+
+            static void Main(string[] args)
+            {
+                int[] a = NhapMang();
+                int n = a.Length;
+                int x = int.Parse(Console.ReadLine());
+                Console.WriteLine($"Tổng lẻ: {TongLe(a, n)}");
+                Console.WriteLine($"Vị trí max cuối: {ViTriMaxCuoi(a, n)}");
+                SapXepGiam(a, n);
+                Console.WriteLine($"Giảm dần: {Xuat(a, n)}");
+                XoaX(a, ref n, x);
+                Console.WriteLine($"Sau khi xóa x: {Xuat(a, n)}");
+            }
+        }`,
+      hint: "Số lẻ âm có <code>a[i] % 2 != 0</code> (không phải == 1). Vị trí max cuối dùng <code>&gt;=</code>. Xóa bằng chỉ số ghi k.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int[] NhapMang()
+            {
+                int n = int.Parse(Console.ReadLine());
+                int[] a = new int[n];
+                string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < n; i++) a[i] = int.Parse(p[i]);
+                return a;
+            }
+
+            static int TongLe(int[] a, int n)
+            {
+                int t = 0;
+                for (int i = 0; i < n; i++) if (a[i] % 2 != 0) t += a[i];
+                return t;
+            }
+
+            static int ViTriMaxCuoi(int[] a, int n)
+            {
+                int vt = 0;
+                for (int i = 1; i < n; i++) if (a[i] >= a[vt]) vt = i;
+                return vt;
+            }
+
+            static void SapXepGiam(int[] a, int n)
+            {
+                for (int i = 0; i < n - 1; i++)
+                    for (int j = i + 1; j < n; j++)
+                        if (a[j] > a[i]) { int t = a[i]; a[i] = a[j]; a[j] = t; }
+            }
+
+            static void XoaX(int[] a, ref int n, int x)
+            {
+                int k = 0;
+                for (int i = 0; i < n; i++) if (a[i] != x) a[k++] = a[i];
+                n = k;
+            }
+
+            static string Xuat(int[] a, int n)
+            {
+                if (n == 0) return "Mảng rỗng";
+                string s = "";
+                for (int i = 0; i < n; i++) s += (i > 0 ? " " : "") + a[i];
+                return s;
+            }
+
+            static void Main(string[] args)
+            {
+                int[] a = NhapMang();
+                int n = a.Length;
+                int x = int.Parse(Console.ReadLine());
+                Console.WriteLine($"Tổng lẻ: {TongLe(a, n)}");
+                Console.WriteLine($"Vị trí max cuối: {ViTriMaxCuoi(a, n)}");
+                SapXepGiam(a, n);
+                Console.WriteLine($"Giảm dần: {Xuat(a, n)}");
+                XoaX(a, ref n, x);
+                Console.WriteLine($"Sau khi xóa x: {Xuat(a, n)}");
+            }
+        }` },
+    { id: "cau3", title: "Đề câu 3 · Xử lý họ tên", level: 2,
+      desc: "<p>Nhập một chuỗi họ tên. In 3 dòng: họ tên đã chuẩn hóa; <code>Số từ: …</code>; <code>Họ: …, Tên: …</code> (họ là từ đầu, tên là từ cuối). Nếu chuỗi rỗng hoặc chỉ có khoảng trắng in <code>Chuỗi rỗng</code>.</p>",
+      samples: [{ in: "  trẦN   thị  thu  HÀ  ", out: "Trần Thị Thu Hà\nSố từ: 4\nHọ: Trần, Tên: Hà" }, { in: "   ", out: "Chuỗi rỗng" }],
+      tests: ["an", "NGUYEN van   b"],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                string s = Console.ReadLine() ?? "";
+                if (string.IsNullOrWhiteSpace(s)) { Console.WriteLine("Chuỗi rỗng"); return; }
+                string[] tu = s.Trim().ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < tu.Length; i++)
+                    tu[i] = char.ToUpper(tu[i][0]) + tu[i].Substring(1);
+                Console.WriteLine(string.Join(" ", tu));
+                Console.WriteLine($"Số từ: {tu.Length}");
+                Console.WriteLine($"Họ: {tu[0]}, Tên: {tu[tu.Length - 1]}");
+            }
+        }` },
+    { id: "cau4", title: "Đề luyện · Ma trận", level: 3,
+      desc: "<p>Dòng 1: m n. m dòng tiếp: ma trận. In:</p><ul><li><code>Dòng tổng lớn nhất: k</code> (đánh số từ 1, bằng nhau chọn dòng trước)</li><li><code>Số nguyên tố: …</code> (số phần tử là số nguyên tố)</li><li>Ma trận sau khi <b>sắp xếp tăng dần từng cột</b> (m dòng, số cách nhau 1 dấu cách)</li></ul>",
+      samples: [{ in: "3 3\n7 2 9\n1 8 4\n5 6 3", out: "Dòng tổng lớn nhất: 1\nSố nguyên tố: 4\n1 2 3\n5 6 4\n7 8 9" }],
+      tests: ["1 1\n2", "2 3\n-1 0 1\n4 4 4", "3 2\n10 11\n13 12\n10 17"],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static bool LaSNT(int n)
+            {
+                if (n < 2) return false;
+                for (int i = 2; i * i <= n; i++) if (n % i == 0) return false;
+                return true;
+            }
+
+            static void Main(string[] args)
+            {
+                string[] mn = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                int m = int.Parse(mn[0]), n = int.Parse(mn[1]);
+                int[,] a = new int[m, n];
+                for (int i = 0; i < m; i++)
+                {
+                    string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    for (int j = 0; j < n; j++) a[i, j] = int.Parse(p[j]);
+                }
+                int best = 0, bestSum = 0, dem = 0;
+                for (int i = 0; i < m; i++)
+                {
+                    int s = 0;
+                    for (int j = 0; j < n; j++) { s += a[i, j]; if (LaSNT(a[i, j])) dem++; }
+                    if (i == 0 || s > bestSum) { bestSum = s; best = i; }
+                }
+                Console.WriteLine($"Dòng tổng lớn nhất: {best + 1}");
+                Console.WriteLine($"Số nguyên tố: {dem}");
+                for (int j = 0; j < n; j++)
+                    for (int i = 0; i < m - 1; i++)
+                        for (int k = i + 1; k < m; k++)
+                            if (a[k, j] < a[i, j]) { int t = a[i, j]; a[i, j] = a[k, j]; a[k, j] = t; }
+                for (int i = 0; i < m; i++)
+                {
+                    for (int j = 0; j < n; j++) Console.Write(a[i, j] + (j < n - 1 ? " " : ""));
+                    Console.WriteLine();
+                }
+            }
+        }` },
+    { id: "cau5", title: "Đề luyện · Lọc số trong đoạn", level: 2,
+      desc: "<p>Nhập a, b (a ≤ b, mỗi số một dòng). In các số trong đoạn [a, b] vừa <b>chia hết cho 3</b> vừa có <b>tổng chữ số chẵn</b> (cách nhau dấu cách), dòng sau in <code>TB = …</code> (2 chữ số thập phân). Nếu không có số nào in <code>Không có</code>. Với số âm, tính tổng chữ số của giá trị tuyệt đối.</p>",
+      samples: [{ in: "10\n40", out: "15 24 33 39\nTB = 27.75" }, { in: "1\n2", out: "Không có" }],
+      tests: ["0\n0", "-20\n20", "100\n130"],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int TongChuSo(int n)
+            {
+                n = Math.Abs(n);
+                int t = 0;
+                while (n > 0) { t += n % 10; n /= 10; }
+                return t;
+            }
+
+            static void Main(string[] args)
+            {
+                int a = int.Parse(Console.ReadLine());
+                int b = int.Parse(Console.ReadLine());
+                string kq = "";
+                int tong = 0, dem = 0;
+                for (int i = a; i <= b; i++)
+                    if (i % 3 == 0 && TongChuSo(i) % 2 == 0)
+                    {
+                        kq += (kq == "" ? "" : " ") + i;
+                        tong += i; dem++;
+                    }
+                if (dem == 0) { Console.WriteLine("Không có"); return; }
+                Console.WriteLine(kq);
+                Console.WriteLine($"TB = {(double)tong / dem:F2}");
+            }
+        }` }
+  ]
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="assets/cs-runner.js"></script>
+<script src="assets/practice.js"></script>
+</body>
+</html>

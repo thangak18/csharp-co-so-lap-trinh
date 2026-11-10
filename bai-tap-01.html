@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bài tập Buổi 1 · Tổng quan và Thuật toán</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="assets/practice.css">
+</head>
+<body>
+<noscript>Trang bài tập cần bật JavaScript.</noscript>
+<script>
+const C = String.raw;
+window.PRACTICE = {
+  lesson: 1,
+  title: "Tổng quan và Thuật toán",
+  quiz: [
+    { q: "Đoạn code sau in ra màn hình những gì?", run: true, mono: true,
+      code: C`
+        Console.Write("A");
+        Console.WriteLine("B");
+        Console.Write("C");`,
+      opts: ["A\nB\nC", "AB\nC", "ABC", "A\nBC"], ans: 1,
+      why: "<code>Write</code> in rồi giữ con trỏ trên cùng dòng; <code>WriteLine</code> in rồi xuống dòng. Vì vậy \"A\" và \"B\" nằm chung dòng 1, \"C\" ở dòng 2." },
+    { q: "Lệnh sau in ra bao nhiêu dòng?",
+      code: C`Console.WriteLine("Xin\nchao\nC#");`,
+      opts: ["1 dòng", "2 dòng", "3 dòng", "4 dòng"], ans: 2,
+      why: "Mỗi <code>\\n</code> là một lần xuống dòng, nên chuỗi được tách thành 3 dòng: Xin / chao / C#." },
+    { q: "Kết quả in ra là gì?", run: true, mono: true,
+      code: C`Console.WriteLine("Tổng: " + 2 + 3);`,
+      opts: ["Tổng: 5", "Tổng: 23", "Tổng: 2 3", "Lỗi biên dịch"], ans: 1,
+      why: "Biểu thức tính từ trái sang phải: <code>\"Tổng: \" + 2</code> là nối chuỗi thành \"Tổng: 2\", rồi nối tiếp 3 thành \"Tổng: 23\". Muốn ra 5 phải viết <code>\"Tổng: \" + (2 + 3)</code>." },
+    { q: "Còn lệnh này in ra gì?", run: true, mono: true,
+      code: C`Console.WriteLine(2 + 3 + " là tổng");`,
+      opts: ["23 là tổng", "5 là tổng", "2 + 3 là tổng", "Lỗi biên dịch"], ans: 1,
+      why: "Lần này <code>2 + 3</code> đứng trước, cả hai đều là số nên được cộng thành 5, sau đó mới nối với chuỗi." },
+    { q: "Chương trình C# (kiểu truyền thống) bắt đầu chạy từ đâu?",
+      opts: ["Dòng đầu tiên của tệp Program.cs", "Hàm Main", "Lệnh using System;", "Lớp được khai báo đầu tiên"], ans: 1,
+      why: "Hàm <code>static void Main(string[] args)</code> là <b>điểm bắt đầu</b> của chương trình." },
+    { q: "Tính chất nào của thuật toán yêu cầu \"thuật toán phải dừng sau một số bước\"?",
+      opts: ["Tính xác định", "Tính hữu hạn", "Tính phổ dụng", "Tính hiệu quả"], ans: 1,
+      why: "<b>Tính hữu hạn</b>: thuật toán phải kết thúc sau hữu hạn bước. Tính xác định là mỗi bước chỉ có một cách hiểu." },
+    { q: "Trong lưu đồ, bước <b>kiểm tra điều kiện</b> (ví dụ <i>a ≠ 0 ?</i>) được vẽ bằng hình gì?",
+      opts: ["Hình chữ nhật", "Hình bình hành", "Hình thoi", "Hình bầu dục"], ans: 2,
+      why: "Hình thoi dùng cho điều kiện (2 nhánh Đúng/Sai). Hình bình hành cho nhập/xuất, chữ nhật cho xử lý, bầu dục cho bắt đầu/kết thúc." },
+    { q: "Lần vết thuật toán sau. Giá trị in ra là bao nhiêu?", run: true, mono: true,
+      code: C`
+        int s = 0, i = 1;
+        while (i <= 4)
+        {
+            s = s + i * i;
+            i = i + 1;
+        }
+        Console.WriteLine(s);`,
+      opts: ["10", "16", "30", "20"], ans: 2,
+      why: "s lần lượt = 1 → 5 → 14 → 30 (cộng 1², 2², 3², 4²). Khi i = 5 điều kiện sai nên dừng." },
+    { q: "Dòng nào sau đây <b>gây lỗi biên dịch</b>?",
+      code: C`
+        Console.WriteLine("Một");      // dòng 1
+        console.WriteLine("Hai");      // dòng 2
+        Console.Write("Ba\n");         // dòng 3
+        Console.WriteLine();           // dòng 4`,
+      opts: ["Dòng 1", "Dòng 2", "Dòng 3", "Dòng 4"], ans: 1,
+      why: "C# <b>phân biệt chữ hoa, chữ thường</b>: <code>console</code> khác <code>Console</code>. <code>Console.WriteLine()</code> không có đối số là hợp lệ, nó chỉ in một dòng trống." },
+    { q: "Phát biểu nào <b>đúng</b> về C#?",
+      opts: ["C# là ngôn ngữ thông dịch, chạy từng dòng một", "Mã C# được biên dịch sang mã trung gian IL, rồi CLR dịch sang mã máy khi chạy", "C# chỉ dùng được để làm game", "C# không phân biệt chữ hoa, chữ thường"], ans: 1,
+      why: "Mã nguồn <code>.cs</code> → trình biên dịch → IL → CLR (JIT) → mã máy." }
+  ],
+  problems: [
+    { id: "hello", title: "Xin chào C#", level: 1,
+      desc: "<p>Viết chương trình in ra đúng một dòng: <code>Xin chào C#!</code></p>",
+      samples: [{ in: "", out: "Xin chào C#!" }],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                Console.WriteLine("Xin chào C#!");
+            }
+        }` },
+    { id: "tamgiac", title: "Vẽ tam giác bằng dấu *", level: 1,
+      desc: "<p>In ra tam giác 4 dòng, dòng thứ <i>i</i> có <i>i</i> dấu <code>*</code> viết liền nhau.</p>",
+      samples: [{ in: "", out: "*\n**\n***\n****" }],
+      hint: "Buổi này chưa học vòng lặp, bạn chỉ cần 4 lệnh <code>Console.WriteLine</code>.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                Console.WriteLine("*");
+                Console.WriteLine("**");
+                Console.WriteLine("***");
+                Console.WriteLine("****");
+            }
+        }` },
+    { id: "chao", title: "Chào theo tên", level: 1,
+      desc: "<p>Nhập vào một dòng là tên người dùng. In ra <code>Xin chào, &lt;tên&gt;!</code></p>",
+      samples: [{ in: "Minh Anh", out: "Xin chào, Minh Anh!" }, { in: "Lan", out: "Xin chào, Lan!" }],
+      tests: ["Nguyễn Văn An", "B", "Trần Thị Thu Hà"],
+      hint: "Đọc tên bằng <code>string ten = Console.ReadLine();</code> rồi nối chuỗi bằng dấu <code>+</code>.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                string ten = Console.ReadLine();
+                Console.WriteLine("Xin chào, " + ten + "!");
+            }
+        }` },
+    { id: "truong", title: "Giới thiệu bản thân", level: 2,
+      desc: "<p>Dòng 1 nhập họ tên, dòng 2 nhập tên trường. In ra 2 dòng:</p><ul><li><code>Họ tên: &lt;họ tên&gt;</code></li><li><code>Bạn &lt;họ tên&gt; đang học tại &lt;trường&gt;.</code></li></ul>",
+      samples: [{ in: "Nguyễn Văn An\nUEH", out: "Họ tên: Nguyễn Văn An\nBạn Nguyễn Văn An đang học tại UEH." }],
+      tests: ["Lê Minh Châu\nĐại học Kinh tế TP.HCM", "A\nB"],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                string ten = Console.ReadLine();
+                string truong = Console.ReadLine();
+                Console.WriteLine("Họ tên: " + ten);
+                Console.WriteLine("Bạn " + ten + " đang học tại " + truong + ".");
+            }
+        }` },
+    { id: "bang", title: "In bảng môn học bằng ký tự đặc biệt", level: 2,
+      desc: "<p>Chỉ dùng <b>một</b> lệnh <code>Console.Write</code> với các ký tự <code>\\t</code> (tab) và <code>\\n</code> (xuống dòng) để in ra 3 dòng sau (các cột cách nhau đúng 1 ký tự tab):</p>",
+      samples: [{ in: "", out: "STT\tMôn học\tTín chỉ\n1\tCơ sở lập trình\t3\n2\tCơ sở dữ liệu\t3" }],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                Console.Write("STT\tMôn học\tTín chỉ\n1\tCơ sở lập trình\t3\n2\tCơ sở dữ liệu\t3\n");
+            }
+        }` }
+  ]
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="assets/cs-runner.js"></script>
+<script src="assets/practice.js"></script>
+</body>
+</html>

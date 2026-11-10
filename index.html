@@ -50,7 +50,13 @@
   .lesson p { margin: 0; color: var(--ink-2); font-size: 14.5px; line-height: 1.55; }
   .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 6px; }
   .tags code { font-variant-ligatures: none; font-family: var(--mono); font-size: 12px; background: #f1f0f7; color: #5b3a9a; padding: 3px 8px; border-radius: 6px; }
-  .go { font-size: 14px; font-weight: 700; color: var(--brand); margin-top: 6px; }
+  .lesson .cover-link { position: absolute; inset: 0; z-index: 0; }
+  .lesson .acts { position: relative; z-index: 1; display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .lesson .act { font-size: 13.5px; font-weight: 700; color: var(--brand); background: var(--brand-soft); padding: 7px 12px; border-radius: 10px; }
+  .lesson .act:hover { background: #e7dcfa; }
+  .lesson .act.pr { color: #fff; background: linear-gradient(90deg, var(--brand), #8b4fd8); }
+  .lesson .act.pr:hover { filter: brightness(1.08); }
+  .lesson .done-badge { position: absolute; top: 18px; right: 18px; font-size: 12px; font-weight: 700; color: #15803d; background: #e9f8ee; padding: 3px 10px; border-radius: 999px; }
   .phase { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; margin: 18px 0 2px; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
   .phase::after { content: ""; flex: 1; height: 1px; background: var(--line); }
   .phase:first-child { margin-top: 0; }
@@ -75,7 +81,7 @@
     <div class="badge"><i></i>Giáo trình 12 buổi · Console App</div>
     <h1>Cơ sở lập trình <em>C#</em></h1>
     <p class="lead">Bộ slide bám sát nội dung học phần Cơ sở lập trình cho sinh viên khối kinh tế: từ thuật toán, biến, rẽ nhánh, vòng lặp, hàm đến mảng, chuỗi và tệp tin. Mỗi buổi gồm lý thuyết, ví dụ mẫu có kết quả chạy, bài tập vận dụng kèm đáp án và bài về nhà.</p>
-    <div class="stats"><span>📚 12 buổi học</span><span>💻 Hơn 100 đoạn code mẫu</span><span>✍ Bài tập có đáp án</span><span>📝 Đề thi thử</span></div>
+    <div class="stats"><span>📚 12 buổi học</span><span>💻 Hơn 100 đoạn code mẫu</span><span>✍ Bài tập có đáp án</span><span>📝 Đề thi thử</span><span>⚡ Code &amp; chấm test ngay trên web</span></div>
     <a class="cta" href="buoi-01.html">Bắt đầu từ Buổi 1 →</a>
   </div>
 </header>
@@ -84,35 +90,51 @@
   <div class="wrap">
     <div class="grid">
       <div class="phase">Phần 1 · Nền tảng</div>
-      <a class="lesson" href="buoi-01.html"><span class="num">BUỔI 01</span><h3>Tổng quan lập trình và Thuật toán</h3><p>Chương trình, ngôn ngữ lập trình, thuật toán, mã giả, lưu đồ, lần vết. Cài Visual Studio và viết chương trình C# đầu tiên.</p><div class="tags"><code>Lưu đồ</code><code>Mã giả</code><code>Main</code><code>WriteLine</code></div><span class="go">Mở slide →</span></a>
-      <a class="lesson" href="buoi-02.html"><span class="num">BUỔI 02</span><h3>Biến, kiểu dữ liệu, nhập xuất và toán tử</h3><p>Khai báo biến, hằng, các kiểu dữ liệu, nhập bằng Parse/Convert, định dạng khi xuất, chia nguyên và chia lấy dư, lớp Math.</p><div class="tags"><code>int</code><code>double</code><code>Parse</code><code>$"{x:N0}"</code></div><span class="go">Mở slide →</span></a>
-      <a class="lesson" href="buoi-03.html"><span class="num">BUỔI 03</span><h3>Cấu trúc rẽ nhánh</h3><p>Toán tử so sánh và logic, if/else if, if lồng, toán tử 3 ngôi, switch. Năm nhuận, phương trình bậc 2, tiền điện bậc thang.</p><div class="tags"><code>if</code><code>else if</code><code>switch</code><code>&amp;&amp; ||</code></div><span class="go">Mở slide →</span></a>
-      <a class="lesson" href="buoi-04.html"><span class="num">BUỔI 04</span><h3>Cấu trúc lặp</h3><p>for, while, do…while, break, continue. Tổng, đếm, giai thừa, số nguyên tố, UCLN Euclid, đảo số, bài toán tiết kiệm.</p><div class="tags"><code>for</code><code>while</code><code>do…while</code><code>break</code></div><span class="go">Mở slide →</span></a>
+      <div class="lesson"><a class="cover-link" href="buoi-01.html" aria-label="Mở slide buổi 1"></a><span class="num">BUỔI 01</span><h3>Tổng quan lập trình và Thuật toán</h3><p>Chương trình, ngôn ngữ lập trình, thuật toán, mã giả, lưu đồ, lần vết. Cài Visual Studio và viết chương trình C# đầu tiên.</p><div class="tags"><code>Lưu đồ</code><code>Mã giả</code><code>Main</code><code>WriteLine</code></div><div class="acts"><a class="act" href="buoi-01.html">▶ Slide</a><a class="act pr" href="bai-tap-01.html">✎ Bài tập · chấm tự động</a></div></div>
+      <div class="lesson"><a class="cover-link" href="buoi-02.html" aria-label="Mở slide buổi 2"></a><span class="num">BUỔI 02</span><h3>Biến, kiểu dữ liệu, nhập xuất và toán tử</h3><p>Khai báo biến, hằng, các kiểu dữ liệu, nhập bằng Parse/Convert, định dạng khi xuất, chia nguyên và chia lấy dư, lớp Math.</p><div class="tags"><code>int</code><code>double</code><code>Parse</code><code>$"{x:N0}"</code></div><div class="acts"><a class="act" href="buoi-02.html">▶ Slide</a><a class="act pr" href="bai-tap-02.html">✎ Bài tập · chấm tự động</a></div></div>
+      <div class="lesson"><a class="cover-link" href="buoi-03.html" aria-label="Mở slide buổi 3"></a><span class="num">BUỔI 03</span><h3>Cấu trúc rẽ nhánh</h3><p>Toán tử so sánh và logic, if/else if, if lồng, toán tử 3 ngôi, switch. Năm nhuận, phương trình bậc 2, tiền điện bậc thang.</p><div class="tags"><code>if</code><code>else if</code><code>switch</code><code>&amp;&amp; ||</code></div><div class="acts"><a class="act" href="buoi-03.html">▶ Slide</a><a class="act pr" href="bai-tap-03.html">✎ Bài tập · chấm tự động</a></div></div>
+      <div class="lesson"><a class="cover-link" href="buoi-04.html" aria-label="Mở slide buổi 4"></a><span class="num">BUỔI 04</span><h3>Cấu trúc lặp</h3><p>for, while, do…while, break, continue. Tổng, đếm, giai thừa, số nguyên tố, UCLN Euclid, đảo số, bài toán tiết kiệm.</p><div class="tags"><code>for</code><code>while</code><code>do…while</code><code>break</code></div><div class="acts"><a class="act" href="buoi-04.html">▶ Slide</a><a class="act pr" href="bai-tap-04.html">✎ Bài tập · chấm tự động</a></div></div>
 
       <div class="phase">Phần 2 · Tổ chức chương trình</div>
-      <a class="lesson" href="buoi-05.html"><span class="num">BUỔI 05</span><h3>Lặp lồng nhau, TryParse và Menu</h3><p>In hình bằng ký tự, bài toán vét cạn, nhập liệu an toàn với TryParse, try…catch và chương trình có menu (mô phỏng ATM).</p><div class="tags"><code>TryParse</code><code>do…while</code><code>Random</code></div><span class="go">Mở slide →</span></a>
-      <a class="lesson" href="buoi-06.html"><span class="num">BUỔI 06</span><h3>Hàm (phương thức)</h3><p>Khai báo và gọi hàm, void và return, phạm vi biến, tham trị, ref, out, nạp chồng, tham số mặc định, đệ quy.</p><div class="tags"><code>static</code><code>return</code><code>ref</code><code>out</code></div><span class="go">Mở slide →</span></a>
+      <div class="lesson"><a class="cover-link" href="buoi-05.html" aria-label="Mở slide buổi 5"></a><span class="num">BUỔI 05</span><h3>Lặp lồng nhau, TryParse và Menu</h3><p>In hình bằng ký tự, bài toán vét cạn, nhập liệu an toàn với TryParse, try…catch và chương trình có menu (mô phỏng ATM).</p><div class="tags"><code>TryParse</code><code>do…while</code><code>Random</code></div><div class="acts"><a class="act" href="buoi-05.html">▶ Slide</a><a class="act pr" href="bai-tap-05.html">✎ Bài tập · chấm tự động</a></div></div>
+      <div class="lesson"><a class="cover-link" href="buoi-06.html" aria-label="Mở slide buổi 6"></a><span class="num">BUỔI 06</span><h3>Hàm (phương thức)</h3><p>Khai báo và gọi hàm, void và return, phạm vi biến, tham trị, ref, out, nạp chồng, tham số mặc định, đệ quy.</p><div class="tags"><code>static</code><code>return</code><code>ref</code><code>out</code></div><div class="acts"><a class="act" href="buoi-06.html">▶ Slide</a><a class="act pr" href="bai-tap-06.html">✎ Bài tập · chấm tự động</a></div></div>
 
       <div class="phase">Phần 3 · Cấu trúc dữ liệu</div>
-      <a class="lesson" href="buoi-07.html"><span class="num">BUỔI 07</span><h3>Mảng một chiều</h3><p>Khai báo, duyệt for/foreach, hàm nhập xuất mảng, tổng, trung bình, max/min, đếm, kiểm tra, phân tích doanh thu 12 tháng.</p><div class="tags"><code>int[]</code><code>Length</code><code>foreach</code></div><span class="go">Mở slide →</span></a>
-      <a class="lesson" href="buoi-08.html"><span class="num">BUỔI 08</span><h3>Tìm kiếm và Sắp xếp</h3><p>Tìm tuần tự, tìm nhị phân, sắp xếp chọn, nổi bọt, chèn (có lần vết), thêm/xóa phần tử, xếp hạng điểm thi.</p><div class="tags"><code>Binary Search</code><code>Selection</code><code>Bubble</code></div><span class="go">Mở slide →</span></a>
-      <a class="lesson" href="buoi-09.html"><span class="num">BUỔI 09</span><h3>Mảng hai chiều (ma trận)</h3><p>Xử lý theo dòng, cột, đường chéo; chuyển vị, cộng, nhân ma trận; bảng doanh thu chi nhánh và bảng điểm có tín chỉ.</p><div class="tags"><code>int[,]</code><code>GetLength</code><code>a[i, j]</code></div><span class="go">Mở slide →</span></a>
-      <a class="lesson" href="buoi-10.html"><span class="num">BUỔI 10</span><h3>Chuỗi ký tự</h3><p>Duyệt ký tự, hàm của char và string, StringBuilder. Đếm từ, đảo chuỗi, đối xứng, chuẩn hóa họ tên, kiểm tra mật khẩu.</p><div class="tags"><code>Split</code><code>Substring</code><code>Trim</code><code>char</code></div><span class="go">Mở slide →</span></a>
-      <a class="lesson" href="buoi-11.html"><span class="num">BUỔI 11</span><h3>Tệp tin và kiểu cấu trúc</h3><p>Đọc/ghi file với File, StreamReader, StreamWriter; xử lý lỗi; struct; dự án mini quản lý điểm từ file CSV.</p><div class="tags"><code>System.IO</code><code>using</code><code>struct</code><code>CSV</code></div><span class="go">Mở slide →</span></a>
+      <div class="lesson"><a class="cover-link" href="buoi-07.html" aria-label="Mở slide buổi 7"></a><span class="num">BUỔI 07</span><h3>Mảng một chiều</h3><p>Khai báo, duyệt for/foreach, hàm nhập xuất mảng, tổng, trung bình, max/min, đếm, kiểm tra, phân tích doanh thu 12 tháng.</p><div class="tags"><code>int[]</code><code>Length</code><code>foreach</code></div><div class="acts"><a class="act" href="buoi-07.html">▶ Slide</a><a class="act pr" href="bai-tap-07.html">✎ Bài tập · chấm tự động</a></div></div>
+      <div class="lesson"><a class="cover-link" href="buoi-08.html" aria-label="Mở slide buổi 8"></a><span class="num">BUỔI 08</span><h3>Tìm kiếm và Sắp xếp</h3><p>Tìm tuần tự, tìm nhị phân, sắp xếp chọn, nổi bọt, chèn (có lần vết), thêm/xóa phần tử, xếp hạng điểm thi.</p><div class="tags"><code>Binary Search</code><code>Selection</code><code>Bubble</code></div><div class="acts"><a class="act" href="buoi-08.html">▶ Slide</a><a class="act pr" href="bai-tap-08.html">✎ Bài tập · chấm tự động</a></div></div>
+      <div class="lesson"><a class="cover-link" href="buoi-09.html" aria-label="Mở slide buổi 9"></a><span class="num">BUỔI 09</span><h3>Mảng hai chiều (ma trận)</h3><p>Xử lý theo dòng, cột, đường chéo; chuyển vị, cộng, nhân ma trận; bảng doanh thu chi nhánh và bảng điểm có tín chỉ.</p><div class="tags"><code>int[,]</code><code>GetLength</code><code>a[i, j]</code></div><div class="acts"><a class="act" href="buoi-09.html">▶ Slide</a><a class="act pr" href="bai-tap-09.html">✎ Bài tập · chấm tự động</a></div></div>
+      <div class="lesson"><a class="cover-link" href="buoi-10.html" aria-label="Mở slide buổi 10"></a><span class="num">BUỔI 10</span><h3>Chuỗi ký tự</h3><p>Duyệt ký tự, hàm của char và string, StringBuilder. Đếm từ, đảo chuỗi, đối xứng, chuẩn hóa họ tên, kiểm tra mật khẩu.</p><div class="tags"><code>Split</code><code>Substring</code><code>Trim</code><code>char</code></div><div class="acts"><a class="act" href="buoi-10.html">▶ Slide</a><a class="act pr" href="bai-tap-10.html">✎ Bài tập · chấm tự động</a></div></div>
+      <div class="lesson"><a class="cover-link" href="buoi-11.html" aria-label="Mở slide buổi 11"></a><span class="num">BUỔI 11</span><h3>Tệp tin và kiểu cấu trúc</h3><p>Đọc/ghi file với File, StreamReader, StreamWriter; xử lý lỗi; struct; dự án mini quản lý điểm từ file CSV.</p><div class="tags"><code>System.IO</code><code>using</code><code>struct</code><code>CSV</code></div><div class="acts"><a class="act" href="buoi-11.html">▶ Slide</a><a class="act pr" href="bai-tap-11.html">✎ Bài tập · chấm tự động</a></div></div>
 
       <div class="phase">Phần 4 · Về đích</div>
-      <a class="lesson" href="buoi-12.html"><span class="num">BUỔI 12</span><h3>Tổng ôn tập và Luyện đề</h3><p>Sơ đồ kiến thức, 8 khuôn thuật toán, đọc code đoán kết quả, tìm sửa lỗi, đề thi thử có đáp án, chiến lược làm bài.</p><div class="tags"><code>Ôn thi</code><code>Đề mẫu</code><code>Checklist</code></div><span class="go">Mở slide →</span></a>
+      <div class="lesson"><a class="cover-link" href="buoi-12.html" aria-label="Mở slide buổi 12"></a><span class="num">BUỔI 12</span><h3>Tổng ôn tập và Luyện đề</h3><p>Sơ đồ kiến thức, 8 khuôn thuật toán, đọc code đoán kết quả, tìm sửa lỗi, đề thi thử có đáp án, chiến lược làm bài.</p><div class="tags"><code>Ôn thi</code><code>Đề mẫu</code><code>Checklist</code></div><div class="acts"><a class="act" href="buoi-12.html">▶ Slide</a><a class="act pr" href="bai-tap-12.html">✎ Bài tập · chấm tự động</a></div></div>
     </div>
 
     <section class="guide">
       <div class="g"><h4>⌨ Cách xem slide</h4><ul><li><kbd>→</kbd> / <kbd>Space</kbd>: slide sau</li><li><kbd>←</kbd>: slide trước</li><li><kbd>F</kbd>: toàn màn hình · <kbd>O</kbd>: xem tổng quan</li></ul></div>
       <div class="g"><h4>📱 Trên điện thoại</h4><p>Slide tự chuyển sang dạng cuộn dọc cho dễ đọc. Trên máy tính bảng có thể vuốt trái/phải để chuyển slide.</p></div>
       <div class="g"><h4>✍ Học hiệu quả</h4><p>Gõ lại từng ví dụ mẫu trong Visual Studio thay vì chỉ đọc. Tự làm bài vận dụng trước, sau đó mới mở "Xem đáp án".</p></div>
+      <div class="g"><h4>✎ Bài tập chấm tự động</h4><p>Mỗi buổi có trang bài tập: trắc nghiệm đọc code và bài lập trình viết code ngay trên web, bấm <strong>Chấm bài</strong> để chạy test. Lần đầu mở cần tải trình biên dịch C# (~10 MB).</p></div>
       <div class="g"><h4>📋 Sao chép code</h4><p>Mỗi khối code có nút <strong>Sao chép</strong> ở góc trên bên phải để dán thẳng vào Visual Studio.</p></div>
     </section>
   </div>
 </main>
 
 <footer>Cơ sở lập trình C# · Tài liệu giảng dạy kèm 1-1</footer>
+<script>
+  // show progress saved by the practice pages
+  document.querySelectorAll(".lesson").forEach(function (card) {
+    var a = card.querySelector(".act.pr"); if (!a) return;
+    var nn = a.getAttribute("href").match(/(\d\d)/)[1];
+    try {
+      var s = JSON.parse(localStorage.getItem("csbt" + nn + ":summary") || "null");
+      if (s && (s.quiz || s.solved)) {
+        var b = document.createElement("span"); b.className = "done-badge";
+        b.textContent = "✎ " + s.quiz + "/" + s.quizTotal + " câu · " + s.solved + "/" + s.probTotal + " bài";
+        card.appendChild(b);
+      }
+    } catch (e) {}
+  });
+</script>
 </body>
 </html>

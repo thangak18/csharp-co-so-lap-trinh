@@ -1,0 +1,4 @@
+runner-src/bin/
+runner-src/obj/
+.runner-publish/
+.DS_Store

@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bài tập Buổi 11 · Tệp tin và kiểu cấu trúc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="assets/practice.css">
+</head>
+<body>
+<noscript>Trang bài tập cần bật JavaScript.</noscript>
+<script>
+const C = String.raw;
+window.PRACTICE = {
+  lesson: 11,
+  title: "Tệp tin và kiểu cấu trúc",
+  codeNote: "Trình duyệt có sẵn một ổ đĩa ảo, nên <code>File</code>, <code>StreamReader</code>, <code>StreamWriter</code> chạy được bình thường (tệp bị xóa khi chạy lại). Ở các bài đọc danh sách, chương trình đọc <b>đến hết dữ liệu</b>: lặp khi <code>(line = Console.ReadLine()) != null</code>.",
+  quiz: [
+    { q: "Tệp có bao nhiêu dòng?", run: true, mono: true,
+      code: C`
+        File.WriteAllText("a.txt", "Dòng 1\n");
+        File.AppendAllText("a.txt", "Dòng 2\n");
+        File.AppendAllText("a.txt", "Dòng 3\n");
+        File.WriteAllText("b.txt", "X\n");
+        Console.WriteLine(File.ReadAllLines("a.txt").Length);`,
+      opts: ["1", "3", "4", "2"], ans: 1,
+      why: "<code>WriteAllText</code> ghi mới (ghi đè), <code>AppendAllText</code> ghi thêm vào cuối. Ghi vào b.txt không ảnh hưởng a.txt." },
+    { q: "Điều kiện lặp nào đúng để đọc <b>từng dòng đến hết</b> tệp bằng StreamReader?",
+      opts: ["while (sr.ReadLine() != \"\")", "while ((line = sr.ReadLine()) != null)", "while (!sr.ReadLine())", "for (int i = 0; i < sr.Length; i++)"], ans: 1, mono: true,
+      why: "<code>ReadLine()</code> trả về <code>null</code> khi đã hết tệp. Dòng trống trả về chuỗi rỗng \"\", không phải null." },
+    { q: "Khối <code>using (StreamWriter sw = …) { … }</code> dùng để làm gì?",
+      opts: ["Khai báo thư viện", "Tự động đóng tệp khi ra khỏi khối, kể cả khi có lỗi", "Tăng tốc độ ghi", "Mã hóa nội dung tệp"], ans: 1,
+      why: "Quên đóng StreamWriter có thể làm tệp rỗng hoặc thiếu dữ liệu. Khối <code>using</code> tự gọi Dispose/Close." },
+    { q: "Vì sao <code>\"D:\\new.txt\"</code> (không có @) gây lỗi đường dẫn?",
+      opts: ["Thiếu phần mở rộng", "\\n được hiểu là ký tự xuống dòng", "Ổ D không tồn tại", "Tên tệp không được có chữ new"], ans: 1,
+      why: "Trong chuỗi thường, <code>\\n</code> là xuống dòng. Viết <code>@\"D:\\new.txt\"</code> hoặc <code>\"D:\\\\new.txt\"</code>." },
+    { q: "Kết quả in ra (struct là kiểu giá trị)?", run: true, mono: true,
+      code: C`
+        Diem a;
+        a.X = 1;
+        Diem b = a;
+        b.X = 5;
+        Console.WriteLine(a.X);
+
+        struct Diem { public int X; }`,
+      opts: ["1", "5", "0", "Lỗi biên dịch"], ans: 0,
+      why: "Gán struct sẽ <b>sao chép</b> toàn bộ giá trị (khác với mảng, là kiểu tham chiếu). Sửa b không ảnh hưởng a." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        try
+        {
+            throw new Exception("lỗi");
+            Console.Write("A");
+        }
+        catch (Exception)
+        {
+            Console.Write("B");
+        }
+        finally
+        {
+            Console.Write("C");
+        }
+        Console.Write("D");`,
+      opts: ["BCD", "ABCD", "BD", "CD"], ans: 0,
+      why: "Ném lỗi thì nhảy ngay sang catch (bỏ A), finally luôn chạy, sau đó chương trình chạy tiếp lệnh in D." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        string line = "SV01,Nguyen Van An,8.5";
+        string[] f = line.Split(',');
+        double d = double.Parse(f[2], System.Globalization.CultureInfo.InvariantCulture);
+        Console.WriteLine($"{f.Length} {f[1].Length} {d * 2}");`,
+      opts: ["3 13 17", "3 12 17", "2 13 17", "3 13 8.58.5"], ans: 0,
+      why: "Tách được 3 trường; \"Nguyen Van An\" dài 13 ký tự; 8.5 × 2 = 17." },
+    { q: "Mở một tệp không tồn tại bằng <code>File.ReadAllLines</code> sẽ gây ngoại lệ nào?",
+      opts: ["FormatException", "FileNotFoundException", "NullReferenceException", "IndexOutOfRangeException"], ans: 1,
+      why: "Có thể kiểm tra trước bằng <code>File.Exists(path)</code> hoặc bắt <code>FileNotFoundException</code>." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        SinhVien[] ds = new SinhVien[3];
+        ds[1].Ten = "An";
+        ds[1].Diem = 8;
+        Console.WriteLine(ds[0].Diem + ds[1].Diem + (ds[2].Ten == null ? 1 : 0));
+
+        struct SinhVien { public string Ten; public double Diem; }`,
+      opts: ["9", "8", "Lỗi NullReference", "10"], ans: 0,
+      why: "Mảng struct mới tạo có mọi trường mặc định: số = 0, string = null. 0 + 8 + 1 = 9." },
+    { q: "Ghi rồi đọc lại bằng StreamWriter/StreamReader, kết quả in ra?", run: true, mono: true,
+      code: C`
+        using (StreamWriter sw = new StreamWriter("so.txt"))
+            for (int i = 1; i <= 4; i++) sw.WriteLine(i * i);
+
+        int tong = 0;
+        using (StreamReader sr = new StreamReader("so.txt"))
+        {
+            string line;
+            while ((line = sr.ReadLine()) != null) tong += int.Parse(line);
+        }
+        Console.WriteLine(tong);`,
+      opts: ["30", "10", "16", "0"], ans: 0,
+      why: "Tệp chứa 1, 4, 9, 16; tổng 30." }
+  ],
+  problems: [
+    { id: "ghidoc", title: "Ghi rồi đọc tệp số", level: 1,
+      desc: "<p>Dòng 1: n. n dòng tiếp theo: mỗi dòng một số nguyên. Hãy <b>ghi</b> n số vào tệp <code>so.txt</code> (mỗi số một dòng), sau đó <b>đọc lại từ tệp</b> và in <code>Số dòng: …</code>, <code>Tổng: …</code>, <code>Max: …</code>.</p>",
+      samples: [{ in: "4\n5\n-2\n9\n3", out: "Số dòng: 4\nTổng: 15\nMax: 9" }],
+      tests: ["1\n-7", "5\n10\n10\n10\n10\n10"],
+      starter: C`
+        using System;
+        using System.IO;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int n = int.Parse(Console.ReadLine());
+                using (StreamWriter sw = new StreamWriter("so.txt"))
+                {
+                    // TODO: đọc n số từ bàn phím và ghi vào tệp
+                }
+                string[] lines = File.ReadAllLines("so.txt");
+                // TODO: tính và in kết quả từ mảng lines
+            }
+        }`,
+      solution: C`
+        using System;
+        using System.IO;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int n = int.Parse(Console.ReadLine());
+                using (StreamWriter sw = new StreamWriter("so.txt"))
+                {
+                    for (int i = 0; i < n; i++) sw.WriteLine(Console.ReadLine().Trim());
+                }
+                string[] lines = File.ReadAllLines("so.txt");
+                int tong = 0, max = int.Parse(lines[0]);
+                foreach (string l in lines)
+                {
+                    int x = int.Parse(l);
+                    tong += x;
+                    if (x > max) max = x;
+                }
+                Console.WriteLine($"Số dòng: {lines.Length}");
+                Console.WriteLine($"Tổng: {tong}");
+                Console.WriteLine($"Max: {max}");
+            }
+        }` },
+    { id: "diemcsv", title: "Bảng điểm từ dữ liệu CSV", level: 3,
+      desc: "<p>Dòng đầu là tiêu đề <code>MaSV,HoTen,GiuaKy,CuoiKy</code>, các dòng sau đến hết là dữ liệu. Điểm tổng kết TK = 0.4 × GiữaKỳ + 0.6 × CuốiKỳ. Xếp loại: A (≥ 8.5), B (≥ 7.0), C (≥ 5.5), D (≥ 4.0), F. Dùng <code>struct SinhVien</code>.</p><p>In danh sách <b>giảm dần theo TK</b> (bằng nhau giữ thứ tự ban đầu), mỗi dòng <code>MaSV HoTen TK Loại</code> với TK 1 chữ số thập phân, các trường cách nhau <code> | </code>. Dòng cuối: <code>TB lớp: …</code> (2 chữ số thập phân).</p>",
+      samples: [{ in: "MaSV,HoTen,GiuaKy,CuoiKy\nSV001,Nguyen Van An,7.5,8.0\nSV002,Tran Thi Binh,6.0,6.0\nSV003,Le Minh Chau,9.0,9.5", out: "SV003 | Le Minh Chau | 9.3 | A\nSV001 | Nguyen Van An | 7.8 | B\nSV002 | Tran Thi Binh | 6.0 | C\nTB lớp: 7.70" }],
+      tests: ["MaSV,HoTen,GiuaKy,CuoiKy\nSV9,Mot Minh,4,3", "MaSV,HoTen,GiuaKy,CuoiKy\nA1,Ba,5,5\nA2,Bon,5,5\nA3,Nam,10,10\nA4,Sau,0,0"],
+      starter: C`
+        using System;
+        using System.Globalization;
+
+        struct SinhVien
+        {
+            public string Ma, Ten;
+            public double GK, CK;
+            public double TK() { return GK * 0.4 + CK * 0.6; }
+        }
+
+        class Program
+        {
+            static string XepLoai(double d)
+            {
+                // TODO
+                return "";
+            }
+
+            static void Main(string[] args)
+            {
+                SinhVien[] ds = new SinhVien[100];
+                int n = 0;
+                Console.ReadLine();                 // bỏ dòng tiêu đề
+                string line;
+                while ((line = Console.ReadLine()) != null)
+                {
+                    string[] f = line.Split(',');
+                    // TODO: gán ds[n].Ma, ds[n].Ten, ds[n].GK, ds[n].CK rồi n++
+                    // gợi ý: double.Parse(f[2], CultureInfo.InvariantCulture)
+                }
+                // TODO: sắp xếp giảm dần theo TK, in danh sách và TB lớp
+            }
+        }`,
+      hint: "Sắp xếp ổn định (giữ thứ tự khi bằng nhau): dùng sắp xếp chèn hoặc nổi bọt với điều kiện <code>&lt;</code> ngặt.",
+      solution: C`
+        using System;
+        using System.Globalization;
+
+        struct SinhVien
+        {
+            public string Ma, Ten;
+            public double GK, CK;
+            public double TK() { return GK * 0.4 + CK * 0.6; }
+        }
+
+        class Program
+        {
+            static string XepLoai(double d)
+            {
+                if (d >= 8.5) return "A";
+                if (d >= 7.0) return "B";
+                if (d >= 5.5) return "C";
+                if (d >= 4.0) return "D";
+                return "F";
+            }
+
+            static void Main(string[] args)
+            {
+                SinhVien[] ds = new SinhVien[100];
+                int n = 0;
+                Console.ReadLine();
+                string line;
+                while ((line = Console.ReadLine()) != null)
+                {
+                    if (line.Trim() == "") continue;
+                    string[] f = line.Split(',');
+                    ds[n].Ma = f[0].Trim();
+                    ds[n].Ten = f[1].Trim();
+                    ds[n].GK = double.Parse(f[2], CultureInfo.InvariantCulture);
+                    ds[n].CK = double.Parse(f[3], CultureInfo.InvariantCulture);
+                    n++;
+                }
+                for (int i = 1; i < n; i++)                 // sắp xếp chèn, giảm dần, ổn định
+                {
+                    SinhVien x = ds[i];
+                    int j = i - 1;
+                    while (j >= 0 && ds[j].TK() < x.TK()) { ds[j + 1] = ds[j]; j--; }
+                    ds[j + 1] = x;
+                }
+                double tong = 0;
+                for (int i = 0; i < n; i++)
+                {
+                    double tk = ds[i].TK();
+                    tong += tk;
+                    Console.WriteLine($"{ds[i].Ma} | {ds[i].Ten} | {tk:F1} | {XepLoai(tk)}");
+                }
+                Console.WriteLine($"TB lớp: {tong / n:F2}");
+            }
+        }` },
+    { id: "sanpham", title: "Hóa đơn sản phẩm", level: 2,
+      desc: "<p>Mỗi dòng (đến hết dữ liệu) có dạng <code>Ma;Ten;SoLuong;DonGia</code> (số lượng, đơn giá là số nguyên). Với mỗi sản phẩm in <code>Ten: &lt;thành tiền N0&gt;</code>. Sau đó in <code>Tổng: …</code> (N0) và <code>Cao nhất: &lt;tên sản phẩm có thành tiền lớn nhất, chọn cái xuất hiện trước&gt;</code>.</p>",
+      samples: [{ in: "P1;But bi;12;5500\nP2;Vo;5;12000\nP3;Thuoc ke;2;8000", out: "But bi: 66,000\nVo: 60,000\nThuoc ke: 16,000\nTổng: 142,000\nCao nhất: But bi" }],
+      tests: ["X;May tinh;1;15000000", "A;Keo;100;1000\nB;Banh;50;2000\nC;Sua;10;5000"],
+      solution: C`
+        using System;
+
+        struct SanPham
+        {
+            public string Ma, Ten;
+            public long SoLuong, DonGia;
+            public long ThanhTien() { return SoLuong * DonGia; }
+        }
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                SanPham[] ds = new SanPham[100];
+                int n = 0;
+                string line;
+                while ((line = Console.ReadLine()) != null)
+                {
+                    if (line.Trim() == "") continue;
+                    string[] f = line.Split(';');
+                    ds[n].Ma = f[0]; ds[n].Ten = f[1];
+                    ds[n].SoLuong = long.Parse(f[2]); ds[n].DonGia = long.Parse(f[3]);
+                    n++;
+                }
+                long tong = 0; int vt = 0;
+                for (int i = 0; i < n; i++)
+                {
+                    Console.WriteLine($"{ds[i].Ten}: {ds[i].ThanhTien():N0}");
+                    tong += ds[i].ThanhTien();
+                    if (ds[i].ThanhTien() > ds[vt].ThanhTien()) vt = i;
+                }
+                Console.WriteLine($"Tổng: {tong:N0}");
+                Console.WriteLine($"Cao nhất: {ds[vt].Ten}");
+            }
+        }` },
+    { id: "thongketep", title: "Thống kê văn bản qua tệp", level: 2,
+      desc: "<p>Đọc tất cả các dòng văn bản (đến hết dữ liệu), ghi vào tệp <code>vanban.txt</code>. Sau đó đọc lại tệp và in <code>Số dòng: …</code>, <code>Số từ: …</code>, <code>Số ký tự: …</code> (không tính ký tự xuống dòng; từ là các chuỗi ngăn cách bởi khoảng trắng).</p>",
+      samples: [{ in: "Hoc lap trinh\nthat  vui", out: "Số dòng: 2\nSố từ: 5\nSố ký tự: 22" }],
+      tests: ["a", "  \nmot hai ba\n\nbon"],
+      solution: C`
+        using System;
+        using System.IO;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                using (StreamWriter sw = new StreamWriter("vanban.txt"))
+                {
+                    string line;
+                    while ((line = Console.ReadLine()) != null) sw.WriteLine(line);
+                }
+                string[] lines = File.ReadAllLines("vanban.txt");
+                int tu = 0, kyTu = 0;
+                foreach (string l in lines)
+                {
+                    kyTu += l.Length;
+                    tu += l.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length;
+                }
+                Console.WriteLine($"Số dòng: {lines.Length}");
+                Console.WriteLine($"Số từ: {tu}");
+                Console.WriteLine($"Số ký tự: {kyTu}");
+            }
+        }` }
+  ]
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="assets/cs-runner.js"></script>
+<script src="assets/practice.js"></script>
+</body>
+</html>

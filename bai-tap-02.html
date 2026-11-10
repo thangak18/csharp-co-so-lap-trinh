@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bài tập Buổi 2 · Biến, kiểu dữ liệu, nhập xuất</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="assets/practice.css">
+</head>
+<body>
+<noscript>Trang bài tập cần bật JavaScript.</noscript>
+<script>
+const C = String.raw;
+window.PRACTICE = {
+  lesson: 2,
+  title: "Biến, kiểu dữ liệu, nhập xuất",
+  quiz: [
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int a = 17, b = 5;
+        Console.WriteLine(a / b + " " + a % b);`,
+      opts: ["3.4 2", "3 2", "3 3", "4 2"], ans: 1,
+      why: "Hai số nguyên chia nhau là <b>chia nguyên</b>: 17 / 5 = 3, dư 17 % 5 = 2." },
+    { q: "Biến <code>x</code> có giá trị bao nhiêu?", run: true, mono: true,
+      code: C`
+        double x = 7 / 2;
+        Console.WriteLine(x);`,
+      opts: ["3.5", "3", "4", "Lỗi biên dịch"], ans: 1,
+      why: "<code>7 / 2</code> được tính trước (chia nguyên = 3), rồi mới gán 3 vào biến double. Muốn ra 3.5 phải viết <code>7.0 / 2</code> hoặc <code>(double)7 / 2</code>." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int a = 5;
+        int b = a++ + ++a;
+        Console.WriteLine($"{a} {b}");`,
+      opts: ["7 12", "7 11", "6 11", "7 13"], ans: 0,
+      why: "<code>a++</code> dùng giá trị 5 rồi mới tăng a lên 6; <code>++a</code> tăng a lên 7 rồi dùng 7. Vậy b = 5 + 7 = 12, a = 7." },
+    { q: "Kết quả in ra (máy cài định dạng tiếng Anh/quốc tế)?", run: true, mono: true,
+      code: C`Console.WriteLine($"{1234567.891:N2}");`,
+      opts: ["1234567.89", "1,234,567.89", "1,234,568", "1.234.567,89"], ans: 1,
+      why: "<code>N2</code>: có dấu phân cách hàng nghìn và 2 chữ số thập phân. Trên máy cài định dạng Việt Nam sẽ hiện <code>1.234.567,89</code>." },
+    { q: "Tên biến nào <b>hợp lệ</b> trong C#?",
+      opts: ["1diem", "so luong", "soLuong_2", "class"], ans: 2,
+      why: "Tên không bắt đầu bằng số, không có khoảng trắng, không trùng từ khóa (<code>class</code>)." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int x = (int)9.99;
+        Console.WriteLine(x + (int)Math.Round(2.5));`,
+      opts: ["13", "12", "11", "10"], ans: 2,
+      why: "<code>(int)9.99</code> <b>cắt bỏ</b> phần lẻ thành 9. <code>Math.Round(2.5)</code> mặc định làm tròn về số <b>chẵn</b> gần nhất (2), nên kết quả là 9 + 2 = 11. Muốn làm tròn 2.5 thành 3 dùng <code>Math.Round(2.5, MidpointRounding.AwayFromZero)</code>." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int n = 4728;
+        Console.WriteLine(n / 100 % 10);`,
+      opts: ["47", "7", "2", "8"], ans: 1,
+      why: "4728 / 100 = 47 (chia nguyên), 47 % 10 = 7, chính là chữ số hàng trăm." },
+    { q: "Nên dùng kiểu dữ liệu nào để lưu <b>số tiền</b> cần tính chính xác tuyệt đối?",
+      opts: ["float", "double", "decimal", "int"], ans: 2,
+      why: "<code>decimal</code> lưu số thập phân chính xác (không sai số nhị phân như double), hậu tố <code>m</code>: <code>199.99m</code>." },
+    { q: "Đoạn code sau bị lỗi gì?",
+      code: C`
+        string s = Console.ReadLine();
+        int t = s + 1;`,
+      opts: ["Không lỗi, t = s + 1", "Lỗi biên dịch: không gán được string cho int", "Lỗi khi chạy FormatException", "In ra s1"], ans: 1,
+      why: "<code>s + 1</code> là nối chuỗi nên ra kiểu <code>string</code>, không gán được cho <code>int</code> (CS0029). Phải viết <code>int t = int.Parse(s) + 1;</code>" },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        double tb = (8 + 7 + 6) / 3;
+        int tong = 25, soMon = 3;
+        Console.WriteLine($"{tb} {(double)tong / soMon:F2}");`,
+      opts: ["7 8.33", "7.00 8.33", "7 8", "7 8.3333"], ans: 0,
+      why: "(8+7+6)/3 = 21/3 = 7 (chia nguyên, vừa khéo chia hết). <code>(double)25 / 3</code> = 8.333…, định dạng <code>F2</code> thành 8.33." }
+  ],
+  problems: [
+    { id: "hcn", title: "Hình chữ nhật", level: 1,
+      desc: "<p>Nhập chiều dài <i>a</i> và chiều rộng <i>b</i> (số thực, mỗi số một dòng). In ra 3 dòng, làm tròn 2 chữ số thập phân:</p><ul><li><code>Chu vi: &lt;giá trị&gt;</code></li><li><code>Diện tích: &lt;giá trị&gt;</code></li><li><code>Đường chéo: &lt;giá trị&gt;</code></li></ul>",
+      samples: [{ in: "4\n3", out: "Chu vi: 14.00\nDiện tích: 12.00\nĐường chéo: 5.00" }],
+      tests: ["2.5\n1.5", "10\n10", "7.2\n3.9"],
+      hint: "Dùng <code>double.Parse</code>, công thức đường chéo <code>Math.Sqrt(a * a + b * b)</code>, định dạng <code>{x:F2}</code>.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                double a = double.Parse(Console.ReadLine());
+                double b = double.Parse(Console.ReadLine());
+                Console.WriteLine($"Chu vi: {(a + b) * 2:F2}");
+                Console.WriteLine($"Diện tích: {a * b:F2}");
+                Console.WriteLine($"Đường chéo: {Math.Sqrt(a * a + b * b):F2}");
+            }
+        }` },
+    { id: "giay", title: "Đổi giây ra giờ, phút, giây", level: 1,
+      desc: "<p>Nhập tổng số giây (số nguyên ≥ 0). In ra dạng <code>&lt;h&gt; giờ &lt;m&gt; phút &lt;s&gt; giây</code>.</p>",
+      samples: [{ in: "3725", out: "1 giờ 2 phút 5 giây" }, { in: "59", out: "0 giờ 0 phút 59 giây" }],
+      tests: ["0", "3600", "86399", "100000"],
+      hint: "giờ = tổng / 3600; phút = (tổng % 3600) / 60; giây = tổng % 60.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int t = int.Parse(Console.ReadLine());
+                Console.WriteLine($"{t / 3600} giờ {t % 3600 / 60} phút {t % 60} giây");
+            }
+        }` },
+    { id: "chuso", title: "Tách chữ số của số có 3 chữ số", level: 2,
+      desc: "<p>Nhập số nguyên <i>n</i> có đúng 3 chữ số (100 ≤ n ≤ 999). In ra 2 dòng:</p><ul><li><code>Trăm: x, Chục: y, Đơn vị: z</code></li><li><code>Tổng: &lt;x + y + z&gt;</code></li></ul>",
+      samples: [{ in: "472", out: "Trăm: 4, Chục: 7, Đơn vị: 2\nTổng: 13" }],
+      tests: ["100", "999", "305", "861"],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int n = int.Parse(Console.ReadLine());
+                int tram = n / 100, chuc = n / 10 % 10, dv = n % 10;
+                Console.WriteLine($"Trăm: {tram}, Chục: {chuc}, Đơn vị: {dv}");
+                Console.WriteLine($"Tổng: {tram + chuc + dv}");
+            }
+        }` },
+    { id: "vat", title: "Hóa đơn có thuế VAT", level: 2,
+      desc: "<p>Dòng 1: số lượng (số nguyên). Dòng 2: đơn giá (số thực). Thuế VAT 10%. In 3 dòng, số tiền có dấu phân cách hàng nghìn, không lấy số lẻ (<code>N0</code>):</p><ul><li><code>Thành tiền: …</code></li><li><code>VAT: …</code></li><li><code>Tổng cộng: …</code></li></ul>",
+      samples: [{ in: "12\n5500", out: "Thành tiền: 66,000\nVAT: 6,600\nTổng cộng: 72,600" }],
+      tests: ["1\n100000", "250\n19900", "3\n1234567"],
+      hint: "Khai báo <code>const double VAT = 0.1;</code>, thành tiền = SL × ĐG, thuế = thành tiền × VAT.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                const double VAT = 0.1;
+                int sl = int.Parse(Console.ReadLine());
+                double dg = double.Parse(Console.ReadLine());
+                double tt = sl * dg, thue = tt * VAT;
+                Console.WriteLine($"Thành tiền: {tt:N0}");
+                Console.WriteLine($"VAT: {thue:N0}");
+                Console.WriteLine($"Tổng cộng: {tt + thue:N0}");
+            }
+        }` },
+    { id: "laikep", title: "Lãi kép tiền gửi tiết kiệm", level: 2,
+      desc: "<p>Dòng 1: số tiền gửi <i>P</i>. Dòng 2: lãi suất năm <i>r</i> (%). Dòng 3: số năm <i>n</i>. Tính <i>A = P × (1 + r/100)ⁿ</i>. In 2 dòng (định dạng <code>N0</code>):</p><ul><li><code>Số tiền: …</code></li><li><code>Tiền lãi: …</code></li></ul>",
+      samples: [{ in: "100000000\n6.5\n5", out: "Số tiền: 137,008,666\nTiền lãi: 37,008,666" }],
+      tests: ["50000000\n7\n10", "1000000\n12\n1", "20000000\n5.2\n3"],
+      hint: "Dùng <code>Math.Pow(1 + r / 100, n)</code>.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                double p = double.Parse(Console.ReadLine());
+                double r = double.Parse(Console.ReadLine());
+                int n = int.Parse(Console.ReadLine());
+                double a = p * Math.Pow(1 + r / 100, n);
+                Console.WriteLine($"Số tiền: {a:N0}");
+                Console.WriteLine($"Tiền lãi: {a - p:N0}");
+            }
+        }` },
+    { id: "nhietdo", title: "Đổi độ C sang độ F", level: 1,
+      desc: "<p>Nhập nhiệt độ độ C (số thực). In <code>&lt;C&gt;C = &lt;F&gt;F</code> với F = C × 9/5 + 32, cả hai làm tròn 1 chữ số thập phân. <b>Cẩn thận phép chia 9/5!</b></p>",
+      samples: [{ in: "37", out: "37.0C = 98.6F" }, { in: "-40", out: "-40.0C = -40.0F" }],
+      tests: ["0", "100", "25.5"],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                double c = double.Parse(Console.ReadLine());
+                double f = c * 9.0 / 5 + 32;
+                Console.WriteLine($"{c:F1}C = {f:F1}F");
+            }
+        }` }
+  ]
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="assets/cs-runner.js"></script>
+<script src="assets/practice.js"></script>
+</body>
+</html>

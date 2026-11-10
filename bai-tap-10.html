@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bài tập Buổi 10 · Chuỗi ký tự</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="assets/practice.css">
+</head>
+<body>
+<noscript>Trang bài tập cần bật JavaScript.</noscript>
+<script>
+const C = String.raw;
+window.PRACTICE = {
+  lesson: 10,
+  title: "Chuỗi ký tự",
+  quiz: [
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        string s = "Hello C#";
+        Console.WriteLine(s.Length + " " + s[6]);`,
+      opts: ["8 C", "7 #", "8 #", "7 C"], ans: 0,
+      why: "Độ dài 8 (khoảng trắng cũng là ký tự). Chỉ số 6 là 'C' (H0 e1 l2 l3 o4 ␣5 C6 #7)." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        string s = " ab ";
+        s.Trim();
+        Console.WriteLine(s.Length);`,
+      opts: ["2", "4", "3", "0"], ans: 1,
+      why: "Chuỗi là <b>bất biến</b>: <code>s.Trim()</code> trả về chuỗi mới nhưng không được gán lại, s vẫn là \" ab \" dài 4. Phải viết <code>s = s.Trim();</code>" },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`Console.WriteLine("Lap Trinh".Substring(4, 3));`,
+      opts: ["Tri", " Tr", "Trinh", "rin"], ans: 0,
+      why: "<code>Substring(4, 3)</code>: lấy 3 ký tự bắt đầu từ chỉ số 4 (chữ T)." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        string s = "banana";
+        Console.WriteLine($"{s.IndexOf("an")} {s.LastIndexOf('a')}");`,
+      opts: ["1 5", "2 5", "1 6", "0 5"], ans: 0,
+      why: "\"an\" xuất hiện đầu tiên tại chỉ số 1; 'a' cuối cùng tại chỉ số 5." },
+    { q: "Mảng tách được có bao nhiêu phần tử?", run: true, mono: true,
+      code: C`Console.WriteLine("a  b c".Split(' ').Length);`,
+      opts: ["3", "4", "5", "2"], ans: 1,
+      why: "Giữa a và b có <b>2</b> dấu cách nên sinh ra một phần tử rỗng: {\"a\", \"\", \"b\", \"c\"}. Thêm <code>StringSplitOptions.RemoveEmptyEntries</code> để bỏ phần tử rỗng." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        char c = '7';
+        int v = c - '0';
+        char d = (char)('a' + 2);
+        Console.WriteLine($"{v * 2} {d}");`,
+      opts: ["14 c", "110 c", "14 b", "Lỗi biên dịch"], ans: 0,
+      why: "<code>'7' - '0'</code> = 7 (hiệu mã Unicode). <code>'a' + 2</code> là mã của 'c'." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        string a = "UEH", b = "ueh";
+        Console.WriteLine($"{a == b} {a.ToLower() == b}");`,
+      opts: ["False True", "True True", "False False", "True False"], ans: 0,
+      why: "So sánh chuỗi phân biệt hoa thường. Đưa về cùng dạng chữ thường thì bằng nhau." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`Console.WriteLine("a-b-c".Replace("-", "").ToUpper() + "x".PadLeft(3, '0'));`,
+      opts: ["ABC00x", "ABCx00", "abc00x", "A-B-C00x"], ans: 0,
+      why: "Replace bỏ dấu gạch được \"abc\", ToUpper thành \"ABC\"; <code>\"x\".PadLeft(3, '0')</code> = \"00x\"." },
+    { q: "Lệnh nào gây <b>lỗi biên dịch</b>?",
+      code: C`string s = "hello";`,
+      opts: ["s = s.ToUpper();", "s[0] = 'H';", "char c = s[0];", "s = 'H' + s.Substring(1);"], ans: 1, mono: true,
+      why: "Chuỗi bất biến, chỉ số của string là <b>chỉ đọc</b>. Muốn sửa ký tự phải tạo chuỗi mới hoặc dùng <code>StringBuilder</code>." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        string s = "Lap trinh C Sharp";
+        int dem = 0;
+        foreach (char c in s.ToLower())
+            if ("aeiou".Contains(c)) dem++;
+        Console.WriteLine(dem);`,
+      opts: ["3", "4", "5", "6"], ans: 0,
+      why: "Chuỗi chữ thường \"lap trinh c sharp\" có các nguyên âm: <b>a</b> (lap), <b>i</b> (trinh), <b>a</b> (sharp). Tổng 3. <code>\"aeiou\".Contains(c)</code> kiểm tra c có nằm trong tập nguyên âm." }
+  ],
+  problems: [
+    { id: "phanloai", title: "Phân loại ký tự", level: 1,
+      desc: "<p>Nhập một dòng văn bản. In 4 dòng: <code>Chữ hoa: …</code>, <code>Chữ thường: …</code>, <code>Chữ số: …</code>, <code>Khoảng trắng: …</code>.</p>",
+      samples: [{ in: "Mat khau: Abc123!", out: "Chữ hoa: 2\nChữ thường: 8\nChữ số: 3\nKhoảng trắng: 2" }],
+      tests: ["   ", "UEH 2025", "Nguyễn Văn An"],
+      hint: "Dùng <code>char.IsUpper</code>, <code>char.IsLower</code>, <code>char.IsDigit</code>, <code>char.IsWhiteSpace</code>.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                string s = Console.ReadLine() ?? "";
+                int hoa = 0, thuong = 0, so = 0, trang = 0;
+                foreach (char c in s)
+                {
+                    if (char.IsUpper(c)) hoa++;
+                    else if (char.IsLower(c)) thuong++;
+                    else if (char.IsDigit(c)) so++;
+                    else if (char.IsWhiteSpace(c)) trang++;
+                }
+                Console.WriteLine($"Chữ hoa: {hoa}");
+                Console.WriteLine($"Chữ thường: {thuong}");
+                Console.WriteLine($"Chữ số: {so}");
+                Console.WriteLine($"Khoảng trắng: {trang}");
+            }
+        }` },
+    { id: "chuanhoa", title: "Chuẩn hóa họ tên", level: 2,
+      desc: "<p>Nhập họ tên (có thể thừa khoảng trắng, hoa thường lộn xộn). In 2 dòng: họ tên đã chuẩn hóa (mỗi từ viết hoa chữ cái đầu, còn lại viết thường, các từ cách nhau đúng 1 dấu cách) và <code>Tên: &lt;từ cuối cùng&gt;</code>.</p>",
+      samples: [{ in: "   nGUYỄN   thị   minh  ANH ", out: "Nguyễn Thị Minh Anh\nTên: Anh" }],
+      tests: ["an", "  TRẦN  bình ", "lê văn  tám"],
+      hint: "Trim → ToLower → Split(' ', RemoveEmptyEntries) → viết hoa ký tự [0] của từng từ → string.Join(\" \", …).",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static string ChuanHoa(string s)
+            {
+                string[] tu = s.Trim().ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < tu.Length; i++)
+                    tu[i] = char.ToUpper(tu[i][0]) + tu[i].Substring(1);
+                return string.Join(" ", tu);
+            }
+
+            static void Main(string[] args)
+            {
+                string ht = ChuanHoa(Console.ReadLine());
+                Console.WriteLine(ht);
+                Console.WriteLine("Tên: " + ht.Substring(ht.LastIndexOf(' ') + 1));
+            }
+        }` },
+    { id: "demtu", title: "Đếm từ và từ dài nhất", level: 2,
+      desc: "<p>Nhập một câu. In <code>Số từ: …</code> và <code>Từ dài nhất: …</code> (nếu nhiều từ dài bằng nhau, chọn từ xuất hiện trước). Các từ được ngăn cách bởi một hoặc nhiều dấu cách. Câu có ít nhất 1 từ.</p>",
+      samples: [{ in: "  Truong   Dai hoc  Kinh te  ", out: "Số từ: 5\nTừ dài nhất: Truong" }],
+      tests: ["a", "lap trinh co so", "xin    chao   cac ban   sinh vien"],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                string[] tu = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                string dai = "";
+                foreach (string w in tu)
+                    if (w.Length > dai.Length) dai = w;
+                Console.WriteLine($"Số từ: {tu.Length}");
+                Console.WriteLine($"Từ dài nhất: {dai}");
+            }
+        }` },
+    { id: "palin", title: "Chuỗi đối xứng", level: 2,
+      desc: "<p>Nhập một dòng. Bỏ qua khoảng trắng và không phân biệt hoa thường, kiểm tra chuỗi có đối xứng không. In <code>YES</code> hoặc <code>NO</code>.</p>",
+      samples: [{ in: "Never odd or even", out: "YES" }, { in: "UEH", out: "NO" }],
+      tests: ["a", "Aa", "ab ba", "abcd dcbX", "  x  "],
+      hint: "Dùng 2 chỉ số l (từ đầu) và r (từ cuối) tiến vào giữa.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                string s = Console.ReadLine().ToLower().Replace(" ", "");
+                int l = 0, r = s.Length - 1;
+                bool ok = true;
+                while (l < r)
+                {
+                    if (s[l] != s[r]) { ok = false; break; }
+                    l++; r--;
+                }
+                Console.WriteLine(ok ? "YES" : "NO");
+            }
+        }` },
+    { id: "nen", title: "Nén chuỗi", level: 2,
+      desc: "<p>Nhập chuỗi (không có khoảng trắng). Thay mỗi nhóm ký tự giống nhau đứng liền nhau bằng ký tự đó kèm số lần lặp. Ví dụ <code>aaabbc</code> → <code>a3b2c1</code>.</p>",
+      samples: [{ in: "aaabbc", out: "a3b2c1" }, { in: "abca", out: "a1b1c1a1" }],
+      tests: ["z", "zzzzzzzzzzzz", "aabbaa"],
+      solution: C`
+        using System;
+        using System.Text;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                string s = Console.ReadLine();
+                StringBuilder sb = new StringBuilder();
+                int i = 0;
+                while (i < s.Length)
+                {
+                    int j = i;
+                    while (j < s.Length && s[j] == s[i]) j++;
+                    sb.Append(s[i]).Append(j - i);
+                    i = j;
+                }
+                Console.WriteLine(sb.ToString());
+            }
+        }` },
+    { id: "caesar", title: "Mã hóa Caesar", level: 3,
+      desc: "<p>Dòng 1: số nguyên k (0 ≤ k ≤ 100). Dòng 2: văn bản. Dịch mỗi chữ cái tiếng Anh (a–z, A–Z) đi k vị trí theo vòng tròn (z → a), giữ nguyên hoa/thường; các ký tự khác giữ nguyên. In văn bản đã mã hóa.</p>",
+      samples: [{ in: "3\nHello, World!", out: "Khoor, Zruog!" }],
+      tests: ["0\nabc", "26\nXyz", "1\nzZ 9", "53\nUEH 2025"],
+      solution: C`
+        using System;
+        using System.Text;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int k = int.Parse(Console.ReadLine()) % 26;
+                string s = Console.ReadLine();
+                StringBuilder sb = new StringBuilder();
+                foreach (char c in s)
+                {
+                    if (c >= 'a' && c <= 'z') sb.Append((char)('a' + (c - 'a' + k) % 26));
+                    else if (c >= 'A' && c <= 'Z') sb.Append((char)('A' + (c - 'A' + k) % 26));
+                    else sb.Append(c);
+                }
+                Console.WriteLine(sb.ToString());
+            }
+        }` }
+  ]
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="assets/cs-runner.js"></script>
+<script src="assets/practice.js"></script>
+</body>
+</html>

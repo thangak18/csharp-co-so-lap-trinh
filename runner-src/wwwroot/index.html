@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>C# Runner</title>
+    <base href="./" />
+    <script type="importmap"></script>
+</head>
+<body>
+    <script src="_framework/blazor.webassembly#[.{fingerprint}].js" autostart="false"></script>
+    <script>
+        // C# compile/run sandbox. Only accepts requests from pages of the same origin.
+        const post = (msg) => parent.postMessage(msg, location.origin);
+        // Load the pre-compressed .gz copies of the framework files and unzip them in the browser
+        // (static hosting such as GitHub Pages does not compress .wasm files on its own).
+        const canGunzip = typeof DecompressionStream !== "undefined";
+        const zipped = new Set(["dotnetwasm", "assembly", "pdb", "icu"]);
+        const loadBootResource = (type, name, defaultUri) => {
+            if (!canGunzip || !zipped.has(type)) return;
+            return (async () => {
+                try {
+                    const r = await fetch(defaultUri + ".gz", { cache: "no-cache" });
+                    if (!r.ok) throw new Error(r.status);
+                    const body = r.body.pipeThrough(new DecompressionStream("gzip"));
+                    const buf = await new Response(body).arrayBuffer();
+                    return new Response(buf, { headers: { "content-type": type === "dotnetwasm" ? "application/wasm" : "application/octet-stream" } });
+                } catch (e) {
+                    return fetch(defaultUri, { cache: "no-cache" });
+                }
+            })();
+        };
+        Blazor.start({ loadBootResource }).then(() => post({ type: "cs-ready" }))
+            .catch(err => post({ type: "cs-fail", error: String(err) }));
+        window.addEventListener("message", async (e) => {
+            if (e.origin !== location.origin) return;
+            const d = e.data;
+            if (!d || d.type !== "cs-run") return;
+            try {
+                const json = await DotNet.invokeMethodAsync("CsRunner", "Run", d.code, d.inputs || [""]);
+                post({ type: "cs-result", id: d.id, result: JSON.parse(json) });
+            } catch (err) {
+                post({ type: "cs-result", id: d.id, result: { fatal: String(err) } });
+            }
+        });
+    </script>
+</body>
+</html>

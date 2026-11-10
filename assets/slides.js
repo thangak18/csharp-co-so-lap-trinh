@@ -78,6 +78,7 @@
   const hud = document.createElement("div"); hud.className = "hud";
   hud.innerHTML =
     '<a href="index.html" title="Danh sách buổi học">☰ Mục lục</a>' +
+    (lessonNo.match(/\d+/) ? '<a href="bai-tap-' + lessonNo.match(/\d+/)[0].padStart(2, "0") + '.html" title="Bài tập ôn luyện của buổi này" style="background:#6b2fbf;color:#fff">✎ Bài tập</a>' : "") +
     '<button class="nav-only" data-a="prev" title="Slide trước (←)">←</button>' +
     '<span class="count nav-only"></span>' +
     '<button class="nav-only" data-a="next" title="Slide sau (→)">→</button>' +

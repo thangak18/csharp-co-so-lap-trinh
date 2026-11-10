@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bài tập Buổi 6 · Hàm (phương thức)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="assets/practice.css">
+</head>
+<body>
+<noscript>Trang bài tập cần bật JavaScript.</noscript>
+<script>
+const C = String.raw;
+window.PRACTICE = {
+  lesson: 6,
+  title: "Hàm (phương thức)",
+  codeNote: "Các bài buổi này đã có sẵn khung hàm và hàm Main, bạn chỉ cần <b>viết phần thân hàm</b> (chỗ có chú thích TODO). Có thể tự viết thêm hàm phụ.",
+  quiz: [
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        static void F(int x, ref int y)
+        {
+            x++;
+            y += x;
+        }
+
+        int p = 1, q = 10;
+        F(p, ref q);
+        Console.WriteLine($"{p} {q}");`,
+      opts: ["1 12", "2 12", "1 11", "2 11"], ans: 0,
+      why: "p truyền <b>tham trị</b> nên không đổi; trong hàm x = 2, y (chính là q) = 10 + 2 = 12." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        static int G(int n)
+        {
+            if (n > 5) return 1;
+            if (n > 2) return 2;
+            return 3;
+        }
+
+        Console.WriteLine(G(4) + G(7) + G(1));`,
+      opts: ["6", "5", "7", "213"], ans: 0,
+      why: "G(4) = 2, G(7) = 1, G(1) = 3. Cả ba là số nên được cộng: 6. <code>return</code> kết thúc hàm ngay." },
+    { q: "Hàm đệ quy trả về gì với F(907)?", run: true, mono: true,
+      code: C`
+        static int F(int n)
+        {
+            if (n == 0) return 0;
+            return n % 10 + F(n / 10);
+        }
+
+        Console.WriteLine(F(907));`,
+      opts: ["907", "16", "97", "7"], ans: 1,
+      why: "F(907) = 7 + F(90) = 7 + 0 + F(9) = 7 + 0 + 9 + F(0) = 16. Đây là tổng chữ số viết bằng đệ quy." },
+    { q: "H(5) bằng bao nhiêu?", run: true, mono: true,
+      code: C`
+        static int H(int n)
+        {
+            if (n == 1) return 1;
+            return n + H(n - 1);
+        }
+
+        Console.WriteLine(H(5));`,
+      opts: ["5", "15", "120", "10"], ans: 1,
+      why: "5 + 4 + 3 + 2 + 1 = 15." },
+    { q: "Kết quả in ra (nạp chồng hàm)?", run: true, mono: true,
+      code: C`
+        class Program
+        {
+            static int Sum(int a, int b) { return a + b; }
+            static double Sum(double a, double b) { return a + b + 0.5; }
+
+            static void Main()
+            {
+                Console.WriteLine(Sum(1, 2) + " " + Sum(1.0, 2));
+            }
+        }`,
+      opts: ["3 3", "3 3.5", "3.5 3.5", "Lỗi biên dịch"], ans: 1,
+      why: "<code>Sum(1, 2)</code> khớp phiên bản int. <code>Sum(1.0, 2)</code> có đối số double nên gọi phiên bản double (2 được chuyển ngầm sang 2.0)." },
+    { q: "Kết quả in ra (tham số mặc định)?", run: true, mono: true,
+      code: C`
+        static int P(int a, int b = 10) { return a * b; }
+
+        Console.WriteLine(P(3) + P(3, 2));`,
+      opts: ["36", "30", "6", "60"], ans: 0,
+      why: "P(3) dùng b = 10 nên ra 30; P(3, 2) = 6. Tổng 36." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        static void Swap(int a, int b)
+        {
+            int t = a; a = b; b = t;
+        }
+
+        int x = 1, y = 2;
+        Swap(x, y);
+        Console.WriteLine($"{x} {y}");`,
+      opts: ["2 1", "1 2", "1 1", "2 2"], ans: 1,
+      why: "Không có <code>ref</code> nên hàm chỉ đổi chỗ <b>bản sao</b>. Muốn đổi thật phải khai báo <code>ref int a, ref int b</code> và gọi <code>Swap(ref x, ref y)</code>." },
+    { q: "Phát biểu nào <b>đúng</b> về tham số <code>out</code>?",
+      opts: ["Phải gán giá trị cho biến trước khi truyền vào", "Hàm bắt buộc phải gán giá trị cho tham số out trước khi kết thúc", "out giống hệt tham trị", "Chỉ dùng được với kiểu string"], ans: 1,
+      why: "Với <code>out</code>, người gọi không cần khởi tạo trước, nhưng hàm bắt buộc phải gán (lỗi CS0177 nếu quên)." },
+    { q: "Vì sao đoạn code sau lỗi biên dịch?",
+      code: C`
+        class Program
+        {
+            void InChao() { Console.WriteLine("Hi"); }
+
+            static void Main(string[] args)
+            {
+                InChao();
+            }
+        }`,
+      opts: ["Thiếu return", "Hàm InChao thiếu từ khóa static", "Tên hàm phải viết thường", "Hàm phải khai báo bên trong Main"], ans: 1,
+      why: "Main là hàm <code>static</code> nên chỉ gọi trực tiếp được hàm <code>static</code> khác (lỗi CS0120)." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        static void TinhToan(int a, int b, out int tong, out int tich)
+        {
+            tong = a + b;
+            tich = a * b;
+        }
+
+        TinhToan(3, 4, out int s, out int p);
+        Console.WriteLine(s * 10 + p);`,
+      opts: ["82", "712", "19", "84"], ans: 0,
+      why: "s = 7, p = 12, 7 × 10 + 12 = 82." }
+  ],
+  problems: [
+    { id: "sntdoan", title: "Số nguyên tố trong đoạn", level: 1,
+      desc: "<p>Viết hàm <code>bool LaSoNguyenTo(int n)</code>. Main đã có sẵn: đọc a, b và in các số nguyên tố trong đoạn [a, b] cách nhau dấu cách, hoặc <code>Không có</code>.</p>",
+      samples: [{ in: "10\n30", out: "11 13 17 19 23 29" }, { in: "24\n28", out: "Không có" }],
+      tests: ["1\n2", "0\n1", "90\n110", "9990\n10010"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static bool LaSoNguyenTo(int n)
+            {
+                // TODO: trả về true nếu n là số nguyên tố
+                return false;
+            }
+
+            static void Main(string[] args)
+            {
+                int a = int.Parse(Console.ReadLine());
+                int b = int.Parse(Console.ReadLine());
+                string kq = "";
+                for (int i = a; i <= b; i++)
+                    if (LaSoNguyenTo(i)) kq += (kq == "" ? "" : " ") + i;
+                Console.WriteLine(kq == "" ? "Không có" : kq);
+            }
+        }`,
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static bool LaSoNguyenTo(int n)
+            {
+                if (n < 2) return false;
+                for (int i = 2; i * i <= n; i++)
+                    if (n % i == 0) return false;
+                return true;
+            }
+
+            static void Main(string[] args)
+            {
+                int a = int.Parse(Console.ReadLine());
+                int b = int.Parse(Console.ReadLine());
+                string kq = "";
+                for (int i = a; i <= b; i++)
+                    if (LaSoNguyenTo(i)) kq += (kq == "" ? "" : " ") + i;
+                Console.WriteLine(kq == "" ? "Không có" : kq);
+            }
+        }` },
+    { id: "phanso", title: "Rút gọn phân số", level: 2,
+      desc: "<p>Viết hàm <code>int UCLN(int a, int b)</code> và <code>void RutGon(ref int tu, ref int mau)</code>. Sau khi rút gọn, mẫu phải <b>dương</b>. Nếu mẫu bằng 1 chỉ in tử số, ngược lại in <code>tu/mau</code>. Dữ liệu: tử, mẫu (mẫu ≠ 0).</p>",
+      samples: [{ in: "6\n8", out: "3/4" }, { in: "4\n-6", out: "-2/3" }, { in: "10\n5", out: "2" }],
+      tests: ["-4\n6", "0\n5", "-9\n-3", "17\n13", "100\n-1"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static int UCLN(int a, int b)
+            {
+                // TODO: trả về ước chung lớn nhất của |a| và |b|
+                return 1;
+            }
+
+            static void RutGon(ref int tu, ref int mau)
+            {
+                // TODO: chia tử và mẫu cho UCLN, đưa dấu âm lên tử
+            }
+
+            static void Main(string[] args)
+            {
+                int tu = int.Parse(Console.ReadLine());
+                int mau = int.Parse(Console.ReadLine());
+                RutGon(ref tu, ref mau);
+                Console.WriteLine(mau == 1 ? $"{tu}" : $"{tu}/{mau}");
+            }
+        }`,
+      hint: "UCLN(0, m) = m. Nếu mau &lt; 0 thì đổi dấu cả tu và mau.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int UCLN(int a, int b)
+            {
+                a = Math.Abs(a); b = Math.Abs(b);
+                while (b != 0) { int r = a % b; a = b; b = r; }
+                return a;
+            }
+
+            static void RutGon(ref int tu, ref int mau)
+            {
+                int u = UCLN(tu, mau);
+                tu /= u; mau /= u;
+                if (mau < 0) { tu = -tu; mau = -mau; }
+            }
+
+            static void Main(string[] args)
+            {
+                int tu = int.Parse(Console.ReadLine());
+                int mau = int.Parse(Console.ReadLine());
+                RutGon(ref tu, ref mau);
+                Console.WriteLine(mau == 1 ? $"{tu}" : $"{tu}/{mau}");
+            }
+        }` },
+    { id: "xeploai", title: "Hàm xếp loại học lực", level: 1,
+      desc: "<p>Viết hàm <code>string XepLoai(double dtb)</code>: ≥ 8 <code>Giỏi</code>, ≥ 6.5 <code>Khá</code>, ≥ 5 <code>Trung bình</code>, còn lại <code>Yếu</code>. Main đọc n rồi n điểm, in mỗi dòng <code>điểm (1 chữ số thập phân): loại</code>.</p>",
+      samples: [{ in: "3\n8.26\n6.5\n4.9", out: "8.3: Giỏi\n6.5: Khá\n4.9: Yếu" }],
+      tests: ["1\n5", "4\n10\n0\n7.99\n6.49"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static string XepLoai(double dtb)
+            {
+                // TODO
+                return "";
+            }
+
+            static void Main(string[] args)
+            {
+                int n = int.Parse(Console.ReadLine());
+                for (int i = 0; i < n; i++)
+                {
+                    double d = double.Parse(Console.ReadLine());
+                    Console.WriteLine($"{d:F1}: {XepLoai(d)}");
+                }
+            }
+        }`,
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static string XepLoai(double dtb)
+            {
+                if (dtb >= 8) return "Giỏi";
+                if (dtb >= 6.5) return "Khá";
+                if (dtb >= 5) return "Trung bình";
+                return "Yếu";
+            }
+
+            static void Main(string[] args)
+            {
+                int n = int.Parse(Console.ReadLine());
+                for (int i = 0; i < n; i++)
+                {
+                    double d = double.Parse(Console.ReadLine());
+                    Console.WriteLine($"{d:F1}: {XepLoai(d)}");
+                }
+            }
+        }` },
+    { id: "dequy", title: "Đệ quy: lũy thừa và tổng chữ số", level: 2,
+      desc: "<p>Viết bằng <b>đệ quy</b> (không dùng vòng lặp): <code>long LuyThua(int a, int n)</code> tính aⁿ (n ≥ 0) và <code>int TongChuSo(int n)</code> (n ≥ 0). Dữ liệu: a, n. In <code>a^n = …</code> và <code>Tổng chữ số của a = …</code>.</p>",
+      samples: [{ in: "2\n10", out: "2^10 = 1024\nTổng chữ số của 2 = 2" }],
+      tests: ["7\n0", "123\n3", "10\n18", "9876\n1"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static long LuyThua(int a, int n)
+            {
+                // TODO: điều kiện dừng n == 0
+                return 0;
+            }
+
+            static int TongChuSo(int n)
+            {
+                // TODO: điều kiện dừng n < 10
+                return 0;
+            }
+
+            static void Main(string[] args)
+            {
+                int a = int.Parse(Console.ReadLine());
+                int n = int.Parse(Console.ReadLine());
+                Console.WriteLine($"{a}^{n} = {LuyThua(a, n)}");
+                Console.WriteLine($"Tổng chữ số của {a} = {TongChuSo(a)}");
+            }
+        }`,
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static long LuyThua(int a, int n)
+            {
+                if (n == 0) return 1;
+                return a * LuyThua(a, n - 1);
+            }
+
+            static int TongChuSo(int n)
+            {
+                if (n < 10) return n;
+                return n % 10 + TongChuSo(n / 10);
+            }
+
+            static void Main(string[] args)
+            {
+                int a = int.Parse(Console.ReadLine());
+                int n = int.Parse(Console.ReadLine());
+                Console.WriteLine($"{a}^{n} = {LuyThua(a, n)}");
+                Console.WriteLine($"Tổng chữ số của {a} = {TongChuSo(a)}");
+            }
+        }` },
+    { id: "doixung", title: "Đếm số đối xứng", level: 2,
+      desc: "<p>Viết hàm <code>int DaoSo(int n)</code> và <code>bool LaDoiXung(int n)</code>. Nhập n (1 ≤ n ≤ 100000), in <code>Có k số đối xứng từ 1 đến n</code>.</p>",
+      samples: [{ in: "100", out: "Có 18 số đối xứng từ 1 đến n" }],
+      tests: ["1", "9", "10", "11", "1000", "100000"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static int DaoSo(int n)
+            {
+                // TODO: 123 -> 321
+                return 0;
+            }
+
+            static bool LaDoiXung(int n)
+            {
+                // TODO: dùng DaoSo
+                return false;
+            }
+
+            static void Main(string[] args)
+            {
+                int n = int.Parse(Console.ReadLine());
+                int dem = 0;
+                for (int i = 1; i <= n; i++)
+                    if (LaDoiXung(i)) dem++;
+                Console.WriteLine($"Có {dem} số đối xứng từ 1 đến n");
+            }
+        }`,
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int DaoSo(int n)
+            {
+                int dao = 0;
+                while (n > 0) { dao = dao * 10 + n % 10; n /= 10; }
+                return dao;
+            }
+
+            static bool LaDoiXung(int n)
+            {
+                return n == DaoSo(n);
+            }
+
+            static void Main(string[] args)
+            {
+                int n = int.Parse(Console.ReadLine());
+                int dem = 0;
+                for (int i = 1; i <= n; i++)
+                    if (LaDoiXung(i)) dem++;
+                Console.WriteLine($"Có {dem} số đối xứng từ 1 đến n");
+            }
+        }` }
+  ]
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="assets/cs-runner.js"></script>
+<script src="assets/practice.js"></script>
+</body>
+</html>

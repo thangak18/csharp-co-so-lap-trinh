@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bài tập Buổi 5 · Lặp lồng nhau, TryParse và Menu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="assets/practice.css">
+</head>
+<body>
+<noscript>Trang bài tập cần bật JavaScript.</noscript>
+<script>
+const C = String.raw;
+window.PRACTICE = {
+  lesson: 5,
+  title: "Lặp lồng nhau, TryParse và Menu",
+  quiz: [
+    { q: "Biến c bằng bao nhiêu?", run: true, mono: true,
+      code: C`
+        int c = 0;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 4; j++)
+                c++;
+        Console.WriteLine(c);`,
+      opts: ["7", "12", "16", "9"], ans: 1,
+      why: "Vòng ngoài 3 lần, mỗi lần vòng trong chạy 4 lần: 3 × 4 = 12." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        for (int i = 1; i <= 3; i++)
+        {
+            for (int j = 1; j <= i; j++)
+                Console.Write(j);
+            Console.WriteLine();
+        }`,
+      opts: ["1\n12\n123", "123\n123\n123", "1\n22\n333", "123\n12\n1"], ans: 0,
+      why: "Dòng i in các số từ 1 đến i." },
+    { q: "Giá trị của s?", run: true, mono: true,
+      code: C`
+        int s = 0;
+        for (int i = 1; i <= 3; i++)
+            for (int j = i; j <= 3; j++)
+                s += j;
+        Console.WriteLine(s);`,
+      opts: ["18", "14", "12", "9"], ans: 1,
+      why: "i = 1: 1+2+3 = 6; i = 2: 2+3 = 5; i = 3: 3. Tổng 14." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        bool ok = int.TryParse("12a", out int n);
+        Console.WriteLine($"{ok} {n}");`,
+      opts: ["True 12", "False 0", "False 12", "Lỗi FormatException"], ans: 1,
+      why: "<code>TryParse</code> không gây lỗi: trả về false và gán n = 0 khi chuỗi không hợp lệ." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        bool ok = int.TryParse("  42 ", out int n);
+        Console.WriteLine($"{ok} {n}");`,
+      opts: ["True 42", "False 0", "True 0", "False 42"], ans: 0,
+      why: "Khoảng trắng ở đầu/cuối chuỗi được bỏ qua khi chuyển sang số." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        for (int i = 1; i <= 3; i++)
+        {
+            for (int j = 1; j <= 3; j++)
+            {
+                if (j == 2) break;
+                Console.Write($"{i}{j} ");
+            }
+        }`,
+      opts: ["11", "11 21 31", "11 12 13", "11 21 31 12"], ans: 1,
+      why: "<code>break</code> chỉ thoát vòng lặp <b>trong cùng</b> (vòng j). Vòng i vẫn chạy đủ 3 lần, mỗi lần chỉ in được j = 1." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        try
+        {
+            int a = int.Parse("x");
+            Console.Write("A");
+        }
+        catch (FormatException)
+        {
+            Console.Write("B");
+        }
+        finally
+        {
+            Console.Write("C");
+        }`,
+      opts: ["AC", "BC", "ABC", "B"], ans: 1,
+      why: "Parse lỗi nên nhảy ngay sang catch (bỏ qua \"A\"), sau đó finally <b>luôn chạy</b>." },
+    { q: "<code>new Random().Next(1, 7)</code> trả về số trong khoảng nào?",
+      opts: ["1 đến 7", "1 đến 6", "0 đến 6", "0 đến 7"], ans: 1,
+      why: "Cận trên của <code>Next(min, max)</code> là <b>loại trừ</b>, nên kết quả từ 1 đến 6, giống tung xúc xắc." },
+    { q: "Muốn hiện menu <b>ít nhất một lần</b> rồi lặp đến khi người dùng chọn 0, vòng lặp nào phù hợp nhất?",
+      opts: ["for", "while", "do…while", "foreach"], ans: 2,
+      why: "<code>do { hiện menu; xử lý } while (chon != 0);</code>" },
+    { q: "Có bao nhiêu dấu * được in ra?", run: true, mono: true,
+      code: C`
+        int dem = 0;
+        int h = 4;
+        for (int i = 1; i <= h; i++)
+            for (int j = 1; j <= 2 * i - 1; j++)
+                dem++;
+        Console.WriteLine(dem);`,
+      opts: ["10", "16", "8", "20"], ans: 1,
+      why: "Dòng i có 2i − 1 dấu sao: 1 + 3 + 5 + 7 = 16 (= h²)." }
+  ],
+  problems: [
+    { id: "tgvuong", title: "Tam giác vuông", level: 1,
+      desc: "<p>Nhập chiều cao n (1 ≤ n ≤ 30). In tam giác vuông: dòng i có i dấu <code>*</code> viết liền.</p>",
+      samples: [{ in: "4", out: "*\n**\n***\n****" }],
+      tests: ["1", "7"],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int n = int.Parse(Console.ReadLine());
+                for (int i = 1; i <= n; i++)
+                {
+                    for (int j = 1; j <= i; j++)
+                        Console.Write("*");
+                    Console.WriteLine();
+                }
+            }
+        }` },
+    { id: "tgcan", title: "Tam giác cân", level: 2,
+      desc: "<p>Nhập chiều cao h (1 ≤ h ≤ 30). Dòng i gồm (h − i) khoảng trắng rồi (2i − 1) dấu <code>*</code>.</p>",
+      samples: [{ in: "4", out: "   *\n  ***\n *****\n*******" }],
+      tests: ["1", "6"],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int h = int.Parse(Console.ReadLine());
+                for (int i = 1; i <= h; i++)
+                {
+                    for (int j = 1; j <= h - i; j++) Console.Write(" ");
+                    for (int j = 1; j <= 2 * i - 1; j++) Console.Write("*");
+                    Console.WriteLine();
+                }
+            }
+        }` },
+    { id: "cuuchuong", title: "Bảng cửu chương", level: 1,
+      desc: "<p>Nhập n (1 ≤ n ≤ 9). In 10 dòng dạng <code>n x i = kết quả</code> với i từ 1 đến 10.</p>",
+      samples: [{ in: "7", out: "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63\n7 x 10 = 70" }],
+      tests: ["1", "9"],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int n = int.Parse(Console.ReadLine());
+                for (int i = 1; i <= 10; i++)
+                    Console.WriteLine($"{n} x {i} = {n * i}");
+            }
+        }` },
+    { id: "nhapantoan", title: "Nhập số an toàn", level: 2,
+      desc: "<p>Chương trình đọc lần lượt từng dòng cho đến khi gặp một <b>số nguyên trong đoạn [1, 100]</b>. Với mỗi dòng không hợp lệ (không phải số nguyên, hoặc ngoài đoạn) in <code>Không hợp lệ</code>. Khi gặp số hợp lệ n, in <code>Bạn đã nhập: n</code> rồi kết thúc.</p>",
+      samples: [{ in: "abc\n-5\n7.5\n42", out: "Không hợp lệ\nKhông hợp lệ\nKhông hợp lệ\nBạn đã nhập: 42" }],
+      tests: ["1", "100", "0\n101\n  \n50", "x\ny\nz\n99"],
+      hint: "Dùng <code>do…while</code> với <code>int.TryParse(Console.ReadLine(), out n)</code> và kiểm tra khoảng.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int n;
+                bool hopLe;
+                do
+                {
+                    hopLe = int.TryParse(Console.ReadLine(), out n) && n >= 1 && n <= 100;
+                    if (!hopLe) Console.WriteLine("Không hợp lệ");
+                } while (!hopLe);
+                Console.WriteLine($"Bạn đã nhập: {n}");
+            }
+        }` },
+    { id: "tramtrau", title: "Trăm trâu trăm cỏ (tổng quát)", level: 3,
+      desc: "<p>Có N con trâu và N bó cỏ. Trâu đứng ăn 5 bó, trâu nằm ăn 3 bó, 3 trâu già ăn 1 bó. Nhập N (≤ 300). Liệt kê mọi cách chia (mỗi loại <b>ít nhất 1 con</b>), mỗi dòng <code>d n g</code> (số trâu đứng, nằm, già), theo thứ tự d tăng dần, rồi n tăng dần. Dòng cuối in <code>Có k phương án</code>.</p>",
+      samples: [{ in: "100", out: "4 18 78\n8 11 81\n12 4 84\nCó 3 phương án" }],
+      tests: ["10", "40", "300"],
+      hint: "Duyệt d và n bằng 2 vòng lặp lồng nhau, tính g = N − d − n, kiểm tra g &gt; 0, g chia hết cho 3 và 5d + 3n + g/3 = N.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int N = int.Parse(Console.ReadLine());
+                int dem = 0;
+                for (int d = 1; d <= N / 5; d++)
+                    for (int n = 1; n <= N / 3; n++)
+                    {
+                        int g = N - d - n;
+                        if (g > 0 && g % 3 == 0 && 5 * d + 3 * n + g / 3 == N)
+                        {
+                            Console.WriteLine($"{d} {n} {g}");
+                            dem++;
+                        }
+                    }
+                Console.WriteLine($"Có {dem} phương án");
+            }
+        }` },
+    { id: "menu", title: "Máy tính có menu", level: 3,
+      desc: "<p>Chương trình lặp lại: đọc một dòng là lựa chọn.</p><ul><li><code>0</code>: in <code>Tạm biệt</code> và kết thúc.</li><li><code>1</code>, <code>2</code>, <code>3</code>, <code>4</code>: đọc tiếp 2 số thực a, b (mỗi số một dòng) và in lần lượt tổng, hiệu, tích, thương (làm tròn 2 chữ số, ví dụ <code>3.50</code>). Nếu chia cho 0 in <code>Không chia được cho 0</code>.</li><li>Lựa chọn khác: in <code>Lựa chọn không hợp lệ</code> (không đọc a, b).</li></ul>",
+      samples: [{ in: "1\n2\n3.5\n4\n7\n0\n9\n4\n7\n2\n0", out: "5.50\nKhông chia được cho 0\nLựa chọn không hợp lệ\n3.50\nTạm biệt" }],
+      tests: ["0", "2\n10\n4\n3\n-2\n2.5\n0", "x\n5\n0"],
+      hint: "Khung: <code>do { đọc chon; switch (chon) { … } } while (chon != 0);</code>",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int chon;
+                do
+                {
+                    if (!int.TryParse(Console.ReadLine(), out chon)) chon = -1;
+                    switch (chon)
+                    {
+                        case 0:
+                            Console.WriteLine("Tạm biệt");
+                            break;
+                        case 1: case 2: case 3: case 4:
+                            double a = double.Parse(Console.ReadLine());
+                            double b = double.Parse(Console.ReadLine());
+                            if (chon == 1) Console.WriteLine($"{a + b:F2}");
+                            else if (chon == 2) Console.WriteLine($"{a - b:F2}");
+                            else if (chon == 3) Console.WriteLine($"{a * b:F2}");
+                            else if (b == 0) Console.WriteLine("Không chia được cho 0");
+                            else Console.WriteLine($"{a / b:F2}");
+                            break;
+                        default:
+                            Console.WriteLine("Lựa chọn không hợp lệ");
+                            break;
+                    }
+                } while (chon != 0);
+            }
+        }` }
+  ]
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="assets/cs-runner.js"></script>
+<script src="assets/practice.js"></script>
+</body>
+</html>

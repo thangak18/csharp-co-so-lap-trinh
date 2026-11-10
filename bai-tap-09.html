@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bài tập Buổi 9 · Mảng hai chiều (ma trận)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="assets/practice.css">
+</head>
+<body>
+<noscript>Trang bài tập cần bật JavaScript.</noscript>
+<script>
+const C = String.raw;
+window.PRACTICE = {
+  lesson: 9,
+  title: "Mảng hai chiều (ma trận)",
+  codeNote: "Dữ liệu ma trận: <b>dòng 1</b> gồm số dòng m và số cột n, <b>m dòng tiếp theo</b> mỗi dòng n số nguyên cách nhau dấu cách. Khung code có sẵn hàm <code>NhapMaTran()</code>. Khi in ma trận, các số trên một dòng cách nhau đúng 1 dấu cách.",
+  quiz: [
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int[,] b = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 } };
+        Console.WriteLine(b[1, 2]);`,
+      opts: ["7", "6", "10", "2"], ans: 0,
+      why: "Dòng 1 (dòng thứ hai) là {5, 6, 7, 8}, cột 2 là 7." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int[,] a = new int[3, 4];
+        Console.WriteLine($"{a.GetLength(0)} {a.GetLength(1)} {a.Length}");`,
+      opts: ["3 4 12", "4 3 12", "3 4 7", "12 3 4"], ans: 0,
+      why: "<code>GetLength(0)</code> = số dòng, <code>GetLength(1)</code> = số cột, <code>Length</code> = tổng số phần tử." },
+    { q: "Tổng đường chéo chính của ma trận 4×4 chứa 1..16?", run: true, mono: true,
+      code: C`
+        int[,] a = new int[4, 4];
+        int k = 1;
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
+                a[i, j] = k++;
+        int s = 0;
+        for (int i = 0; i < 4; i++) s += a[i, i];
+        Console.WriteLine(s);`,
+      opts: ["34", "40", "16", "10"], ans: 0,
+      why: "Chéo chính: 1 + 6 + 11 + 16 = 34." },
+    { q: "Điều kiện để a[i, j] nằm trên <b>đường chéo phụ</b> của ma trận vuông cấp n?",
+      opts: ["i == j", "i + j == n", "i + j == n - 1", "j > i"], ans: 2, mono: true,
+      why: "Chéo phụ đi từ góc trên phải (0, n−1) xuống góc dưới trái (n−1, 0), tổng chỉ số luôn bằng n − 1." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int[,] b = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 } };
+        int s = 0;
+        for (int i = 0; i < b.GetLength(0); i++)
+            s += b[i, 1];
+        Console.WriteLine(s);`,
+      opts: ["18", "10", "26", "6"], ans: 0,
+      why: "Cố định cột 1, chạy dòng i: 2 + 6 + 10 = 18." },
+    { q: "Chuyển vị một ma trận 3×4 thì được ma trận kích thước nào?",
+      opts: ["3×4", "4×3", "4×4", "3×3"], ans: 1,
+      why: "Chuyển vị đổi dòng thành cột: t[j, i] = a[i, j], nên m×n thành n×m." },
+    { q: "Phần tử c[0, 1] của tích hai ma trận là bao nhiêu?", run: true, mono: true,
+      code: C`
+        int[,] a = { { 1, 2 }, { 3, 4 } };
+        int[,] b = { { 5, 6 }, { 7, 8 } };
+        int c01 = 0;
+        for (int k = 0; k < 2; k++) c01 += a[0, k] * b[k, 1];
+        Console.WriteLine(c01);`,
+      opts: ["22", "19", "12", "26"], ans: 0,
+      why: "Dòng 0 của A nhân cột 1 của B: 1·6 + 2·8 = 22." },
+    { q: "Ma trận vuông 4×4 có bao nhiêu phần tử nằm <b>phía trên</b> đường chéo chính?", run: true, mono: true,
+      code: C`
+        int dem = 0;
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
+                if (j > i) dem++;
+        Console.WriteLine(dem);`,
+      opts: ["4", "6", "8", "10"], ans: 1,
+      why: "Dòng 0 có 3, dòng 1 có 2, dòng 2 có 1, dòng 3 có 0: tổng 6 = n(n−1)/2." },
+    { q: "Với <code>int[,] a</code>, cách truy cập nào <b>đúng</b>?",
+      opts: ["a[1][2]", "a[1, 2]", "a(1, 2)", "a[1;2]"], ans: 1, mono: true,
+      why: "Mảng hai chiều C# dùng dấu phẩy <code>a[i, j]</code>. Kiểu <code>a[i][j]</code> dành cho mảng răng cưa <code>int[][]</code>." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int[,] a = { { 3, -1 }, { 0, 7 }, { -4, 2 } };
+        int dem = 0;
+        foreach (int x in a)
+            if (x > 0) dem++;
+        Console.WriteLine(dem);`,
+      opts: ["3", "4", "2", "6"], ans: 0,
+      why: "<code>foreach</code> duyệt hết mọi phần tử của ma trận. Các số dương: 3, 7, 2." }
+  ],
+  problems: [
+    { id: "tongdong", title: "Tổng từng dòng", level: 1,
+      desc: "<p>In tổng của từng dòng, mỗi tổng một dòng dạng <code>Dòng i: tổng</code> (i đánh số từ 1). Dòng cuối in <code>Lớn nhất: dòng k</code> (nếu bằng nhau chọn dòng đầu tiên).</p>",
+      samples: [{ in: "3 4\n1 2 3 4\n5 6 7 8\n9 10 11 12", out: "Dòng 1: 10\nDòng 2: 26\nDòng 3: 42\nLớn nhất: dòng 3" }],
+      tests: ["1 1\n-5", "2 3\n1 1 1\n3 0 0", "3 2\n-1 -2\n-3 -4\n0 -1"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static int[,] NhapMaTran()
+            {
+                string[] mn = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                int m = int.Parse(mn[0]), n = int.Parse(mn[1]);
+                int[,] a = new int[m, n];
+                for (int i = 0; i < m; i++)
+                {
+                    string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    for (int j = 0; j < n; j++) a[i, j] = int.Parse(p[j]);
+                }
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[,] a = NhapMaTran();
+                // TODO
+            }
+        }`,
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int[,] NhapMaTran()
+            {
+                string[] mn = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                int m = int.Parse(mn[0]), n = int.Parse(mn[1]);
+                int[,] a = new int[m, n];
+                for (int i = 0; i < m; i++)
+                {
+                    string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    for (int j = 0; j < n; j++) a[i, j] = int.Parse(p[j]);
+                }
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[,] a = NhapMaTran();
+                int best = 0, bestSum = 0;
+                for (int i = 0; i < a.GetLength(0); i++)
+                {
+                    int s = 0;
+                    for (int j = 0; j < a.GetLength(1); j++) s += a[i, j];
+                    Console.WriteLine($"Dòng {i + 1}: {s}");
+                    if (i == 0 || s > bestSum) { bestSum = s; best = i; }
+                }
+                Console.WriteLine($"Lớn nhất: dòng {best + 1}");
+            }
+        }` },
+    { id: "maxvt", title: "Phần tử lớn nhất và vị trí", level: 1,
+      desc: "<p>In <code>Max = …</code> và <code>Vị trí: (dòng, cột)</code> của lần xuất hiện <b>đầu tiên</b> (duyệt theo dòng), dòng và cột đánh số từ 1.</p>",
+      samples: [{ in: "2 3\n4 9 1\n9 0 2", out: "Max = 9\nVị trí: (1, 2)" }],
+      tests: ["1 1\n7", "3 3\n-1 -2 -3\n-4 -5 -6\n-7 -8 -9", "2 2\n0 0\n0 1"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static int[,] NhapMaTran()
+            {
+                string[] mn = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                int m = int.Parse(mn[0]), n = int.Parse(mn[1]);
+                int[,] a = new int[m, n];
+                for (int i = 0; i < m; i++)
+                {
+                    string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    for (int j = 0; j < n; j++) a[i, j] = int.Parse(p[j]);
+                }
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[,] a = NhapMaTran();
+                // TODO
+            }
+        }`,
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int[,] NhapMaTran()
+            {
+                string[] mn = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                int m = int.Parse(mn[0]), n = int.Parse(mn[1]);
+                int[,] a = new int[m, n];
+                for (int i = 0; i < m; i++)
+                {
+                    string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    for (int j = 0; j < n; j++) a[i, j] = int.Parse(p[j]);
+                }
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[,] a = NhapMaTran();
+                int di = 0, dj = 0;
+                for (int i = 0; i < a.GetLength(0); i++)
+                    for (int j = 0; j < a.GetLength(1); j++)
+                        if (a[i, j] > a[di, dj]) { di = i; dj = j; }
+                Console.WriteLine($"Max = {a[di, dj]}");
+                Console.WriteLine($"Vị trí: ({di + 1}, {dj + 1})");
+            }
+        }` },
+    { id: "duongcheo", title: "Tổng hai đường chéo", level: 1,
+      desc: "<p>Ma trận vuông (m = n). In <code>Chéo chính: …</code> và <code>Chéo phụ: …</code>.</p>",
+      samples: [{ in: "3 3\n1 2 3\n4 5 6\n7 8 9", out: "Chéo chính: 15\nChéo phụ: 15" }],
+      tests: ["1 1\n4", "2 2\n1 2\n3 4", "4 4\n1 0 0 2\n0 3 4 0\n0 5 6 0\n7 0 0 8"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static int[,] NhapMaTran()
+            {
+                string[] mn = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                int m = int.Parse(mn[0]), n = int.Parse(mn[1]);
+                int[,] a = new int[m, n];
+                for (int i = 0; i < m; i++)
+                {
+                    string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    for (int j = 0; j < n; j++) a[i, j] = int.Parse(p[j]);
+                }
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[,] a = NhapMaTran();
+                // TODO: chỉ cần 1 vòng lặp
+            }
+        }`,
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int[,] NhapMaTran()
+            {
+                string[] mn = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                int m = int.Parse(mn[0]), n = int.Parse(mn[1]);
+                int[,] a = new int[m, n];
+                for (int i = 0; i < m; i++)
+                {
+                    string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    for (int j = 0; j < n; j++) a[i, j] = int.Parse(p[j]);
+                }
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[,] a = NhapMaTran();
+                int n = a.GetLength(0), c = 0, p = 0;
+                for (int i = 0; i < n; i++)
+                {
+                    c += a[i, i];
+                    p += a[i, n - 1 - i];
+                }
+                Console.WriteLine($"Chéo chính: {c}");
+                Console.WriteLine($"Chéo phụ: {p}");
+            }
+        }` },
+    { id: "chuyenvi", title: "Ma trận chuyển vị", level: 2,
+      desc: "<p>In ma trận chuyển vị (n dòng, m cột).</p>",
+      samples: [{ in: "2 3\n1 2 3\n4 5 6", out: "1 4\n2 5\n3 6" }],
+      tests: ["1 1\n9", "1 4\n1 2 3 4", "3 2\n1 2\n3 4\n5 6"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static int[,] NhapMaTran()
+            {
+                string[] mn = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                int m = int.Parse(mn[0]), n = int.Parse(mn[1]);
+                int[,] a = new int[m, n];
+                for (int i = 0; i < m; i++)
+                {
+                    string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    for (int j = 0; j < n; j++) a[i, j] = int.Parse(p[j]);
+                }
+                return a;
+            }
+
+            static void XuatMaTran(int[,] a)
+            {
+                for (int i = 0; i < a.GetLength(0); i++)
+                {
+                    for (int j = 0; j < a.GetLength(1); j++)
+                        Console.Write(a[i, j] + (j < a.GetLength(1) - 1 ? " " : ""));
+                    Console.WriteLine();
+                }
+            }
+
+            static int[,] ChuyenVi(int[,] a)
+            {
+                // TODO
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[,] a = NhapMaTran();
+                XuatMaTran(ChuyenVi(a));
+            }
+        }`,
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int[,] NhapMaTran()
+            {
+                string[] mn = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                int m = int.Parse(mn[0]), n = int.Parse(mn[1]);
+                int[,] a = new int[m, n];
+                for (int i = 0; i < m; i++)
+                {
+                    string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    for (int j = 0; j < n; j++) a[i, j] = int.Parse(p[j]);
+                }
+                return a;
+            }
+
+            static void XuatMaTran(int[,] a)
+            {
+                for (int i = 0; i < a.GetLength(0); i++)
+                {
+                    for (int j = 0; j < a.GetLength(1); j++)
+                        Console.Write(a[i, j] + (j < a.GetLength(1) - 1 ? " " : ""));
+                    Console.WriteLine();
+                }
+            }
+
+            static int[,] ChuyenVi(int[,] a)
+            {
+                int m = a.GetLength(0), n = a.GetLength(1);
+                int[,] t = new int[n, m];
+                for (int i = 0; i < m; i++)
+                    for (int j = 0; j < n; j++)
+                        t[j, i] = a[i, j];
+                return t;
+            }
+
+            static void Main(string[] args)
+            {
+                int[,] a = NhapMaTran();
+                XuatMaTran(ChuyenVi(a));
+            }
+        }` },
+    { id: "doixung", title: "Ma trận đối xứng", level: 2,
+      desc: "<p>Ma trận vuông có <b>đối xứng</b> qua đường chéo chính không (a[i, j] = a[j, i] với mọi i, j)? In <code>YES</code> hoặc <code>NO</code>.</p>",
+      samples: [{ in: "3 3\n1 2 3\n2 5 6\n3 6 9", out: "YES" }, { in: "2 2\n1 2\n3 1", out: "NO" }],
+      tests: ["1 1\n5", "3 3\n0 1 2\n1 0 3\n2 4 0", "2 2\n7 -1\n-1 7"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static int[,] NhapMaTran()
+            {
+                string[] mn = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                int m = int.Parse(mn[0]), n = int.Parse(mn[1]);
+                int[,] a = new int[m, n];
+                for (int i = 0; i < m; i++)
+                {
+                    string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    for (int j = 0; j < n; j++) a[i, j] = int.Parse(p[j]);
+                }
+                return a;
+            }
+
+            static bool DoiXung(int[,] a)
+            {
+                // TODO
+                return false;
+            }
+
+            static void Main(string[] args)
+            {
+                int[,] a = NhapMaTran();
+                Console.WriteLine(DoiXung(a) ? "YES" : "NO");
+            }
+        }`,
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int[,] NhapMaTran()
+            {
+                string[] mn = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                int m = int.Parse(mn[0]), n = int.Parse(mn[1]);
+                int[,] a = new int[m, n];
+                for (int i = 0; i < m; i++)
+                {
+                    string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    for (int j = 0; j < n; j++) a[i, j] = int.Parse(p[j]);
+                }
+                return a;
+            }
+
+            static bool DoiXung(int[,] a)
+            {
+                int n = a.GetLength(0);
+                for (int i = 0; i < n; i++)
+                    for (int j = i + 1; j < n; j++)
+                        if (a[i, j] != a[j, i]) return false;
+                return true;
+            }
+
+            static void Main(string[] args)
+            {
+                int[,] a = NhapMaTran();
+                Console.WriteLine(DoiXung(a) ? "YES" : "NO");
+            }
+        }` },
+    { id: "nhan", title: "Nhân hai ma trận", level: 3,
+      desc: "<p>Nhập ma trận A (m×p) rồi ma trận B (q×n), mỗi ma trận theo đúng định dạng trên. Nếu p ≠ q in <code>Không nhân được</code>, ngược lại in ma trận tích C = A × B (m×n).</p>",
+      samples: [{ in: "2 2\n1 2\n3 4\n2 2\n5 6\n7 8", out: "19 22\n43 50" }, { in: "1 2\n1 2\n1 2\n3 4", out: "Không nhân được" }],
+      tests: ["1 3\n1 2 3\n3 1\n4\n5\n6", "2 3\n1 0 2\n0 1 0\n3 2\n1 2\n3 4\n5 6", "1 1\n-3\n1 1\n4"],
+      starter: C`
+        using System;
+
+        class Program
+        {
+            static int[,] NhapMaTran()
+            {
+                string[] mn = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                int m = int.Parse(mn[0]), n = int.Parse(mn[1]);
+                int[,] a = new int[m, n];
+                for (int i = 0; i < m; i++)
+                {
+                    string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    for (int j = 0; j < n; j++) a[i, j] = int.Parse(p[j]);
+                }
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[,] a = NhapMaTran();
+                int[,] b = NhapMaTran();
+                // TODO
+            }
+        }`,
+      hint: "c[i, j] = Σ a[i, k] × b[k, j] với k từ 0 đến p − 1 (3 vòng lặp lồng nhau).",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static int[,] NhapMaTran()
+            {
+                string[] mn = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                int m = int.Parse(mn[0]), n = int.Parse(mn[1]);
+                int[,] a = new int[m, n];
+                for (int i = 0; i < m; i++)
+                {
+                    string[] p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    for (int j = 0; j < n; j++) a[i, j] = int.Parse(p[j]);
+                }
+                return a;
+            }
+
+            static void Main(string[] args)
+            {
+                int[,] a = NhapMaTran();
+                int[,] b = NhapMaTran();
+                int m = a.GetLength(0), p = a.GetLength(1), n = b.GetLength(1);
+                if (p != b.GetLength(0)) { Console.WriteLine("Không nhân được"); return; }
+                for (int i = 0; i < m; i++)
+                {
+                    for (int j = 0; j < n; j++)
+                    {
+                        int s = 0;
+                        for (int k = 0; k < p; k++) s += a[i, k] * b[k, j];
+                        Console.Write(s + (j < n - 1 ? " " : ""));
+                    }
+                    Console.WriteLine();
+                }
+            }
+        }` }
+  ]
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="assets/cs-runner.js"></script>
+<script src="assets/practice.js"></script>
+</body>
+</html>

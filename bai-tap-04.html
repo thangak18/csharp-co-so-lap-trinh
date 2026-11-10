@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bài tập Buổi 4 · Cấu trúc lặp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="assets/practice.css">
+</head>
+<body>
+<noscript>Trang bài tập cần bật JavaScript.</noscript>
+<script>
+const C = String.raw;
+window.PRACTICE = {
+  lesson: 4,
+  title: "Cấu trúc lặp",
+  quiz: [
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        for (int i = 1; i <= 10; i += 3)
+            Console.Write(i + " ");`,
+      opts: ["1 4 7", "1 4 7 10", "1 3 6 9", "1 4 7 10 13"], ans: 1,
+      why: "i nhận 1, 4, 7, 10; đến 13 thì điều kiện i ≤ 10 sai nên dừng." },
+    { q: "Giá trị của s?", run: true, mono: true,
+      code: C`
+        int s = 0;
+        for (int i = 10; i > 0; i -= 2)
+            s += i;
+        Console.WriteLine(s);`,
+      opts: ["30", "55", "20", "28"], ans: 0,
+      why: "s = 10 + 8 + 6 + 4 + 2 = 30." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int n = 1205, t = 0;
+        while (n > 0)
+        {
+            t += n % 10;
+            n /= 10;
+        }
+        Console.WriteLine(t);`,
+      opts: ["8", "7", "1205", "4"], ans: 0,
+      why: "Đây là thuật toán tổng chữ số: 5 + 0 + 2 + 1 = 8." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int x = 10;
+        do
+        {
+            Console.Write(x + " ");
+            x++;
+        } while (x < 5);`,
+      opts: ["(không in gì)", "10", "10 11 12 13 14", "Vòng lặp vô hạn"], ans: 1,
+      why: "<code>do…while</code> chạy thân <b>ít nhất 1 lần</b> rồi mới kiểm tra điều kiện. In 10, sau đó 11 &lt; 5 sai nên dừng." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        for (int i = 1; i <= 10; i++)
+        {
+            if (i % 4 == 0) break;
+            if (i % 2 == 0) continue;
+            Console.Write(i + " ");
+        }`,
+      opts: ["1 3", "1 3 5 7 9", "1 2 3", "1 3 5"], ans: 0,
+      why: "i = 1 in; i = 2 continue; i = 3 in; i = 4 thì break thoát hẳn vòng lặp." },
+    { q: "Thân vòng lặp chạy bao nhiêu lần?", run: true, mono: true,
+      code: C`
+        int dem = 0;
+        for (int i = 0; i < 20; i += 5)
+            dem++;
+        Console.WriteLine(dem);`,
+      opts: ["3", "4", "5", "20"], ans: 1,
+      why: "i = 0, 5, 10, 15 (4 lần); i = 20 thì 20 &lt; 20 sai." },
+    { q: "Đoạn code sau chạy thế nào?",
+      code: C`
+        int i = 1;
+        while (i <= 5);
+        {
+            Console.Write(i);
+            i++;
+        }`,
+      opts: ["In 12345", "In 1", "Vòng lặp vô hạn, không in gì", "Lỗi biên dịch"], ans: 2,
+      why: "Dấu <code>;</code> sau <code>while (i &lt;= 5)</code> tạo thân rỗng. i không bao giờ tăng nên điều kiện luôn đúng, vòng lặp không dừng và khối { } phía sau không bao giờ được chạy tới." },
+    { q: "Thuật toán Euclid với a = 84, b = 36 cho kết quả?", run: true, mono: true,
+      code: C`
+        int a = 84, b = 36;
+        while (b != 0)
+        {
+            int r = a % b;
+            a = b;
+            b = r;
+        }
+        Console.WriteLine(a);`,
+      opts: ["6", "12", "36", "4"], ans: 1,
+      why: "(84, 36) → (36, 12) → (12, 0). UCLN = 12." },
+    { q: "Lần vết: giá trị cuối cùng của p?", run: true, mono: true,
+      code: C`
+        int p = 1;
+        for (int i = 1; i <= 4; i++)
+            p = p * 2 + i;
+        Console.WriteLine(p);`,
+      opts: ["26", "42", "31", "19"], ans: 1,
+      why: "p: 1 → 1·2+1 = 3 → 3·2+2 = 8 → 8·2+3 = 19 → 19·2+4 = 42." },
+    { q: "Kết quả in ra?", run: true, mono: true,
+      code: C`
+        int a = 1, b = 1;
+        for (int i = 0; i < 5; i++)
+        {
+            int t = a + b;
+            a = b;
+            b = t;
+        }
+        Console.WriteLine(b);`,
+      opts: ["8", "13", "21", "5"], ans: 1,
+      why: "(a, b) lần lượt: (1,2) → (2,3) → (3,5) → (5,8) → (8,13). Đây là dãy Fibonacci." }
+  ],
+  problems: [
+    { id: "tongtich", title: "Tổng và giai thừa", level: 1,
+      desc: "<p>Nhập số nguyên n (1 ≤ n ≤ 20). In 2 dòng: <code>S = &lt;1 + 2 + … + n&gt;</code> và <code>n! = &lt;giai thừa&gt;</code> (thay n bằng giá trị thật).</p>",
+      samples: [{ in: "5", out: "S = 15\n5! = 120" }],
+      tests: ["1", "10", "20"],
+      hint: "Giai thừa tăng rất nhanh, 20! vượt quá int nên phải dùng <code>long</code>.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int n = int.Parse(Console.ReadLine());
+                long s = 0, gt = 1;
+                for (int i = 1; i <= n; i++)
+                {
+                    s += i;
+                    gt *= i;
+                }
+                Console.WriteLine($"S = {s}");
+                Console.WriteLine($"{n}! = {gt}");
+            }
+        }` },
+    { id: "chuso", title: "Đếm và cộng chữ số", level: 1,
+      desc: "<p>Nhập số nguyên n ≥ 0. In <code>Số chữ số: …</code> và <code>Tổng chữ số: …</code>. Lưu ý số 0 có 1 chữ số.</p>",
+      samples: [{ in: "4728", out: "Số chữ số: 4\nTổng chữ số: 21" }, { in: "0", out: "Số chữ số: 1\nTổng chữ số: 0" }],
+      tests: ["7", "1000000", "2147483647", "90909"],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int n = int.Parse(Console.ReadLine());
+                int dem = 0, tong = 0;
+                do
+                {
+                    tong += n % 10;
+                    dem++;
+                    n /= 10;
+                } while (n > 0);
+                Console.WriteLine($"Số chữ số: {dem}");
+                Console.WriteLine($"Tổng chữ số: {tong}");
+            }
+        }` },
+    { id: "snt", title: "Kiểm tra số nguyên tố", level: 2,
+      desc: "<p>Nhập số nguyên n (0 ≤ n ≤ 10⁹). In <code>YES</code> nếu n là số nguyên tố, ngược lại in <code>NO</code>.</p>",
+      samples: [{ in: "97", out: "YES" }, { in: "1", out: "NO" }],
+      tests: ["0", "2", "4", "7919", "1000000007", "999999937", "1000000000"],
+      hint: "Chỉ cần thử chia cho i từ 2 đến √n (<code>i * i &lt;= n</code>), nếu không thì test số lớn sẽ quá thời gian.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                long n = long.Parse(Console.ReadLine());
+                bool nt = n >= 2;
+                for (long i = 2; i * i <= n; i++)
+                {
+                    if (n % i == 0) { nt = false; break; }
+                }
+                Console.WriteLine(nt ? "YES" : "NO");
+            }
+        }` },
+    { id: "ucln", title: "UCLN và BCNN", level: 2,
+      desc: "<p>Nhập hai số nguyên dương a, b (mỗi số một dòng, ≤ 10⁹). In <code>UCLN = …</code> và <code>BCNN = …</code>.</p>",
+      samples: [{ in: "48\n18", out: "UCLN = 6\nBCNN = 144" }],
+      tests: ["7\n13", "100\n100", "1000000000\n999999999", "12\n1"],
+      hint: "BCNN = a / UCLN × b. Kết quả BCNN có thể rất lớn, hãy dùng <code>long</code>.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                long a = long.Parse(Console.ReadLine());
+                long b = long.Parse(Console.ReadLine());
+                long x = a, y = b;
+                while (y != 0)
+                {
+                    long r = x % y;
+                    x = y;
+                    y = r;
+                }
+                Console.WriteLine($"UCLN = {x}");
+                Console.WriteLine($"BCNN = {a / x * b}");
+            }
+        }` },
+    { id: "hoanhao", title: "Liệt kê số hoàn hảo", level: 2,
+      desc: "<p>Số hoàn hảo là số bằng tổng các ước nhỏ hơn nó (6 = 1 + 2 + 3). Nhập n (≤ 10000), in các số hoàn hảo <b>nhỏ hơn</b> n trên một dòng, cách nhau 1 dấu cách. Nếu không có in <code>Không có</code>.</p>",
+      samples: [{ in: "1000", out: "6 28 496" }, { in: "5", out: "Không có" }],
+      tests: ["7", "29", "10000"],
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                int n = int.Parse(Console.ReadLine());
+                string kq = "";
+                for (int k = 2; k < n; k++)
+                {
+                    int tong = 0;
+                    for (int i = 1; i <= k / 2; i++)
+                        if (k % i == 0) tong += i;
+                    if (tong == k) kq += (kq == "" ? "" : " ") + k;
+                }
+                Console.WriteLine(kq == "" ? "Không có" : kq);
+            }
+        }` },
+    { id: "tietkiem", title: "Bao lâu đạt mục tiêu tiết kiệm?", level: 2,
+      desc: "<p>Dòng 1: tiền gửi P. Dòng 2: lãi suất năm r (%). Dòng 3: mục tiêu M. Lãi nhập gốc mỗi năm. In số năm ít nhất để số dư ≥ M dạng <code>Sau &lt;k&gt; năm</code>. Nếu ngay từ đầu P ≥ M thì in <code>Sau 0 năm</code>.</p>",
+      samples: [{ in: "100000000\n12\n200000000", out: "Sau 7 năm" }],
+      tests: ["100\n10\n100", "50000000\n6\n100000000", "1000\n100\n1000000"],
+      hint: "Chưa biết trước số năm nên dùng <code>while (soDu &lt; M)</code>.",
+      solution: C`
+        using System;
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                double p = double.Parse(Console.ReadLine());
+                double r = double.Parse(Console.ReadLine());
+                double m = double.Parse(Console.ReadLine());
+                int nam = 0;
+                while (p < m)
+                {
+                    p += p * r / 100;
+                    nam++;
+                }
+                Console.WriteLine($"Sau {nam} năm");
+            }
+        }` }
+  ]
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="assets/cs-runner.js"></script>
+<script src="assets/practice.js"></script>
+</body>
+</html>
